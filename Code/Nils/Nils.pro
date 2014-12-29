@@ -1,23 +1,27 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2014-12-01T17:07:00
-#
-#-------------------------------------------------
-
 QT       += core gui
-
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Nils
 TEMPLATE = app
 
-
-SOURCES += main.cpp \
-    updatable.cpp \
-    node.cpp \
-    gamer.cpp
-
-HEADERS  += \
-    updatable.h \
+HEADERS += \
+    connexion.h \
+    gamer.h \
     node.h \
-    gamer.h
+    updatable.h \
+    widget.h \
+    map.h \
+    squad.h
+
+SOURCES += \
+    connexion.cpp \
+    gamer.cpp \
+    main.cpp \
+    node.cpp \
+    widget.cpp \
+    map.cpp \
+    updatable.cpp \
+    squad.cpp
+
+OTHER_FILES += \
+    Notes.txt

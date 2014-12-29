@@ -2,20 +2,23 @@
 #define UPDATABLE_H
 
 #include <QObject>
+#include <QMutex>
 
-/**
- * @brief Super classe abstraite de tout les objets
- * devant être mis à jour lors de la boucle de
- * rafraichissement
- */
+namespace GameComponent {
+    class Updatable;
+}
+
 class Updatable : public QObject
 {
     Q_OBJECT
 public:
-    explicit Updatable(QObject *parent = 0);
-
+    explicit Updatable(QObject *parent=0);
+    virtual ~Updatable();
+    virtual void tic() = 0;
+    unsigned int getId() const;
 private:
-    virtual void tic();
+    unsigned int id;
+    mutable QMutex mutex;   //Verroux sur l'objet
 };
 
 #endif // UPDATABLE_H
