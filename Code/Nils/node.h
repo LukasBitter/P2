@@ -1,7 +1,6 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include "updatable.h"
 #include <QGraphicsItem>
 #include <QMutex>
 #include <QMap>
@@ -21,16 +20,18 @@ namespace GameComponent {
  *
  * Classe thread-safe
  */
-class Node : public QGraphicsItem, public Updatable
+class Node : public QGraphicsObject
 {
+    Q_OBJECT
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     explicit Node(int x, int y, int radius, int ressourcesMax,
                   Gamer *g=0, QGraphicsItem *parent=0);
+    explicit Node(int x, int y, int radius, int ressourcesMax,
+                  int updateMs, Gamer *g=0, QGraphicsItem *parent=0);
     virtual ~Node();
 
     /*SURCHARGE*/
-    void tic();
     QRectF boundingRect() const;
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
@@ -75,11 +76,11 @@ private:
     int radius;
     mutable QMutex lockRessource;   //Verroux sur l'objet
     mutable QMutex lockMapConnexion;   //Verroux sur l'objet
-    QMap<int, Connexion *> mapConnexion; //Cle = ID noeud distant, Valeur = pinteur sur sa connextion //Ressource critique
+    QMap<Node *, Connexion *> mapConnexion; //Cle = noeud distant, Valeur = pinteur sur sa connextion //Ressource critique
 
     /*METHODE PRIVE*/
     void addConnexion(Connexion *c);
-    void removeConnexion(int nodeID);
+    void removeConnexion(Node &n);
 };
 
 #endif // NODE_H

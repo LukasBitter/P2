@@ -8,8 +8,6 @@ HEADERS += \
     connexion.h \
     gamer.h \
     node.h \
-    updatable.h \
-    widget.h \
     map.h \
     squad.h
 
@@ -18,9 +16,7 @@ SOURCES += \
     gamer.cpp \
     main.cpp \
     node.cpp \
-    widget.cpp \
     map.cpp \
-    updatable.cpp \
     squad.cpp
 
 OTHER_FILES += \

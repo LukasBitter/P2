@@ -1,4 +1,3 @@
-#include "widget.h"
 #include "map.h"
 #include "gamer.h"
 #include "node.h"
@@ -9,20 +8,16 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    /*
-    Widget w;
-    w.show();
-    */
 
     Map m;
 
     //Créatoin des joueur
     Gamer *nils = new Gamer(Qt::red);
-    Gamer *lukas = new Gamer(Qt::red);
+    Gamer *lukas = new Gamer(Qt::green);
 
     //Création de la map
     Node *campsBaseNils = new Node(180,-150,30,10,nils,0);
-    Node *campsBaseLukas = new Node(-200,80,30,15,lukas,0);
+    Node *campsBaseLukas = new Node(-200,80,30,100,lukas,0);
     Node *aventageNils = new Node(180,10,10,10,0,0);
     Node *lienLukasNils = new Node(-10,-20,50,110,0,0);
 
@@ -30,7 +25,7 @@ int main(int argc, char *argv[])
     campsBaseLukas->setRessourcesRate(1);
     aventageNils->setRessourcesRate(1);
     lienLukasNils->setRessourcesRate(0);
-    campsBaseNils->setNbRessources(5);
+    campsBaseNils->setNbRessources(50);
     campsBaseLukas->setNbRessources(5);
 
     m.addNode(*campsBaseNils);
@@ -44,21 +39,9 @@ int main(int argc, char *argv[])
     //Action de la partie
     campsBaseNils->sendSquad(1, *aventageNils);
     campsBaseLukas->sendSquad(3, *lienLukasNils);
+    campsBaseNils->sendSquad(5, *lienLukasNils);
+    campsBaseNils->sendSquad(20, *aventageNils);
+
     m.show();
-
-
-
-
-
-    /*
-    Node *n1 = new Node(150,0,10,0);
-    Node *n2 = new Node(50,50,110,0);
-    n1->connect(*n2);
-
-    delete n1;
-    delete n2;
-    return 0;*/
-
-    qDebug()<<"test";
     return a.exec();
 }

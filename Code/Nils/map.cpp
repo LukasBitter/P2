@@ -19,6 +19,7 @@ Map::Map(QWidget *parent) :
 {
     scene = new QGraphicsScene(this);
     setScene(scene);
+    scene->setSceneRect(-100,100,200,200);
     // Désactivation des scrollbars
     setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
@@ -29,7 +30,7 @@ Map::Map(QWidget *parent) :
 Map::~Map()
 {
     //Efface simplement la liste des pointeurs
-    mapNode.clear();
+    lstNode.clear();
     //La scene s'occupe de detruire les noeud et les connexions
     delete scene;
 }
@@ -40,7 +41,7 @@ Map::~Map()
 
 void Map::addNode(Node &n)
 {
-    mapNode.insert(n.getId(), &n);
+    lstNode.append(&n);
     scene->addItem(&n);
 }
 
@@ -48,14 +49,6 @@ bool Map::addConnexion(Node &n1, Node &n2)
 {
     n1.connect(n2);
     scene->addItem(n1.getConnexion(n2));
-}
-
-Node* Map::getNode(int number)const
-{
-    if(mapNode.contains(number))
-        return mapNode.value(number);
-    else
-        return 0;
 }
 
 /*----------------------------------------------------*/

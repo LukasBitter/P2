@@ -1,10 +1,5 @@
 #include "squad.h"
 
-/*
- * - Rendez thread safe toutes méthodes public implémentées
- */
-
-
 
 Squad::Squad(const Gamer &g) : owner(g)
 {

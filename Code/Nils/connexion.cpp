@@ -8,22 +8,17 @@
 
 #include <QDebug>
 
-/*
- * - Rendez thread safe toutes méthodes public implémentées
- */
-
-
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
 Connexion::Connexion(Node &n1, Node &n2,  QGraphicsItem *parent)
-    : Connexion(n1,n2,500,parent)
+    : Connexion(n1,n2,200,parent)
 {
 }
 
 Connexion::Connexion(Node &n1, Node &n2, int updateMs, QGraphicsItem *parent)
-    : QGraphicsItem(parent), n1(n1), n2(n2)
+    : QGraphicsObject(parent), n1(n1), n2(n2)
 {
     qreal dist = sqrt(pow(abs(n1.getPosX()-n2.getPosX()),2)+
                       pow(abs(n1.getPosY()-n2.getPosY()),2));
@@ -47,18 +42,9 @@ Connexion::~Connexion()
 /*SURCHARGE*/
 /*----------------------------------------------------*/
 
-void Connexion::tic()
-{
-    advanceSquad();
-    resolveSquadFigth();
-    checkSquadArrive();
-
-    QGraphicsItem::update();
-}
-
 QRectF Connexion::boundingRect() const
 {
-    return QRectF(n1.getPosX(), n1.getPosY(), n2.getPosX(), n2.getPosY());
+    return QRectF(n1.getPosX(), n1.getPosY(), n2.getPosX()-n1.getPosX(), n2.getPosY()-n1.getPosY());
 }
 
 void Connexion::paint(QPainter *painter,
@@ -88,7 +74,11 @@ void Connexion::paint(QPainter *painter,
 
 void Connexion::timerEvent(QTimerEvent *event)
 {
-    tic();
+    advanceSquad();
+    resolveSquadFigth();
+    checkSquadArrive();
+
+    update();
 }
 
 /*----------------------------------------------------*/
@@ -107,26 +97,26 @@ Node & Connexion::getNode2()const
 
 bool Connexion::isConnextedTo(Node &n) const
 {
-    return n.getId() == n1.getId() || n.getId() == n2.getId();
+    return &n == &n1 || &n == &n2;
 }
 
 void Connexion::sendSquad(Squad &s, Node &from)
 {
     QMutexLocker l(&lockListSquad);
 
-    if(from.getId() == n1.getId())
+    if(&from == &n1)
     {
-        s.setProgress(0);
+        s.setProgress(n1.getRadius());
         lstSquad1To2.push_front(&s);
     }
-    else if(from.getId() == n2.getId())
+    else if(&from == &n2)
     {
-        s.setProgress(pathLength);
+        s.setProgress(pathLength-n2.getRadius());
         lstSquad2To1.push_front(&s);
     }
     l.unlock();
 
-    QGraphicsItem::update();
+    update();
 }
 
 /*----------------------------------------------------*/
@@ -140,7 +130,7 @@ void Connexion::advanceSquad()
     foreach(Squad *s, lstSquad1To2)
     {
         int p = s->getProgress();
-        if(p < pathLength)
+        if(p < pathLength-n2.getRadius())
         {
             ++p;
             s->setProgress(p);
@@ -149,7 +139,7 @@ void Connexion::advanceSquad()
     foreach(Squad *s, lstSquad2To1)
     {
         int p = s->getProgress();
-        if(p > 0)
+        if(p > n1.getRadius())
         {
             --p;
             s->setProgress(p);
@@ -203,7 +193,7 @@ void Connexion::checkSquadArrive()
     foreach(Squad *s, lstSquad1To2)
     {
         int p = s->getProgress();
-        if(p == pathLength)
+        if(p == pathLength-n2.getRadius())
         {
             n2.incoming(*s);
             lstSquad1To2.pop_back();
@@ -212,7 +202,7 @@ void Connexion::checkSquadArrive()
     foreach(Squad *s, lstSquad2To1)
     {
         int p = s->getProgress();
-        if(p == 0)
+        if(p == n1.getRadius())
         {
             n1.incoming(*s);
             lstSquad2To1.pop_back();
@@ -230,7 +220,7 @@ QList<QPair<Squad *, Squad *> > Connexion::checkSquadColision()
         foreach(Squad *s2to1, lstSquad2To1)
         {
             if(abs(s1to2->getProgress()-s2to1->getProgress()) <= 1 &&
-                    s1to2->getOwner().getId() != s2to1->getOwner().getId())
+                    &s1to2->getOwner() != &s2to1->getOwner())
             {
                 lstColision.append(QPair<Squad *, Squad *>(s1to2, s2to1));
             }

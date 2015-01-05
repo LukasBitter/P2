@@ -25,7 +25,6 @@ public:
     /*ASSESSEUR / MUTATEUR*/
     void addNode(Node &n);
     bool addConnexion(Node &n1, Node &n2);
-    Node* getNode(int number) const;
 private:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     //Ne pas implementer, les copies ne sont pas voulues
@@ -34,7 +33,7 @@ private:
 
     /*TOOL*/
     QGraphicsScene * scene;
-    QMap<int, Node *> mapNode;
+    QList<Node *> lstNode;
     QList<QGraphicsItem *> selection1;
     QList<QGraphicsItem *> selection2;
 

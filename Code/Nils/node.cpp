@@ -7,20 +7,22 @@
 
 #include <QDebug>
 
-/*
- * - Rendez thread safe toutes méthodes public implémentées
- */
-
 
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
 Node::Node(int x, int y, int radius, int ressourcesMax, Gamer *g, QGraphicsItem *parent)
-    : QGraphicsItem(parent), posX(x), posY(y), radius(radius), owner(g), ressourcesMax(ressourcesMax)
+    : Node(x,y,radius,ressourcesMax,1000,g,parent)
+{
+
+}
+
+Node::Node(int x, int y, int radius, int ressourcesMax, int updateMs, Gamer *g, QGraphicsItem *parent)
+    : QGraphicsObject(parent), posX(x), posY(y), radius(radius), owner(g), ressourcesMax(ressourcesMax), nbRessources(0)
 {
     setFlag(QGraphicsItem::ItemIsSelectable, true);
-    startTimer(1000);
+    startTimer(updateMs);
 }
 
 Node::~Node()
@@ -29,13 +31,13 @@ Node::~Node()
 
     foreach(Connexion *c, mapConnexion)
     {
-        if(c->getNode1().getId() == this->getId())
+        if(&c->getNode1() == this)
         {
-            c->getNode2().removeConnexion(this->getId());
+            c->getNode2().removeConnexion(*this);
         }
-        else if(c->getNode2().getId() == this->getId())
+        else if(&c->getNode2() == this)
         {
-            c->getNode1().removeConnexion(this->getId());
+            c->getNode1().removeConnexion(*this);
         }
     }
     qDeleteAll(mapConnexion);
@@ -46,7 +48,25 @@ Node::~Node()
 /*SURCHARGE*/
 /*----------------------------------------------------*/
 
-void Node::tic()
+QRectF Node::boundingRect() const
+{
+    return QRectF(posX - radius, posY - radius,
+                  2* radius, 2* radius);
+}
+
+void Node::paint(QPainter *painter,
+                const QStyleOptionGraphicsItem *option,QWidget *widget)
+{
+    painter->setPen(Qt::black);
+    if(owner != 0)painter->setBrush(QBrush(owner->getColor()));
+
+    painter->drawEllipse(posX - radius, posY - radius,
+                             2* radius, 2* radius);
+    //Acces concurent ne posant pas de problème
+    painter->drawText(QPoint(posX , posY),QString("%1").arg(nbRessources) );
+}
+
+void Node::timerEvent(QTimerEvent *event)
 {
     QMutexLocker l(&lockRessource);
 
@@ -60,33 +80,12 @@ void Node::tic()
     }
     l.unlock();
 
-    QGraphicsItem::update();
-}
-
-QRectF Node::boundingRect() const
-{
-    return QRectF(posX - radius, posY - radius,
-                  posX + radius, posY + radius);
-}
-
-void Node::paint(QPainter *painter,
-                const QStyleOptionGraphicsItem *option,QWidget *widget)
-{
-    painter->setPen(Qt::black);
-    //painter->setBrush(QBrush(owner->getColor()));
-    painter->drawEllipse(posX - radius, posY - radius,
-                             2* radius, 2* radius);
-    //Acces concurent ne posant pas de problème
-    painter->drawText(QPoint(posX , posY),QString("%1").arg(nbRessources) );
-}
-
-void Node::timerEvent(QTimerEvent *event)
-{
-    tic();
+    update(boundingRect());
 }
 
 void Node::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    update();
 }
 
 void Node::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
@@ -150,18 +149,17 @@ void Node::setNbRessources(int r)
     nbRessources = r;
     l.unlock();
 
-    QGraphicsItem::update();
+    update();
 }
 
 void Node::connect(Node &n)
 {
     QMutexLocker l(&lockMapConnexion);
 
-    if(!mapConnexion.contains(n.getId()) &&
-            n.getId() != this->getId())
+    if(!mapConnexion.contains(&n) && &n != this)
     {
         Connexion *c = new Connexion(*this,n);
-        mapConnexion.insert(n.getId(), c);
+        mapConnexion.insert(&n, c);
         n.addConnexion(c);
     }
 }
@@ -169,7 +167,7 @@ void Node::connect(Node &n)
 bool Node::isConnected(Node &n) const
 {
     QMutexLocker l(&lockMapConnexion);
-    return mapConnexion.contains(n.getId());
+    return mapConnexion.contains(&n);
 }
 
 Connexion * Node::getConnexion(Node &n) const
@@ -177,9 +175,9 @@ Connexion * Node::getConnexion(Node &n) const
     QMutexLocker l(&lockMapConnexion);
 
     Connexion *c = 0;
-    if(mapConnexion.contains(n.getId()))
+    if(mapConnexion.contains(&n))
     {
-        c = mapConnexion.value(n.getId());
+        c = mapConnexion.value(&n);
     }
     return c;
 }
@@ -196,7 +194,7 @@ void Node::incoming(Squad &s)
     int ressource = s.getNbRessources();
     delete &s;
 
-    if(g.getId() == owner->getId())
+    if(&g == owner)
     {
         //Entrée d'allier
         nbRessources += ressource;
@@ -218,7 +216,7 @@ void Node::incoming(Squad &s)
     }
     l.unlock();
 
-    QGraphicsItem::update();
+    update();
 }
 
 void Node::sendSquad(int ressource, Node &n)
@@ -226,17 +224,17 @@ void Node::sendSquad(int ressource, Node &n)
     QMutexLocker lr(&lockRessource);
     QMutexLocker lm(&lockMapConnexion);
 
-    if(n.getId() != this->getId() && mapConnexion.contains(n.getId()))
+    if(&n != this && mapConnexion.contains(&n))
     {
         int nbToSend = ressource > nbRessources ? nbRessources : ressource;
         Squad *s = new Squad(*owner);
         s->setNbRessources(nbToSend);
-        mapConnexion.value(n.getId())->sendSquad(*s, *this);
+        mapConnexion.value(&n)->sendSquad(*s, *this);
     }
     lr.unlock();
     lm.unlock();
 
-    QGraphicsItem::update();
+    update();
 }
 
 /*----------------------------------------------------*/
@@ -247,23 +245,23 @@ void Node::addConnexion(Connexion *c)
 {
     QMutexLocker l(&lockMapConnexion); //Acces via autre noeud externe
 
-    if(c->getNode1().getId() == this->getId() &&
-            !mapConnexion.contains(c->getNode2().getId()) &&
-            c->getNode2().getId() != this->getId())
+    if(&c->getNode1() == this &&
+            !mapConnexion.contains(&c->getNode2()) &&
+            &c->getNode2() != this)
     {
-        mapConnexion.insert(c->getNode2().getId(), c);
+        mapConnexion.insert(&c->getNode2(), c);
     }
-    else if(c->getNode2().getId() == this->getId() &&
-            !mapConnexion.contains(c->getNode1().getId()) &&
-            c->getNode1().getId() != this->getId())
+    else if(&c->getNode2() == this &&
+            !mapConnexion.contains(&c->getNode1()) &&
+            &c->getNode1() != this)
     {
-        mapConnexion.insert(c->getNode1().getId(), c);
+        mapConnexion.insert(&c->getNode1(), c);
     }
 }
 
-void Node::removeConnexion(int nodeID)
+void Node::removeConnexion(Node &n)
 {
     QMutexLocker l(&lockMapConnexion);  //Acces via autre noeud externe
 
-    mapConnexion.remove(nodeID);
+    mapConnexion.remove(&n);
 }

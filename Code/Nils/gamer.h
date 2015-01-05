@@ -2,9 +2,7 @@
 #define GAMER_H
 
 #include <QColor>
-#include "updatable.h"
-
-class QObject;
+#include <QObject>
 
 namespace GameComponent {
     class Gamer;
@@ -13,15 +11,13 @@ namespace GameComponent {
 /**
  * @brief Représente un joueur de la partie
  */
-class Gamer: public Updatable
+class Gamer : public QObject
 {
+    Q_OBJECT
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     explicit Gamer(QColor color, QObject *parent=0);
     virtual ~Gamer();
-
-    /*SURCHARGE*/
-    void tic();
 
     /*ASSESSEUR / MUTATEUR*/
     QColor getColor() const;

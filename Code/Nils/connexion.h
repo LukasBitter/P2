@@ -1,9 +1,8 @@
 #ifndef CONNEXION_H
 #define CONNEXION_H
 
-#include "updatable.h"
 #include <QMutex>
-#include <QGraphicsItem>
+#include <QGraphicsObject>
 #include <QQueue>
 
 class Node;
@@ -21,8 +20,9 @@ namespace GameComponent {
  *
  * Classe thread-safe
  */
-class Connexion : public QGraphicsItem, public Updatable
+class Connexion : public QGraphicsObject
 {
+    Q_OBJECT
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     explicit Connexion(Node &n1, Node &n2, QGraphicsItem *parent=0);
@@ -30,7 +30,6 @@ public:
     virtual ~Connexion();
 
     /*SURCHARGE*/
-    void tic();
     QRectF boundingRect() const;
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
