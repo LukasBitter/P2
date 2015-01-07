@@ -22,7 +22,6 @@ int Squad::getNbRessources() const
 
 void Squad::setNbRessources(int ressource)
 {
-    //Set de type simple, pas besoin de vérouiller
     nbRessource = ressource;
 }
 

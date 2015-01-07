@@ -1,14 +1,10 @@
 #ifndef SQUAD_H
 #define SQUAD_H
 
-#include <QMutex>
-
 class Gamer;
 
 /**
  * @brief Représente les ressources envoyées à travers la connexion
- *
- * Classe thread-safe
  */
 class Squad
 {
@@ -24,7 +20,6 @@ private:
     int progress;
     int nbRessource;
     const Gamer &owner;
-    mutable QMutex mutex;   //Verroux sur l'objet
 
 };
 

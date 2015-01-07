@@ -19,12 +19,10 @@ Map::Map(QWidget *parent) :
 {
     scene = new QGraphicsScene(this);
     setScene(scene);
-    scene->setSceneRect(-100,100,200,200);
+    scene->setSceneRect(-1000,-1000,2000,2000);
     // Désactivation des scrollbars
     setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
-
-    connect(scene, SIGNAL(selectionChanged()), this, SLOT(updateSelection()));
 }
 
 Map::~Map()
@@ -58,8 +56,6 @@ bool Map::addConnexion(Node &n1, Node &n2)
 void Map::advance()
 {
     scene->advance();
-    update();
-    qDebug()<<"test";
 }
 
 /*----------------------------------------------------*/

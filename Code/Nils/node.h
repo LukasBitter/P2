@@ -2,7 +2,6 @@
 #define NODE_H
 
 #include <QGraphicsItem>
-#include <QMutex>
 #include <QMap>
 
 class Gamer;
@@ -17,8 +16,6 @@ namespace GameComponent {
 
 /**
  * @brief Représente les noeuds
- *
- * Classe thread-safe
  */
 class Node : public QGraphicsObject
 {
@@ -72,8 +69,6 @@ private:
 
     /*TOOL*/
     int radius;
-    mutable QMutex lockRessource;   //Verroux sur l'objet
-    mutable QMutex lockMapConnexion;   //Verroux sur l'objet
     QMap<Node *, Connexion *> mapConnexion; //Cle = noeud distant, Valeur = pinteur sur sa connextion //Ressource critique
 
     /*METHODE PRIVE*/

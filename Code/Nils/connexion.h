@@ -1,7 +1,6 @@
 #ifndef CONNEXION_H
 #define CONNEXION_H
 
-#include <QMutex>
 #include <QGraphicsObject>
 #include <QQueue>
 
@@ -17,8 +16,6 @@ namespace GameComponent {
 
 /**
  * @brief Représente les liens entre les noeuds
- *
- * Classe thread-safe
  */
 class Connexion : public QGraphicsObject
 {
@@ -54,7 +51,6 @@ private:
     float distance;
 
     /*TOOL*/
-    mutable QMutex lockListSquad;   //Sur les listes
     QQueue<Squad *> lstSquad1To2;   //Ressource critique
     QQueue<Squad *> lstSquad2To1;   //Ressource critique
 

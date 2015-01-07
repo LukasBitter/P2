@@ -4,7 +4,6 @@
 #include "squad.h"
 #include <QPainter>
 #include <QtMath>
-#include <QMutexLocker>
 
 #include <QDebug>
 
@@ -23,8 +22,6 @@ Connexion::Connexion(Node &n1, Node &n2, QGraphicsItem *parent)
 
 Connexion::~Connexion()
 {
-    QMutexLocker l(&lockListSquad);
-
     qDeleteAll(lstSquad1To2);
     lstSquad1To2.clear();
     qDeleteAll(lstSquad2To1);
@@ -49,7 +46,6 @@ void Connexion::paint(QPainter *painter,
     painter->rotate(angle);
     painter->drawLine(0, n1.getRadius(), 0, pathLength-n2.getRadius());
 
-    QMutexLocker l(&lockListSquad);
     foreach(Squad *s, lstSquad1To2)
     {
         painter->drawLine(-5,s->getProgress(),5,s->getProgress());
@@ -71,7 +67,7 @@ void Connexion::advance(int step)
     resolveSquadFigth();
     checkSquadArrive();
 
-    update();
+    update(boundingRect());
 }
 
 /*----------------------------------------------------*/
@@ -95,8 +91,6 @@ bool Connexion::isConnextedTo(Node &n) const
 
 void Connexion::sendSquad(Squad &s, Node &from)
 {
-    QMutexLocker l(&lockListSquad);
-
     if(&from == &n1)
     {
         s.setProgress(n1.getRadius());
@@ -107,7 +101,6 @@ void Connexion::sendSquad(Squad &s, Node &from)
         s.setProgress(pathLength-n2.getRadius());
         lstSquad2To1.push_front(&s);
     }
-    l.unlock();
 
     update();
 }
@@ -118,8 +111,6 @@ void Connexion::sendSquad(Squad &s, Node &from)
 
 void Connexion::advanceSquad()
 {
-    QMutexLocker l(&lockListSquad);
-
     foreach(Squad *s, lstSquad1To2)
     {
         int p = s->getProgress();
@@ -144,7 +135,6 @@ void Connexion::resolveSquadFigth()
 {
     QList<QPair<Squad *, Squad *> > lstColision = checkSquadColision();
 
-    QMutexLocker m(&lockListSquad);
     QPair<Squad *, Squad *> p;
     foreach(p , lstColision)
     {
@@ -181,8 +171,6 @@ void Connexion::resolveSquadFigth()
 
 void Connexion::checkSquadArrive()
 {
-    QMutexLocker l(&lockListSquad);
-
     foreach(Squad *s, lstSquad1To2)
     {
         int p = s->getProgress();
@@ -205,8 +193,6 @@ void Connexion::checkSquadArrive()
 
 QList<QPair<Squad *, Squad *> > Connexion::checkSquadColision()
 {
-    QMutexLocker m(&lockListSquad);
-
     QList<QPair<Squad *, Squad *> > lstColision;
     foreach(Squad *s1to2, lstSquad1To2)
     {

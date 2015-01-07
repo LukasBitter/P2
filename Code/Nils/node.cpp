@@ -20,8 +20,6 @@ Node::Node(int x, int y, int radius, int ressourcesMax, Gamer *g, QGraphicsItem 
 
 Node::~Node()
 {
-    QMutexLocker l(&lockMapConnexion);
-
     foreach(Connexion *c, mapConnexion)
     {
         if(&c->getNode1() == this)
@@ -61,8 +59,6 @@ void Node::paint(QPainter *painter,
 
 void Node::advance(int step)
 {
-    QMutexLocker l(&lockRessource);
-
     if(nbRessources < ressourcesMax)
     {
         nbRessources += ressourcesRate;
@@ -71,7 +67,6 @@ void Node::advance(int step)
             nbRessources = ressourcesMax;
         }
     }
-    l.unlock();
 
     update();
 }
@@ -138,17 +133,13 @@ void Node::setRessourcesRate(int r)
 
 void Node::setNbRessources(int r)
 {
-    QMutexLocker l(&lockRessource);
     nbRessources = r;
-    l.unlock();
 
     update();
 }
 
 void Node::connect(Node &n)
 {
-    QMutexLocker l(&lockMapConnexion);
-
     if(!mapConnexion.contains(&n) && &n != this)
     {
         Connexion *c = new Connexion(*this,n);
@@ -159,14 +150,11 @@ void Node::connect(Node &n)
 
 bool Node::isConnected(Node &n) const
 {
-    QMutexLocker l(&lockMapConnexion);
     return mapConnexion.contains(&n);
 }
 
 Connexion * Node::getConnexion(Node &n) const
 {
-    QMutexLocker l(&lockMapConnexion);
-
     Connexion *c = 0;
     if(mapConnexion.contains(&n))
     {
@@ -181,8 +169,6 @@ Connexion * Node::getConnexion(Node &n) const
 
 void Node::incoming(Squad &s)
 {
-    QMutexLocker l(&lockRessource);
-
     const Gamer &g = s.getOwner();
     int ressource = s.getNbRessources();
     delete &s;
@@ -207,16 +193,12 @@ void Node::incoming(Squad &s)
             nbRessources -= ressource;
         }
     }
-    l.unlock();
 
     update();
 }
 
 void Node::sendSquad(int ressource, Node &n)
 {
-    QMutexLocker lr(&lockRessource);
-    QMutexLocker lm(&lockMapConnexion);
-
     if(&n != this && mapConnexion.contains(&n))
     {
         int nbToSend = ressource > nbRessources ? nbRessources : ressource;
@@ -224,8 +206,6 @@ void Node::sendSquad(int ressource, Node &n)
         s->setNbRessources(nbToSend);
         mapConnexion.value(&n)->sendSquad(*s, *this);
     }
-    lr.unlock();
-    lm.unlock();
 
     update();
 }
@@ -236,8 +216,6 @@ void Node::sendSquad(int ressource, Node &n)
 
 void Node::addConnexion(Connexion *c)
 {
-    QMutexLocker l(&lockMapConnexion); //Acces via autre noeud externe
-
     if(&c->getNode1() == this &&
             !mapConnexion.contains(&c->getNode2()) &&
             &c->getNode2() != this)
@@ -254,7 +232,5 @@ void Node::addConnexion(Connexion *c)
 
 void Node::removeConnexion(Node &n)
 {
-    QMutexLocker l(&lockMapConnexion);  //Acces via autre noeud externe
-
     mapConnexion.remove(&n);
 }
