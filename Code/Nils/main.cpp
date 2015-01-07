@@ -1,9 +1,9 @@
 #include "map.h"
 #include "gamer.h"
 #include "node.h"
+#include <QtWidgets>
 #include <QApplication>
 #include <qdebug.h>
-#include <qthread.h>
 
 int main(int argc, char *argv[])
 {
@@ -41,6 +41,10 @@ int main(int argc, char *argv[])
     campsBaseLukas->sendSquad(3, *lienLukasNils);
     campsBaseNils->sendSquad(5, *lienLukasNils);
     campsBaseNils->sendSquad(20, *aventageNils);
+
+    QTimer timer;
+    QObject::connect(&timer, SIGNAL(timeout()), &m, SLOT(advance()));
+    timer.start(1000);
 
     m.show();
     return a.exec();

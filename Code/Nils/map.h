@@ -25,6 +25,11 @@ public:
     /*ASSESSEUR / MUTATEUR*/
     void addNode(Node &n);
     bool addConnexion(Node &n1, Node &n2);
+
+public slots:
+    /*DELEGUE*/
+    void advance();
+
 private:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     //Ne pas implementer, les copies ne sont pas voulues
@@ -40,14 +45,6 @@ private:
     /*METHODE PRIVE*/
     void getPath(Node &n1, Node &n2)const;
     int sortNodeByWight(const QPair<int, int> *a, const QPair<int, int> *b);
-
-
-signals:
-
-public slots:
-
-private slots:
-    void updateSelection();
 };
 
 #endif // MAP_H

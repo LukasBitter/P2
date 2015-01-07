@@ -12,20 +12,13 @@
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-Connexion::Connexion(Node &n1, Node &n2,  QGraphicsItem *parent)
-    : Connexion(n1,n2,200,parent)
-{
-}
-
-Connexion::Connexion(Node &n1, Node &n2, int updateMs, QGraphicsItem *parent)
+Connexion::Connexion(Node &n1, Node &n2, QGraphicsItem *parent)
     : QGraphicsObject(parent), n1(n1), n2(n2)
 {
     qreal dist = sqrt(pow(abs(n1.getPosX()-n2.getPosX()),2)+
                       pow(abs(n1.getPosY()-n2.getPosY()),2));
     pathLength = dist;
     distance = dist;
-
-    startTimer(updateMs);
 }
 
 Connexion::~Connexion()
@@ -72,7 +65,7 @@ void Connexion::paint(QPainter *painter,
     painter->restore();
 }
 
-void Connexion::timerEvent(QTimerEvent *event)
+void Connexion::advance(int step)
 {
     advanceSquad();
     resolveSquadFigth();

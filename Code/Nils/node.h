@@ -27,8 +27,6 @@ public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     explicit Node(int x, int y, int radius, int ressourcesMax,
                   Gamer *g=0, QGraphicsItem *parent=0);
-    explicit Node(int x, int y, int radius, int ressourcesMax,
-                  int updateMs, Gamer *g=0, QGraphicsItem *parent=0);
     virtual ~Node();
 
     /*SURCHARGE*/
@@ -36,7 +34,7 @@ public:
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
                QWidget *widget);
-    void timerEvent(QTimerEvent *event);
+    void advance(int step);
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);

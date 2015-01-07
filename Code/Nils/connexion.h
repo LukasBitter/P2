@@ -26,7 +26,6 @@ class Connexion : public QGraphicsObject
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     explicit Connexion(Node &n1, Node &n2, QGraphicsItem *parent=0);
-    explicit Connexion(Node &n1, Node &n2, int updateMs, QGraphicsItem *parent=0);
     virtual ~Connexion();
 
     /*SURCHARGE*/
@@ -34,7 +33,7 @@ public:
     void paint(QPainter *painter,
                const QStyleOptionGraphicsItem *option,
                QWidget *widget);
-    void timerEvent( QTimerEvent * event );
+    void advance(int step);
 
     /*ASSESSEUR / MUTATEUR*/
     Node & getNode1() const;

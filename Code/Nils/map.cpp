@@ -52,6 +52,17 @@ bool Map::addConnexion(Node &n1, Node &n2)
 }
 
 /*----------------------------------------------------*/
+/*DELEGUE*/
+/*----------------------------------------------------*/
+
+void Map::advance()
+{
+    scene->advance();
+    update();
+    qDebug()<<"test";
+}
+
+/*----------------------------------------------------*/
 /*METHODE PRIVE*/
 /*----------------------------------------------------*/
 
@@ -83,9 +94,4 @@ int Map::sortNodeByWight (const QPair<int, int>*a, const QPair<int, int>*b)
     if ( a->second < b->second) return -1;
     if ( a->second == b->second) return 0;
     if ( a->second > b->second) return 1;
-}
-
-void Map::updateSelection()
-{
-    qDebug()<<"prout";
 }

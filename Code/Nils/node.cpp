@@ -13,16 +13,9 @@
 /*----------------------------------------------------*/
 
 Node::Node(int x, int y, int radius, int ressourcesMax, Gamer *g, QGraphicsItem *parent)
-    : Node(x,y,radius,ressourcesMax,1000,g,parent)
-{
-
-}
-
-Node::Node(int x, int y, int radius, int ressourcesMax, int updateMs, Gamer *g, QGraphicsItem *parent)
     : QGraphicsObject(parent), posX(x), posY(y), radius(radius), owner(g), ressourcesMax(ressourcesMax), nbRessources(0)
 {
     setFlag(QGraphicsItem::ItemIsSelectable, true);
-    startTimer(updateMs);
 }
 
 Node::~Node()
@@ -66,7 +59,7 @@ void Node::paint(QPainter *painter,
     painter->drawText(QPoint(posX , posY),QString("%1").arg(nbRessources) );
 }
 
-void Node::timerEvent(QTimerEvent *event)
+void Node::advance(int step)
 {
     QMutexLocker l(&lockRessource);
 
@@ -80,7 +73,7 @@ void Node::timerEvent(QTimerEvent *event)
     }
     l.unlock();
 
-    update(boundingRect());
+    update();
 }
 
 void Node::mousePressEvent(QGraphicsSceneMouseEvent *event)
