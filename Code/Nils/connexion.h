@@ -3,6 +3,8 @@
 
 #include <QGraphicsObject>
 #include <QQueue>
+#include "identitytoken.h"
+
 
 class Node;
 class QPainter;
@@ -17,7 +19,7 @@ namespace GameComponent {
 /**
  * @brief Représente les liens entre les noeuds
  */
-class Connexion : public QGraphicsObject
+class Connexion : public QGraphicsObject, public IdentityToken
 {
     Q_OBJECT
 public:
@@ -37,6 +39,10 @@ public:
     Node & getNode2() const;
     bool isConnextedTo(Node &n) const;
     void sendSquad(Squad &s, Node &from);
+
+    /*PARSING*/
+    QString * parse();
+    void unParse(QString &s);
 
 private:
     /*CONSTRUCTEUR / DESTRUCTEUR*/

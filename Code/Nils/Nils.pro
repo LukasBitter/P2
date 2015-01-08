@@ -9,7 +9,9 @@ HEADERS += \
     gamer.h \
     node.h \
     map.h \
-    squad.h
+    squad.h \
+    parsermap.h \
+    identitytoken.h
 
 SOURCES += \
     connexion.cpp \
@@ -17,7 +19,9 @@ SOURCES += \
     main.cpp \
     node.cpp \
     map.cpp \
-    squad.cpp
+    squad.cpp \
+    parsermap.cpp \
+    identitytoken.cpp
 
 OTHER_FILES += \
     Notes.txt

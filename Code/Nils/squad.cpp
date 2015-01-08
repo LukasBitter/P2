@@ -5,6 +5,10 @@ Squad::Squad(const Gamer &g) : owner(g)
 {
 }
 
+Squad::~Squad()
+{
+}
+
 int Squad::getProgress() const
 {
     return progress;

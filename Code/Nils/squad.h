@@ -1,15 +1,18 @@
 #ifndef SQUAD_H
 #define SQUAD_H
 
+#include "identitytoken.h"
+
 class Gamer;
 
 /**
  * @brief Représente les ressources envoyées à travers la connexion
  */
-class Squad
+class Squad : public IdentityToken
 {
 public:
     Squad(const Gamer &g);
+    virtual ~Squad();
     int getProgress() const;
     void setProgress(int p);
     int getNbRessources() const;

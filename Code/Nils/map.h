@@ -29,6 +29,8 @@ public:
     int getAvrageRessourcesRate(Gamer &g);
     int getTotalRessources();
     int getAvrageRessourcesRate();
+    const QList<Connexion *> & getLstConnexion()const;
+    const QList<Node *> & getLstNode()const;
 public slots:
     void advance();
 
@@ -41,6 +43,7 @@ private:
     /*TOOL*/
     QGraphicsScene * scene;
     QList<Node *> lstNode;
+    QList<Connexion *> lstConnexion;
     QList<QGraphicsItem *> selection1;
     QList<QGraphicsItem *> selection2;
 

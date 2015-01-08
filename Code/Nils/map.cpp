@@ -48,7 +48,9 @@ void Map::addNode(Node &n)
 bool Map::addConnexion(Node &n1, Node &n2)
 {
     n1.connect(n2);
-    scene->addItem(n1.getConnexion(n2));
+    Connexion *c = n1.getConnexion(n2);
+    lstConnexion.append(c);
+    scene->addItem(c);
 }
 
 int Map::getTotalRessources(Gamer &g)
@@ -91,6 +93,16 @@ int Map::getAvrageRessourcesRate()
         sum += n->getRessourcesRate();
     }
     return sum / lstNode.size();
+}
+
+const QList<Connexion *> &Map::getLstConnexion() const
+{
+    return lstConnexion;
+}
+
+const QList<Node *> &Map::getLstNode() const
+{
+    return lstNode;
 }
 
 /*----------------------------------------------------*/

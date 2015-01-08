@@ -103,6 +103,28 @@ void Connexion::sendSquad(Squad &s, Node &from)
     }
 }
 
+QString *Connexion::parse()
+{
+
+}
+
+void Connexion::unParse(QString &s)
+{
+    qDeleteAll(lstSquad1To2);
+    lstSquad1To2.clear();
+    qDeleteAll(lstSquad2To1);
+    lstSquad2To1.clear();
+
+    QStringList lstSubStr1 = s.split(",");
+    foreach (QString sub1, lstSubStr1)
+    {
+        QStringList lstSubStr2 = sub1.split("-");
+
+
+
+    }
+}
+
 /*----------------------------------------------------*/
 /*METHODE PRIVE*/
 /*----------------------------------------------------*/

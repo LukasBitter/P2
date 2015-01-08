@@ -3,6 +3,7 @@
 
 #include <QColor>
 #include <QObject>
+#include "identitytoken.h"
 
 namespace GameComponent {
     class Gamer;
@@ -11,7 +12,7 @@ namespace GameComponent {
 /**
  * @brief Représente un joueur de la partie
  */
-class Gamer : public QObject
+class Gamer : public QObject, public IdentityToken
 {
     Q_OBJECT
 public:

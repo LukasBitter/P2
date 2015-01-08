@@ -3,6 +3,7 @@
 
 #include <QGraphicsItem>
 #include <QMap>
+#include "identitytoken.h"
 
 class Gamer;
 class Connexion;
@@ -17,7 +18,7 @@ namespace GameComponent {
 /**
  * @brief Représente les noeuds
  */
-class Node : public QGraphicsObject
+class Node : public QGraphicsObject, public IdentityToken
 {
     Q_OBJECT
 public:
