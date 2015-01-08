@@ -22,6 +22,7 @@ public:
     explicit Map(QWidget *parent=0);
     virtual ~Map();
 
+
     /*ASSESSEUR / MUTATEUR*/
     void addNode(Node &n);
     bool addConnexion(Node &n1, Node &n2);
@@ -31,8 +32,14 @@ public:
     int getAvrageRessourcesRate();
     const QList<Connexion *> & getLstConnexion()const;
     const QList<Node *> & getLstNode()const;
+
 public slots:
     void advance();
+
+protected:
+
+    /*SURCHARGE*/
+    void keyPressEvent(QKeyEvent *e);
 
 private:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
@@ -44,12 +51,16 @@ private:
     QGraphicsScene * scene;
     QList<Node *> lstNode;
     QList<Connexion *> lstConnexion;
-    QList<QGraphicsItem *> selection1;
-    QList<QGraphicsItem *> selection2;
+    Node *currentSelection;
+    Node *lastSelection;
 
     /*METHODE PRIVE*/
     void getPath(Node &n1, Node &n2)const;
     int sortNodeByWight(const QPair<int, int> *a, const QPair<int, int> *b);
+
+private slots:
+    void selectionChange();
+
 };
 
 #endif // MAP_H

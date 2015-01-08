@@ -4,6 +4,7 @@
 #include "gamer.h"
 #include <QPainter>
 #include <QtWidgets>
+#include <QStringBuilder>
 
 #include <QDebug>
 
@@ -17,6 +18,7 @@ Node::Node(int x, int y, int radius, int ressourcesMax, Gamer *g, QGraphicsItem 
 {
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setAcceptHoverEvents(true);
+    setNextId();
 }
 
 Node::~Node()
@@ -178,6 +180,28 @@ Connexion * Node::getConnexion(Node &n) const
     return c;
 }
 
+QString Node::getUpdateString()
+{
+    return QString("%1,%2,%3").arg(nbRessources).
+            arg(ressourcesRate).arg(owner->getId());
+}
+
+void Node::updateFromString(QString &s)
+{
+    QStringList lstSubStr1 = s.split(",");
+    if(lstSubStr1.size() == 3)
+    {
+        QString &s1 = lstSubStr1.first();
+        lstSubStr1.pop_front();
+        nbRessources = s1.toInt();
+        QString &s2 = lstSubStr1.first();
+        lstSubStr1.pop_front();
+        ressourcesRate = s2.toInt();
+        QString &s3 = lstSubStr1.first();
+        owner = Gamer::getGamer(s3.toInt());
+    }
+}
+
 /*----------------------------------------------------*/
 /*EVENEMENT*/
 /*----------------------------------------------------*/
@@ -217,6 +241,7 @@ void Node::sendSquad(int ressource, Node &n)
     if(&n != this && mapConnexion.contains(&n))
     {
         int nbToSend = ressource > nbRessources ? nbRessources : ressource;
+        nbRessources -= nbToSend;
         Squad *s = new Squad(*owner);
         s->setNbRessources(nbToSend);
         mapConnexion.value(&n)->sendSquad(*s, *this);

@@ -4,6 +4,7 @@
 #include <QGraphicsScene>
 #include <QMap>
 #include <climits>
+#include <QKeyEvent>
 
 #include <QDebug>
 
@@ -20,11 +21,17 @@ Map::Map(QWidget *parent) :
     scene = new QGraphicsScene(this);
     setScene(scene);
     scene->setSceneRect(-1000,-1000,2000,2000);
+
+    connect(scene,SIGNAL(selectionChanged()),this,SLOT(selectionChange()));
     // Désactivation des scrollbars
     setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
     setRenderHint(QPainter::Antialiasing, true);
+    //setDragMode(QGraphicsView::RubberBandDrag);
+
+    currentSelection = 0;
+    lastSelection = 0;
 }
 
 Map::~Map()
@@ -33,6 +40,17 @@ Map::~Map()
     lstNode.clear();
     //La scene s'occupe de detruire les noeud et les connexions
     delete scene;
+}
+
+void Map::keyPressEvent(QKeyEvent *e)
+{
+    QGraphicsView::keyPressEvent(e);
+    if(e->key() == Qt::Key_Space &&
+            currentSelection != 0 && lastSelection != 0 &&
+            currentSelection != lastSelection)
+    {
+        lastSelection->sendSquad(lastSelection->getNbRessources()/2,*currentSelection);
+    }
 }
 
 /*----------------------------------------------------*/
@@ -146,4 +164,18 @@ int Map::sortNodeByWight (const QPair<int, int>*a, const QPair<int, int>*b)
     if ( a->second < b->second) return -1;
     if ( a->second == b->second) return 0;
     if ( a->second > b->second) return 1;
+}
+
+void Map::selectionChange()
+{
+    lastSelection = currentSelection;
+    QList<QGraphicsItem *> lst = scene->selectedItems();
+    if(!lst.isEmpty())
+    {
+        currentSelection = static_cast<Node*>(lst.first());
+    }
+    else
+    {
+        currentSelection = 0;
+    }
 }

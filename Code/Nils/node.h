@@ -49,6 +49,8 @@ public:
     void connect(Node &n);
     bool isConnected(Node &n) const;
     Connexion* getConnexion(Node &n) const;
+    QString getUpdateString();
+    void updateFromString(QString &s);
 
     /*EVENEMENT*/
     void incoming(Squad &s);

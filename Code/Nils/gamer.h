@@ -4,6 +4,7 @@
 #include <QColor>
 #include <QObject>
 #include "identitytoken.h"
+#include <QHash>
 
 namespace GameComponent {
     class Gamer;
@@ -22,6 +23,9 @@ public:
 
     /*ASSESSEUR / MUTATEUR*/
     QColor getColor() const;
+
+    /*STATIC*/
+    static Gamer * getGamer(int idGamer);
 private:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     //Ne pas implementer, les copies ne sont pas voulues
@@ -30,6 +34,8 @@ private:
 
     /*TOOL*/
     QColor color;
+
+
 };
 
 #endif // GAMER_H

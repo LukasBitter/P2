@@ -3,6 +3,7 @@
 
 Squad::Squad(const Gamer &g) : owner(g)
 {
+    setNextId();
 }
 
 Squad::~Squad()

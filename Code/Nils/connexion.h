@@ -41,8 +41,8 @@ public:
     void sendSquad(Squad &s, Node &from);
 
     /*PARSING*/
-    QString * parse();
-    void unParse(QString &s);
+    QString getUpdateString();
+    void updateFromString(QString &s);
 
 private:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
@@ -54,7 +54,6 @@ private:
     Node &n1;
     Node &n2;
     int pathLength;
-    float distance;
 
     /*TOOL*/
     QQueue<Squad *> lstSquad1To2;   //Ressource critique
