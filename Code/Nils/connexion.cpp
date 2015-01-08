@@ -63,11 +63,11 @@ void Connexion::paint(QPainter *painter,
 
 void Connexion::advance(int step)
 {
+    if(step == 0) return;
+
     advanceSquad();
     resolveSquadFigth();
     checkSquadArrive();
-
-    update(boundingRect());
 }
 
 /*----------------------------------------------------*/
@@ -101,8 +101,6 @@ void Connexion::sendSquad(Squad &s, Node &from)
         s.setProgress(pathLength-n2.getRadius());
         lstSquad2To1.push_front(&s);
     }
-
-    update();
 }
 
 /*----------------------------------------------------*/

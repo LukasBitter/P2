@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     campsBaseNils->setRessourcesRate(1);
     campsBaseLukas->setRessourcesRate(1);
     aventageNils->setRessourcesRate(1);
-    lienLukasNils->setRessourcesRate(0);
+    lienLukasNils->setRessourcesRate(1);
     campsBaseNils->setNbRessources(50);
     campsBaseLukas->setNbRessources(5);
 
@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 
     QTimer timer;
     QObject::connect(&timer, SIGNAL(timeout()), &m, SLOT(advance()));
-    timer.start(1000);
+    timer.start(200);
 
     m.show();
     return a.exec();

@@ -25,9 +25,11 @@ public:
     /*ASSESSEUR / MUTATEUR*/
     void addNode(Node &n);
     bool addConnexion(Node &n1, Node &n2);
-
+    int getTotalRessources(Gamer &g);
+    int getAvrageRessourcesRate(Gamer &g);
+    int getTotalRessources();
+    int getAvrageRessourcesRate();
 public slots:
-    /*DELEGUE*/
     void advance();
 
 private:

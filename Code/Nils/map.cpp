@@ -23,6 +23,8 @@ Map::Map(QWidget *parent) :
     // Désactivation des scrollbars
     setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
+    setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
+    setRenderHint(QPainter::Antialiasing, true);
 }
 
 Map::~Map()
@@ -47,6 +49,48 @@ bool Map::addConnexion(Node &n1, Node &n2)
 {
     n1.connect(n2);
     scene->addItem(n1.getConnexion(n2));
+}
+
+int Map::getTotalRessources(Gamer &g)
+{
+    int total = 0;
+    foreach (Node *n, lstNode)
+    {
+        if(n->getOwner() == &g)total += n->getNbRessources();
+    }
+    return total;
+}
+
+int Map::getAvrageRessourcesRate(Gamer &g)
+{
+    int sum = 0;
+    int nb = 0;
+    foreach (Node *n, lstNode)
+    {
+        if(n->getOwner() == &g)sum += n->getRessourcesRate();
+        ++nb;
+    }
+    return sum / nb;
+}
+
+int Map::getTotalRessources()
+{
+    int total = 0;
+    foreach (Node *n, lstNode)
+    {
+        total += n->getNbRessources();
+    }
+    return total;
+}
+
+int Map::getAvrageRessourcesRate()
+{
+    int sum = 0;
+    foreach (Node *n, lstNode)
+    {
+        sum += n->getRessourcesRate();
+    }
+    return sum / lstNode.size();
 }
 
 /*----------------------------------------------------*/

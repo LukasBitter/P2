@@ -16,6 +16,7 @@ Node::Node(int x, int y, int radius, int ressourcesMax, Gamer *g, QGraphicsItem 
     : QGraphicsObject(parent), posX(x), posY(y), radius(radius), owner(g), ressourcesMax(ressourcesMax), nbRessources(0)
 {
     setFlag(QGraphicsItem::ItemIsSelectable, true);
+    setAcceptHoverEvents(true);
 }
 
 Node::~Node()
@@ -49,17 +50,30 @@ void Node::paint(QPainter *painter,
                 const QStyleOptionGraphicsItem *option,QWidget *widget)
 {
     painter->setPen(Qt::black);
-    if(owner != 0)painter->setBrush(QBrush(owner->getColor()));
+    if(owner != 0)
+    {
+        painter->setBrush(owner->getColor());
+    }
+    if(isSelected())
+    {
+        painter->setPen(Qt::DashLine);
+    }
+    else
+    {
+        painter->setPen(Qt::SolidLine);
+    }
 
     painter->drawEllipse(posX - radius, posY - radius,
                              2* radius, 2* radius);
-    //Acces concurent ne posant pas de problème
+
     painter->drawText(QPoint(posX , posY),QString("%1").arg(nbRessources) );
 }
 
 void Node::advance(int step)
 {
-    if(nbRessources < ressourcesMax)
+    if(step == 0) return;
+
+    if(nbRessources < ressourcesMax && owner != 0)
     {
         nbRessources += ressourcesRate;
         if(nbRessources > ressourcesMax)
@@ -73,6 +87,7 @@ void Node::advance(int step)
 
 void Node::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    QGraphicsItem::mousePressEvent(event);
     update();
 }
 
