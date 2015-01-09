@@ -1,6 +1,7 @@
 #include "map.h"
 #include "node.h"
 #include "connexion.h"
+#include "gamer.h"
 #include <QGraphicsScene>
 #include <QKeyEvent>
 
@@ -30,6 +31,65 @@ Map::Map(const Gamer *g, QWidget *parent) :
 
     currentSelection = 0;
     lastSelection = 0;
+}
+
+Map::Map(QString create, const Gamer *g, QWidget *parent):
+    Map(g, parent)
+{
+    QStringList allNodesAndConnexions = create.split("@");
+    if(allNodesAndConnexions.size() == 2)
+    {
+        QStringList allConnexionsStr = allNodesAndConnexions.first().split("/");
+        allNodesAndConnexions.pop_front();
+        QStringList allNodesStr = allNodesAndConnexions.first().split("/");
+
+        foreach (QString s, allNodesStr)
+        {
+            QStringList nodeStr = s.split(".");
+            if(nodeStr.size() == 6)
+            {
+                int numberId = nodeStr.first().toInt();
+                nodeStr.pop_front();
+                int posX = nodeStr.first().toInt();
+                nodeStr.pop_front();
+                int posY = nodeStr.first().toInt();
+                nodeStr.pop_front();
+                int radius = nodeStr.first().toInt();
+                nodeStr.pop_front();
+                int ressourcesMax = nodeStr.first().toInt();
+                nodeStr.pop_front();
+                int ownerId = nodeStr.first().toInt();
+
+                Node *n = new Node(posX, posY, radius,ressourcesMax,
+                                   Gamer::getGamer(ownerId));
+                n->setId(numberId);
+                addNode(*n);
+            }
+        }
+
+        foreach (QString s, allConnexionsStr)
+        {
+            QStringList connexionStr = s.split(".");
+            if(connexionStr.size() == 3)
+            {
+                int numberId = connexionStr.first().toInt();
+                connexionStr.pop_front();
+                int idNode1 = connexionStr.first().toInt();
+                connexionStr.pop_front();
+                int idNode2 = connexionStr.first().toInt();
+
+                Node *n1 = Node::getNode(idNode1);
+                Node *n2 = Node::getNode(idNode2);
+                Connexion *c = new Connexion(*n1, *n2);
+                c->setId(numberId);
+
+                n1->addConnexion(c);
+                n2->addConnexion(c);
+                lstConnexion.append(c);
+                scene->addItem(c);
+            }
+        }
+    }
 }
 
 Map::~Map()
@@ -181,6 +241,30 @@ void Map::updateFromString(QString &s)
             }
         }
     }
+}
+
+QString Map::getCreationString()
+{
+    QString s;
+    foreach (Connexion *c, lstConnexion)
+    {
+        s.append(QString("%1.%2.%3/").arg(c->getId()).
+                 arg(c->getNode1().getId()).
+                 arg(c->getNode2().getId()));
+    }
+    s.append("@");
+    foreach (Node *n, lstNode)
+    {
+        int id = -1;
+        if(n->getOwner()!= 0)id = n->getOwner()->getId();
+        s.append(QString("%1.%2.%3.%4.%5.%6/").arg(n->getId()).
+                 arg(n->getPosX()).
+                 arg(n->getPosY()).
+                 arg(n->getRadius()).
+                 arg(n->getRessourcesMax()).
+                 arg(id));
+    }
+    return s;
 }
 
 /*----------------------------------------------------*/

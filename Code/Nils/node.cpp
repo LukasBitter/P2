@@ -166,6 +166,11 @@ void Node::setRessourcesRate(int r)
     ressourcesRate = r;
 }
 
+int Node::getRessourcesMax() const
+{
+    return ressourcesMax;
+}
+
 void Node::setNbRessources(int r)
 {
     nbRessources = r;
@@ -262,10 +267,13 @@ void Node::sendSquad(int ressource, Node &n)
     if(&n != this && mapConnexion.contains(&n))
     {
         int nbToSend = ressource > nbRessources ? nbRessources : ressource;
-        nbRessources -= nbToSend;
-        Squad *s = new Squad(*owner);
-        s->setNbRessources(nbToSend);
-        mapConnexion.value(&n)->sendSquad(*s, *this);
+        if(nbToSend > 0)
+        {
+            nbRessources -= nbToSend;
+            Squad *s = new Squad(*owner);
+            s->setNbRessources(nbToSend);
+            mapConnexion.value(&n)->sendSquad(*s, *this);
+        }
     }
 
     update();

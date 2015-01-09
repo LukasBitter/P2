@@ -5,6 +5,7 @@
 #include <QWidget>
 #include <QGraphicsView>
 #include "connexion.h"
+#include "power.h"
 
 class QGraphicsScene;
 class Node;
@@ -20,6 +21,7 @@ class Map: public QGraphicsView
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     explicit Map(const Gamer *g = 0, QWidget *parent=0);
+    explicit Map(QString update, const Gamer *g = 0, QWidget *parent=0);
     virtual ~Map();
 
     /*SURCHARGE*/
@@ -38,6 +40,7 @@ public:
     /*PARSING*/
     QString getUpdateString();
     void updateFromString(QString &s);
+    QString getCreationString();
 public slots:
     void advance();
 
@@ -59,6 +62,8 @@ private:
     QList<Connexion *> lstConnexion;
     Node *currentSelection;
     Node *lastSelection;
+    Power power;
+
 private slots:
     void selectionChange();
 

@@ -119,8 +119,20 @@ void Connexion::sendSquad(Squad &s, Node &from)
 {
     if(&from == &n1)
     {
-        s.setProgress(n1.getRadius());
-        lstSquad1To2.push_front(&s);
+        Squad *sTemps;
+        foreach(*s, lstSquad1To2)
+        {
+            int p = sTemps->getProgress();
+            if(p == n1.getRadius())break;
+        }
+        if(sTemps==0){
+            s.setProgress(n1.getRadius());
+            lstSquad1To2.push_front(&s);
+        }
+        else
+        {
+            sTemps->setNbRessources();
+        }
     }
     else if(&from == &n2)
     {
@@ -138,12 +150,12 @@ QString Connexion::getUpdateString()
     QString s;
     foreach (Squad *s1to2, lstSquad1To2)
     {
-        s.append(QString("%1-%2-%3-0,").arg(s1to2->getProgress()).
+        s.append(QString("%1_%2_%3_0,").arg(s1to2->getProgress()).
                  arg(s1to2->getNbRessources()).arg(s1to2->getOwner().getId()));
     }
     foreach (Squad *s1to2, lstSquad2To1)
     {
-        s.append(QString("%1-%2-%3-1,").arg(s1to2->getProgress()).
+        s.append(QString("%1_%2_%3_1,").arg(s1to2->getProgress()).
                  arg(s1to2->getNbRessources()).arg(s1to2->getOwner().getId()));
     }
     return s;
@@ -159,7 +171,7 @@ void Connexion::updateFromString(QString &s)
     QStringList allSquadsStr = s.split(",");
     foreach (QString sub1, allSquadsStr)
     {
-        QStringList squadStr = sub1.split("-");
+        QStringList squadStr = sub1.split("_");
         if(squadStr.size() == 4)
         {
             int progress = squadStr.first().toInt();
@@ -188,6 +200,26 @@ void Connexion::updateFromString(QString &s)
 /*----------------------------------------------------*/
 /*METHODE PRIVE*/
 /*----------------------------------------------------*/
+
+Squad * Connexion::getSquadAtNode1()
+{
+    foreach(Squad *s, lstSquad1To2)
+    {
+        int p = s->getProgress();
+        if(p == n1.getRadius())return s;
+    }
+    return 0;
+}
+
+Squad * Connexion::getSquadAtNode2()
+{
+    foreach(Squad *s, lstSquad2To1)
+    {
+        int p = s->getProgress();
+        if(p == pathLength-n2.getRadius())return s;
+    }
+    return 0;
+}
 
 void Connexion::advanceSquad()
 {

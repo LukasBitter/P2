@@ -1,0 +1,17 @@
+INPUT(
+./debug/main.o
+./debug/basicrtswindow.o
+./debug/mainwindow.o
+./debug/welcomewindow.o
+./debug/settingswindow.o
+./debug/lobbywindow.o
+./debug/gameboard.o
+./debug/custombutton.o
+./debug/moc_basicrtswindow.o
+./debug/moc_mainwindow.o
+./debug/moc_welcomewindow.o
+./debug/moc_settingswindow.o
+./debug/moc_lobbywindow.o
+./debug/moc_gameboard.o
+./debug/moc_custombutton.o
+);

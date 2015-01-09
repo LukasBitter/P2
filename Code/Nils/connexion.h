@@ -66,6 +66,7 @@ private:
     void resolveSquadFigth();
     void checkSquadArrive();
     QList<QPair<Squad *, Squad *> > checkSquadColision();
+    Squad *getSquadAtNode1();
 };
 
 #endif // CONNEXION_H

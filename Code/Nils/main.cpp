@@ -13,7 +13,11 @@ int main(int argc, char *argv[])
     //Créatoin des joueur
     Gamer *nils = new Gamer(Qt::red);
     Gamer *lukas = new Gamer(Qt::green);
-    Map m(nils);
+
+    Map m;
+
+    /*Map m("6.5.2/7.5.3/8.4.2/9.2.3/@2.180.-150.50.100.0/3.0.-200.30.100.1/4.180.10.10.10.-1/5.-10.-20.50.110.-1/",
+          nils); //*/
 
 
     //Création de la map
@@ -41,18 +45,7 @@ int main(int argc, char *argv[])
 
     campsBaseNils->sendSquad(30,*lienLukasNils);
 
-    QString s = m.getUpdateString();
-
-    campsBaseNils->setRessourcesRate(0);
-    campsBaseLukas->setRessourcesRate(0);
-    aventageNils->setRessourcesRate(0);
-    lienLukasNils->setRessourcesRate(0);
-
-    campsBaseNils->setNbRessources(0);
-    campsBaseLukas->setNbRessources(0);
-
-    m.updateFromString(s);
-
+    //*/
     QTimer timer;
     QObject::connect(&timer, SIGNAL(timeout()), &m, SLOT(advance()));
     timer.start(200);

@@ -20,6 +20,7 @@ namespace GameComponent {
  */
 class Node : public QGraphicsObject, public IdentityToken
 {
+    friend class Map;
     Q_OBJECT
 public:
     /*STATIC*/
@@ -45,6 +46,7 @@ public:
     void setNbRessources(int r);
     int getRessourcesRate() const;
     void setRessourcesRate(int r);
+    int getRessourcesMax() const;
     int getPosY() const;
     int getPosX() const;
     int getRadius() const;

@@ -11,7 +11,8 @@ HEADERS += \
     map.h \
     squad.h \
     parsermap.h \
-    identitytoken.h
+    identitytoken.h \
+    power.h
 
 SOURCES += \
     connexion.cpp \
@@ -21,7 +22,8 @@ SOURCES += \
     map.cpp \
     squad.cpp \
     parsermap.cpp \
-    identitytoken.cpp
+    identitytoken.cpp \
+    power.cpp
 
 OTHER_FILES += \
     Notes.txt
