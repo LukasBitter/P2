@@ -107,7 +107,6 @@ void Server::setUI()
     gridLayout->addWidget(lPlayersReady.at(3),4, 5);
     gridLayout->addWidget(runButton,5, 2);
     gridLayout->addWidget(quitButton,5, 3);
-
 }
 
 void Server::sessionOpened()

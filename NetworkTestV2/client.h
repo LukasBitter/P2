@@ -32,12 +32,17 @@ private slots:
     void runGame();
 
 private:
-    QLabel *hostLabel;
-    QLabel *portLabel;
     QComboBox *hostCombo;
     QLineEdit *portLineEdit;
     QLineEdit *userNameLineEdit;
     QLabel *statusLabel;
+    QList<QLabel *> lPlayersNumbers;
+    QList<QLabel *> lPlayersNames;
+    QList<QLabel *> lPlayersConnected;
+    QList<QLabel *> lPlayersReady;
+    int playersInGame;
+    int maxPlayers;
+    int gameRunning;
     QPushButton *getConnectionButton;
     QPushButton *readyButton;
     QPushButton *quitButton;
@@ -46,6 +51,8 @@ private:
     QString playerNumber;
     QString headerOut;
     QString headerIn;
+    void setUI();
+    void init();
     void setPlayerNumber(QString number);
     void setStatus(QString msg);
     void sendServerMessage(QString msg);

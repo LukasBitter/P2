@@ -9,11 +9,10 @@
 Client::Client(QWidget *parent) :
     QDialog(parent), networkSession(0)
 {
-    hostLabel = new QLabel(tr("&Server name:"));
-    portLabel = new QLabel(tr("S&erver port:"));
-
+    maxPlayers = 4;
     hostCombo = new QComboBox;
     hostCombo->setEditable(true);
+
     // find out name of this machine
     QString name = QHostInfo::localHostName();
     if (!name.isEmpty()) {
@@ -41,8 +40,6 @@ Client::Client(QWidget *parent) :
     userNameLineEdit = new QLineEdit;
     portLineEdit->setValidator(new QIntValidator(1, 65535, this));
 
-    hostLabel->setBuddy(hostCombo);
-    portLabel->setBuddy(portLineEdit);
 
     statusLabel = new QLabel(tr("To play a Delete game, you must run"
                                 "Delete Game Server as well."));
@@ -76,17 +73,10 @@ Client::Client(QWidget *parent) :
     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
             this, SLOT(displayError(QAbstractSocket::SocketError)));
 
-    QGridLayout *mainLayout = new QGridLayout;
-    mainLayout->addWidget(hostLabel, 0, 0);
-    mainLayout->addWidget(hostCombo, 0, 1);
-    mainLayout->addWidget(portLabel, 1, 0);
-    mainLayout->addWidget(portLineEdit, 1, 1);
-    mainLayout->addWidget(userNameLineEdit, 2, 1);
-    mainLayout->addWidget(statusLabel, 3, 0, 1, 2);
-    mainLayout->addWidget(buttonBox, 4, 0, 1, 2);
-    setLayout(mainLayout);
+    init();
+    setUI();
 
-    setWindowTitle(tr("Delete Game Client"));
+    setWindowTitle(tr("Basic RTS Game"));
     portLineEdit->setFocus();
 
     QNetworkConfigurationManager manager;
@@ -111,6 +101,77 @@ Client::Client(QWidget *parent) :
         statusLabel->setText(tr("Opening network session."));
         networkSession->open();
     }
+}
+
+void Client::setUI()
+{
+    QLabel *lPlayerH = new QLabel(tr("Player: "));
+    QLabel *lPlayersConnectedH = new QLabel(tr("Connexion: "));
+    QLabel *lPlayersReadyH = new QLabel(tr("Ready: "));
+    QLabel *hostLabel = new QLabel(tr("&Server name:"));
+    QLabel *portLabel = new QLabel(tr("S&erver port:"));
+    QLabel *userNameLabel = new QLabel(tr("&User name:"));
+
+    QGridLayout *gridLayout= new QGridLayout(this);
+    gridLayout->setColumnStretch(1, 15);
+    gridLayout->setColumnStretch(2, 30);
+    gridLayout->setColumnStretch(3, 30);
+    gridLayout->setColumnStretch(4, 30);
+    gridLayout->setColumnStretch(5, 30);
+
+    gridLayout->setRowStretch(1,10);
+    gridLayout->setRowStretch(2,10);
+    gridLayout->setRowStretch(3,10);
+    gridLayout->setRowStretch(4,10);
+    gridLayout->setRowStretch(5,10);
+    gridLayout->setRowStretch(6,10);
+    gridLayout->setRowStretch(7,10);
+
+    gridLayout->addWidget(hostLabel, 0, 1);
+    gridLayout->addWidget(hostCombo, 0, 2, 1, 3);
+    gridLayout->addWidget(portLabel, 1, 1);
+    gridLayout->addWidget(portLineEdit, 1, 2, 1, 3);
+    gridLayout->addWidget(userNameLabel, 2, 1);
+    gridLayout->addWidget(userNameLineEdit, 2, 2, 1, 3);
+    gridLayout->addWidget(lPlayerH,3, 1);
+    gridLayout->addWidget(lPlayersNumbers.at(0),3, 2);
+    gridLayout->addWidget(lPlayersNumbers.at(1),3, 3);
+    gridLayout->addWidget(lPlayersNumbers.at(2),3, 4);
+    gridLayout->addWidget(lPlayersNumbers.at(3),3, 5);
+    gridLayout->addWidget(lPlayersConnectedH,4, 1);
+    gridLayout->addWidget(lPlayersConnected.at(0),4, 2);
+    gridLayout->addWidget(lPlayersConnected.at(1),4, 3);
+    gridLayout->addWidget(lPlayersConnected.at(2),4, 4);
+    gridLayout->addWidget(lPlayersConnected.at(3),4, 5);
+    gridLayout->addWidget(lPlayersReadyH,5, 1);
+    gridLayout->addWidget(lPlayersReady.at(0),5, 2);
+    gridLayout->addWidget(lPlayersReady.at(1),5, 3);
+    gridLayout->addWidget(lPlayersReady.at(2),5, 4);
+    gridLayout->addWidget(lPlayersReady.at(3),5, 5);
+    gridLayout->addWidget(statusLabel, 6, 1, 1, 2);
+    gridLayout->addWidget(buttonBox, 7, 0, 1, 2);
+    gridLayout->addWidget(readyButton,7, 2, 1, 2);
+    gridLayout->addWidget(quitButton,7, 4, 1, 2);
+
+    hostLabel->setBuddy(hostCombo);
+    portLabel->setBuddy(portLineEdit);
+}
+
+void Client::init(){
+    for(int i= 0; i<maxPlayers;i++)
+    {
+        lPlayersNumbers.append(new QLabel(QString("#").append(QString::number(i+1))));
+        lPlayersNames.append(new QLabel("n/a"));
+        lPlayersConnected.append(new QLabel("n/a"));
+        lPlayersReady.append(new QLabel(""));
+    }
+    playersInGame = 0;
+    blockSize = 0;
+
+//    lPlayerH = new QLabel(tr("Player: "));
+//    lPlayersConnectedH = new QLabel(tr("Connexion: "));
+//    lPlayersReadyH = new QLabel(tr("Ready: "));
+    gameRunning= 0;
 }
 
 void Client::requestNewConnection()
