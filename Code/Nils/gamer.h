@@ -17,15 +17,15 @@ class Gamer : public QObject, public IdentityToken
 {
     Q_OBJECT
 public:
+    /*STATIC*/
+    static Gamer * getGamer(int idGamer);
+
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     explicit Gamer(QColor color, QObject *parent=0);
     virtual ~Gamer();
 
     /*ASSESSEUR / MUTATEUR*/
     QColor getColor() const;
-
-    /*STATIC*/
-    static Gamer * getGamer(int idGamer);
 private:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     //Ne pas implementer, les copies ne sont pas voulues
@@ -34,8 +34,6 @@ private:
 
     /*TOOL*/
     QColor color;
-
-
 };
 
 #endif // GAMER_H

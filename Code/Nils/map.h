@@ -19,9 +19,11 @@ class Map: public QGraphicsView
     Q_OBJECT
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    explicit Map(QWidget *parent=0);
+    explicit Map(const Gamer *g = 0, QWidget *parent=0);
     virtual ~Map();
 
+    /*SURCHARGE*/
+    void keyPressEvent(QKeyEvent *e);
 
     /*ASSESSEUR / MUTATEUR*/
     void addNode(Node &n);
@@ -33,13 +35,14 @@ public:
     const QList<Connexion *> & getLstConnexion()const;
     const QList<Node *> & getLstNode()const;
 
+    /*PARSING*/
+    QString getUpdateString();
+    void updateFromString(QString &s);
 public slots:
     void advance();
 
 protected:
 
-    /*SURCHARGE*/
-    void keyPressEvent(QKeyEvent *e);
 
 private:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
@@ -47,17 +50,15 @@ private:
     Map(Map &c);
     Map& operator=(const Map&);
 
+    /*INPUT*/
+    const Gamer *owner;
+
     /*TOOL*/
     QGraphicsScene * scene;
     QList<Node *> lstNode;
     QList<Connexion *> lstConnexion;
     Node *currentSelection;
     Node *lastSelection;
-
-    /*METHODE PRIVE*/
-    void getPath(Node &n1, Node &n2)const;
-    int sortNodeByWight(const QPair<int, int> *a, const QPair<int, int> *b);
-
 private slots:
     void selectionChange();
 

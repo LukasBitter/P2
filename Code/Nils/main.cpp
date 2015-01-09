@@ -9,11 +9,12 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    Map m;
 
     //Créatoin des joueur
     Gamer *nils = new Gamer(Qt::red);
     Gamer *lukas = new Gamer(Qt::green);
+    Map m(nils);
+
 
     //Création de la map
     Node *campsBaseNils = new Node(180,-150,50,100,nils,0);
@@ -25,6 +26,7 @@ int main(int argc, char *argv[])
     campsBaseLukas->setRessourcesRate(1);
     aventageNils->setRessourcesRate(1);
     lienLukasNils->setRessourcesRate(1);
+
     campsBaseNils->setNbRessources(50);
     campsBaseLukas->setNbRessources(50);
 
@@ -36,15 +38,21 @@ int main(int argc, char *argv[])
     m.addConnexion(*lienLukasNils, *campsBaseLukas);
     m.addConnexion(*aventageNils, *campsBaseNils);
     m.addConnexion(*campsBaseNils, *campsBaseLukas);
-    Connexion *c = m.getLstConnexion().value(2);
 
-    //Action de la partie
-    campsBaseNils->sendSquad(1, *aventageNils);
-    campsBaseLukas->sendSquad(3, *lienLukasNils);
-    campsBaseNils->sendSquad(10, *lienLukasNils);
-    campsBaseNils->sendSquad(20, *aventageNils);
-    campsBaseLukas->sendSquad(20, *campsBaseNils);
-    campsBaseNils->sendSquad(20, *campsBaseLukas);
+    campsBaseNils->sendSquad(30,*lienLukasNils);
+
+    QString s = m.getUpdateString();
+
+    campsBaseNils->setRessourcesRate(0);
+    campsBaseLukas->setRessourcesRate(0);
+    aventageNils->setRessourcesRate(0);
+    lienLukasNils->setRessourcesRate(0);
+
+    campsBaseNils->setNbRessources(0);
+    campsBaseLukas->setNbRessources(0);
+
+    m.updateFromString(s);
+
     QTimer timer;
     QObject::connect(&timer, SIGNAL(timeout()), &m, SLOT(advance()));
     timer.start(200);

@@ -10,6 +10,23 @@
 
 
 /*----------------------------------------------------*/
+/*STATIC*/
+/*----------------------------------------------------*/
+
+QHash<int,Node *> lstNodes;
+Node *Node::getNode(int idNode)
+{
+    if(lstNodes.contains(idNode))
+    {
+        return lstNodes.value(idNode);
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+/*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
@@ -19,6 +36,7 @@ Node::Node(int x, int y, int radius, int ressourcesMax, Gamer *g, QGraphicsItem 
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setAcceptHoverEvents(true);
     setNextId();
+    lstNodes.insert(getId(), this);
 }
 
 Node::~Node()
@@ -180,25 +198,28 @@ Connexion * Node::getConnexion(Node &n) const
     return c;
 }
 
+/*----------------------------------------------------*/
+/*PARSING*/
+/*----------------------------------------------------*/
+
 QString Node::getUpdateString()
 {
+    int id  = -1;
+    if(owner != 0)id = owner->getId();
     return QString("%1,%2,%3").arg(nbRessources).
-            arg(ressourcesRate).arg(owner->getId());
+            arg(ressourcesRate).arg(id);
 }
 
 void Node::updateFromString(QString &s)
 {
-    QStringList lstSubStr1 = s.split(",");
-    if(lstSubStr1.size() == 3)
+    QStringList nodeStr = s.split(",");
+    if(nodeStr.size() == 3)
     {
-        QString &s1 = lstSubStr1.first();
-        lstSubStr1.pop_front();
-        nbRessources = s1.toInt();
-        QString &s2 = lstSubStr1.first();
-        lstSubStr1.pop_front();
-        ressourcesRate = s2.toInt();
-        QString &s3 = lstSubStr1.first();
-        owner = Gamer::getGamer(s3.toInt());
+        nbRessources = nodeStr.first().toInt();
+        nodeStr.pop_front();
+        ressourcesRate = nodeStr.first().toInt();
+        nodeStr.pop_front();
+        owner = Gamer::getGamer(nodeStr.first().toInt());
     }
 }
 

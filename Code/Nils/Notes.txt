@@ -1,5 +1,7 @@
-Connexion.sendSquad -> simplification de la signature paramétrique suivant les paramètre défini dans la classe Squad
+
 Vérifier la solution pour le vérouillages des métodes const qui me semble bizard
 resolveSquadFigth et checkSquadColision pourrais travaillez sur des pointeur de afin de minimiser les copie
 Je n'aime pas bcp comment sont implementer les méthode de parsing, sans pointeur il se passe des copie implicite
-
+Tester si la virgule en trop en fin de parsing peu faire du chenis
+Cumuler les squad qui sont sur la meme progression -> eviter bug popinter vide MAIS demander si acces kexpress treadsafe
+Demander si besoin dissocier objet graphique et logique

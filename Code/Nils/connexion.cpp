@@ -7,6 +7,24 @@
 
 #include <QDebug>
 
+
+/*----------------------------------------------------*/
+/*STATIC*/
+/*----------------------------------------------------*/
+
+QHash<int,Connexion *> lstConnexions;
+Connexion *Connexion::getConnexion(int idConnexion)
+{
+    if(lstConnexions.contains(idConnexion))
+    {
+        return lstConnexions.value(idConnexion);
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
@@ -18,6 +36,7 @@ Connexion::Connexion(Node &n1, Node &n2, QGraphicsItem *parent)
                       pow(abs(n1.getPosY()-n2.getPosY()),2));
     pathLength = dist;
     setNextId();
+    lstConnexions.insert(getId(), this);
 }
 
 Connexion::~Connexion()
@@ -44,6 +63,7 @@ void Connexion::paint(QPainter *painter,
     painter->translate(n1.getPosX(), n1.getPosY());
     qreal angle = qRadiansToDegrees(qAtan2(n1.getPosY()-n2.getPosY(),n1.getPosX()-n2.getPosX()))+90;
     painter->rotate(angle);
+    //painter->setPen(QPen(Qt::black, 1));
     painter->drawLine(0, n1.getRadius(), 0, pathLength-n2.getRadius());
 
     foreach(Squad *s, lstSquad1To2)
@@ -109,6 +129,10 @@ void Connexion::sendSquad(Squad &s, Node &from)
     }
 }
 
+/*----------------------------------------------------*/
+/*PARSING*/
+/*----------------------------------------------------*/
+
 QString Connexion::getUpdateString()
 {
     QString s;
@@ -132,22 +156,22 @@ void Connexion::updateFromString(QString &s)
     qDeleteAll(lstSquad2To1);
     lstSquad2To1.clear();
 
-    QStringList lstSubStr1 = s.split(",");
-    foreach (QString sub1, lstSubStr1)
+    QStringList allSquadsStr = s.split(",");
+    foreach (QString sub1, allSquadsStr)
     {
-        QStringList lstSubStr2 = sub1.split("-");
-        if(lstSubStr2.size() == 4)
+        QStringList squadStr = sub1.split("-");
+        if(squadStr.size() == 4)
         {
-            QString &s1 = lstSubStr2.first();
-            lstSubStr2.pop_front();
-            QString &s2 = lstSubStr2.first();
-            lstSubStr2.pop_front();
-            QString &s3 = lstSubStr2.first();
-            lstSubStr2.pop_front();
-            QString &s4 = lstSubStr2.first();
+            int progress = squadStr.first().toInt();
+            squadStr.pop_front();
+            int nbRessources = squadStr.first().toInt();
+            squadStr.pop_front();
+            int ownerId = squadStr.first().toInt();
+            squadStr.pop_front();
+            int direction = squadStr.first().toInt();
 
-            Squad *squad = new Squad(*Gamer::getGamer(s3.toInt()));
-            if(s4.toInt()==0)
+            Squad *squad = new Squad(*Gamer::getGamer(ownerId));
+            if(direction==0)
             {
                 sendSquad(*squad, n1);
             }
@@ -155,8 +179,8 @@ void Connexion::updateFromString(QString &s)
             {
                 sendSquad(*squad, n2);
             }
-            squad->setNbRessources(s2.toInt());
-            squad->setProgress(s1.toInt());
+            squad->setNbRessources(nbRessources);
+            squad->setProgress(progress);
         }
     }
 }

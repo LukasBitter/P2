@@ -2,8 +2,6 @@
 #include "node.h"
 #include "connexion.h"
 #include <QGraphicsScene>
-#include <QMap>
-#include <climits>
 #include <QKeyEvent>
 
 #include <QDebug>
@@ -15,8 +13,8 @@ using namespace std;
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-Map::Map(QWidget *parent) :
-    QGraphicsView(parent)
+Map::Map(const Gamer *g, QWidget *parent) :
+    QGraphicsView(parent), owner(g)
 {
     scene = new QGraphicsScene(this);
     setScene(scene);
@@ -42,12 +40,18 @@ Map::~Map()
     delete scene;
 }
 
+/*----------------------------------------------------*/
+/*SURCHARGE*/
+/*----------------------------------------------------*/
+
 void Map::keyPressEvent(QKeyEvent *e)
 {
     QGraphicsView::keyPressEvent(e);
     if(e->key() == Qt::Key_Space &&
             currentSelection != 0 && lastSelection != 0 &&
-            currentSelection != lastSelection)
+            currentSelection != lastSelection &&
+            (lastSelection->getOwner() == owner || owner==0) &&
+            lastSelection->getOwner() !=0)
     {
         lastSelection->sendSquad(lastSelection->getNbRessources()/2,*currentSelection);
     }
@@ -124,6 +128,62 @@ const QList<Node *> &Map::getLstNode() const
 }
 
 /*----------------------------------------------------*/
+/*PARSING*/
+/*----------------------------------------------------*/
+
+QString Map::getUpdateString()
+{
+    QString s;
+    foreach (Connexion *c, lstConnexion)
+    {
+        s.append(QString("%1.%2/").arg(c->getId()).arg(c->getUpdateString()));
+    }
+    s.append("@");
+    foreach (Node *n, lstNode)
+    {
+        s.append(QString("%1.%2/").arg(n->getId()).arg(n->getUpdateString()));
+    }
+    return s;
+}
+
+void Map::updateFromString(QString &s)
+{
+    QStringList allNodesAndConnexions = s.split("@");
+    if(allNodesAndConnexions.size() == 2)
+    {
+        QStringList allConnexionsStr = allNodesAndConnexions.first().split("/");
+        allNodesAndConnexions.pop_front();
+        QStringList allNodesStr = allNodesAndConnexions.first().split("/");
+
+        foreach (QString s, allConnexionsStr)
+        {
+            QStringList connexionStr = s.split(".");
+            if(connexionStr.size() == 2)
+            {
+                int numberId = connexionStr.first().toInt();
+                connexionStr.pop_front();
+                QString &data = connexionStr.first();
+                Connexion *c = Connexion::getConnexion(numberId);
+                c->updateFromString(data);
+            }
+        }
+
+        foreach (QString s, allNodesStr)
+        {
+            QStringList nodeStr = s.split(".");
+            if(nodeStr.size() == 2)
+            {
+                int numberId = nodeStr.first().toInt();
+                nodeStr.pop_front();
+                QString &data = nodeStr.first();
+                Node *n = Node::getNode(numberId);
+                n->updateFromString(data);
+            }
+        }
+    }
+}
+
+/*----------------------------------------------------*/
 /*DELEGUE*/
 /*----------------------------------------------------*/
 
@@ -135,36 +195,6 @@ void Map::advance()
 /*----------------------------------------------------*/
 /*METHODE PRIVE*/
 /*----------------------------------------------------*/
-
-void Map::getPath(Node &n1, Node &n2)const
-{
-    QList<QPair<int, int>* > weight;
-    weight.append(new QPair<int, int>(6,2));
-    weight.append(new QPair<int, int>(5,1));
-    weight.append(new QPair<int, int>(1,3));
-    qDebug()<<weight;
-    QMap<int, int> previousLink;
-    //qsort(weight.begin(), weight.end(),sortNodeByWight);
-    //Initialisation
-    /*
-    weight.insert(n1.getID(),0);
-    previousLink.insert(n1.getID(),n1.getID());
-
-
-    foreach(Node *n , lstNode)
-    {
-        weight.insert(n->getID(), INT_MAX);
-        previousLink.insert(n->getID(), -1);
-    }*/
-
-}
-
-int Map::sortNodeByWight (const QPair<int, int>*a, const QPair<int, int>*b)
-{
-    if ( a->second < b->second) return -1;
-    if ( a->second == b->second) return 0;
-    if ( a->second > b->second) return 1;
-}
 
 void Map::selectionChange()
 {

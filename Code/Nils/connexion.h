@@ -23,6 +23,9 @@ class Connexion : public QGraphicsObject, public IdentityToken
 {
     Q_OBJECT
 public:
+    /*STATIC*/
+    static Connexion * getConnexion(int idConnexion);
+
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     explicit Connexion(Node &n1, Node &n2, QGraphicsItem *parent=0);
     virtual ~Connexion();
@@ -43,7 +46,6 @@ public:
     /*PARSING*/
     QString getUpdateString();
     void updateFromString(QString &s);
-
 private:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     //Ne pas implementer, les copies ne sont pas voulues

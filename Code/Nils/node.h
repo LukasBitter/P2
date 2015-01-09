@@ -22,6 +22,9 @@ class Node : public QGraphicsObject, public IdentityToken
 {
     Q_OBJECT
 public:
+    /*STATIC*/
+    static Node * getNode(int idNode);
+
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     explicit Node(int x, int y, int radius, int ressourcesMax,
                   Gamer *g=0, QGraphicsItem *parent=0);
@@ -49,6 +52,8 @@ public:
     void connect(Node &n);
     bool isConnected(Node &n) const;
     Connexion* getConnexion(Node &n) const;
+
+    /*PARSING*/
     QString getUpdateString();
     void updateFromString(QString &s);
 
