@@ -39,7 +39,7 @@ private:
     QLineEdit *userNameLineEdit;
     QLabel *statusLabel;
     QPushButton *getConnectionButton;
-    QPushButton *runButton;
+    QPushButton *readyButton;
     QPushButton *quitButton;
     QDialogButtonBox *buttonBox;
     deleteGame *game;

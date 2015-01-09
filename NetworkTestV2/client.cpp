@@ -53,13 +53,13 @@ Client::Client(QWidget *parent) :
 
     playerNumber = "NULL";
 
-    runButton = new QPushButton(tr("Run"));
-    runButton->setEnabled(false);
+    readyButton = new QPushButton(tr("Run"));
+    readyButton->setEnabled(false);
     quitButton = new QPushButton(tr("Quit"));
 
     buttonBox = new QDialogButtonBox;
     buttonBox->addButton(getConnectionButton, QDialogButtonBox::ActionRole);
-    buttonBox->addButton(runButton, QDialogButtonBox::RejectRole);
+    buttonBox->addButton(readyButton, QDialogButtonBox::RejectRole);
     buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
 
     tcpSocket = new QTcpSocket(this);
@@ -70,7 +70,7 @@ Client::Client(QWidget *parent) :
             this, SLOT(enableGetConnectionButton()));
     connect(getConnectionButton, SIGNAL(clicked()),
             this, SLOT(requestNewConnection()));
-    connect(runButton, SIGNAL(clicked()), this, SLOT(ReadyRun()));
+    connect(readyButton, SIGNAL(clicked()), this, SLOT(ReadyRun()));
     connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readServerResponse()));
     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
@@ -301,20 +301,26 @@ void Client::readServerResponse()
         }*/
 
 
-        if (listMsg.at(0) == "serverConnectionOk") {
+        if (listMsg.at(0) == "serverConnectionOk")
+        {
+            qDebug()<<"CLIENT: readServerResponse / setPlayerId";
+            setPlayerNumber(listMsg.at(1));
             setStatus("Connected to server. Checking user name");
             msgOut = "checkUserName";
+            msgOut += "#" + userNameLineEdit->text();
             //sendServerMessage(userNameLineEdit->text());
             sendMessage = true;
         }
-        else if (listMsg.at(0) == "userNameOk") {
-
-            qDebug()<<"CLIENT: readServerResponse / setPlayerId";
-            setPlayerNumber(listMsg.at(1));
+        else if (listMsg.at(0) == "userNameOK")
+        {
             setStatus("Connection established. Press RUN when ready");
+            readyButton->setEnabled(true);
         }
         else if (listMsg.at(0) == "userNameTaken")
+        {
             setStatus("userName already taken. Choose another one");
+            getConnectionButton->setEnabled(true);
+        }
         else if (listMsg.at(0) == "noMoreSocketAvailable" )
             setStatus("game full!");
         else if (listMsg.at(0) == "clientReady" )
@@ -325,7 +331,6 @@ void Client::readServerResponse()
         else
         {
             setStatus("could not read server header");
-            runButton->setEnabled(true);
         }
         blockSize = 0;
 
@@ -335,7 +340,6 @@ void Client::readServerResponse()
             QByteArray block;
             QDataStream out(&block, QIODevice::WriteOnly);
             out.setVersion(QDataStream::Qt_4_0);
-            msgOut += "#" + userNameLineEdit->text();
 
             out << (quint16)0;
             //out << headerOut;
@@ -363,7 +367,6 @@ void Client::setPlayerNumber(QString number)
 
     qDebug()<<"CLIENT: setPlayerId / playerId: "<<playerNumber;
 
-    runButton->setEnabled(true);
 }
 
 QList<QString> Client::parse(QString clientMessage)

@@ -232,17 +232,18 @@ void Server::onNewClientRequest()
     QString msg;
     if(checkAvailableSocket())
     {
-        msg = "serverConnectionOk";
+        msg = "serverConnectionOk#";
+        msg.append(QString::number(playerNumber));
         lPlayersConnected.at(playerNumber-1)->setText("Connected");
         lPlayersReady.at(playerNumber-1)->setText("n/a");
-        qDebug()<<"SERVER: onNewClientRequest / header = serverConnectionOk";
+        qDebug()<<"SERVER: onNewClientRequest / msg =" << msg;
     }
     else
     {
         msg = "noMoreSocketAvailable";
         qDebug()<<"SERVER: onNewClientRequest / header = noMoreSocketAvailable";
     }
-    msg += "#" + playerNumber;
+    //msg += "#" + playerNumber;
 
     buildClientResponse(msg);
     //sendClientResponse();
@@ -330,18 +331,19 @@ void Server::readRequest()
         // else throw exception XXX_GAME_IS_RUNNING;
     }
     else if (listMsg.at(0) == "checkUserName"){
-        if (!gameRunning)
+        if(!gameRunning)
             rep = checkPlayerName(listMsg.at(1));
-        rep = "gameIsRunning!";
+        else
+            rep = "gameIsRunning!";
         // else throw exception XXX_GAME_NOT_RUNNING;
     }
     else if (listMsg.at(0) == "playerStatusRequest"){
-        if (gameRunning)
+        if(gameRunning)
             sendPlayerStatus();
         // else throw exception XXX_GAME_NOT_RUNNING;
     }/*
     else if(header == "playerAction"){
-        if (gameRunning)
+        if(gameRunning)
             requestServerConnection();
             //playerAction();
         // else throw exception XXX_GAME_NOT_RUNNING;
