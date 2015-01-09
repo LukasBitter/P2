@@ -64,12 +64,11 @@ private:
     void getClientRequest();
     void sendMessage();
     void sendPlayerStatus();
-    void sendClientResponse();
-    void buildClientResponse(QString connexionMsg);
+    void sendClientResponse(QString connexionMsg);
     bool checkAvailableSocket();
     QString playerReady();
     QString checkPlayerName(QString msg);
-    QList<QString> parse(QString clientMessage);
+    QString parse(QString clientMessage);
     void endConversation();
     QString getHostIp();
     bool isLinkLocalAddress(QHostAddress addr);

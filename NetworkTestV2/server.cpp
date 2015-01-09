@@ -178,8 +178,6 @@ QString Server::getHostIp(){
     hostIpStr.remove(hostIpStr.length()-3, 3);
 
     return hostIpStr;
-
-
 }
 
 /**
@@ -204,7 +202,6 @@ bool Server::isLinkLocalAddress(QHostAddress addr){
   1. 10.0.0.0 - 10.255.255.255
   2. 172.16.0.0 - 172.31.255.255
   3. 192.168.0.0 - 192.168.255.255
-
   */
 
 bool Server::isLocalIp(QHostAddress addr){
@@ -236,24 +233,12 @@ void Server::onNewClientRequest()
         msg.append(QString::number(playerNumber));
         lPlayersConnected.at(playerNumber-1)->setText("Connected");
         lPlayersReady.at(playerNumber-1)->setText("n/a");
-        qDebug()<<"SERVER: onNewClientRequest / msg =" << msg;
     }
     else
-    {
         msg = "noMoreSocketAvailable";
-        qDebug()<<"SERVER: onNewClientRequest / header = noMoreSocketAvailable";
-    }
-    //msg += "#" + playerNumber;
+    qDebug()<<"SERVER: onNewClientRequest / msg =" << msg;
 
-    buildClientResponse(msg);
-    //sendClientResponse();
-
-    if(activeSocket == NULL)
-        qDebug()<<"SERVER: onNewClientRequest END / activeSocket == NULL";
-    else
-    {
-        qDebug()<<"SERVER: onNewClientRequest END / activeSocket: "<<activeSocket->state();
-    }
+    sendClientResponse(msg);
     endConversation();
 }
 
@@ -267,46 +252,41 @@ void Server::endConversation()
 
 void Server::readRequest()
 {
-    qDebug()<<"SERVER: readRequest / header before = " << clientMessage;
-    qDebug()<<"SERVER: readRequest / Hash.size() = " << clientConnections.size();
-
     //QTcpSocket *client = qobject_cast<QTcpSocket*>(sender());
     activeSocket = qobject_cast<QTcpSocket*>(sender());
 
     playerNumber = clientConnections.indexOf(activeSocket)+1;
     if(playerNumber == -1)
     {
-        qDebug()<<"SERVER: readRequest / id in Hash not foud / ERROR ";
+        qDebug()<<"SERVER: readRequest / id not foud in Hash / ERROR ";
         return;
     }
     qDebug()<<"SERVER: readRequest / id in Hash = " << playerNumber;
     QDataStream in(activeSocket);
     in.setVersion(QDataStream::Qt_4_0);
 
-    qDebug() << "SERVER: readRequest / activeSocket->bytesAvailable() " << activeSocket->bytesAvailable();
-
     if (blockSize == 0) {
+        // we check if first element in DataStream is at least size of a quint16 as expected
         if (activeSocket->bytesAvailable() < (int)sizeof(quint16))
         {
+            // if not, readyRead slot will be called another time when new data is available
             qDebug()<<"SERVER: readRequest / activeSocket->bytesAvailable() < (int)sizeof(quint16)";
             return;
         }
-
         in >> blockSize;
     }
 
+    // we check if the remaining data in datastream is of the expected size
     if (activeSocket->bytesAvailable() < blockSize)
     {
         qDebug()<<"SERVER: readRequest / activeSocket->bytesAvailable() < blockSize";
         return;
     }
 
-    qDebug() << "SERVER: readRequest / activeSocket->bytesAvailable() " << activeSocket->bytesAvailable();
-
+    // we catch the rest of the data
     in >> clientMessage;
 
-    qDebug() << "blockSize" <<blockSize;
-    qDebug() << "clientMessage" <<clientMessage;
+    qDebug() << "SERVER: readRequest / clientMessage: " <<clientMessage;
 
     char *s = new char[activeSocket->bytesAvailable()];
     int n = in.readRawData(s,activeSocket->bytesAvailable());
@@ -317,53 +297,40 @@ void Server::readRequest()
     //qDebug() << "status :" << in.status();
     //return;
 
-    QList<QString> listMsg = parse(clientMessage);
+    QString rep = parse(clientMessage);
+    sendClientResponse(rep);
+    endConversation();
+}
 
-    qDebug() << "SERVER: readRequest / before headerRead playerNumber = " << playerNumber;
-
+QString Server::parse(QString clientMessage)
+{
+    QList<QString> listMsg = clientMessage.split("#");
     QString rep;
+
     if(listMsg.at(0) == "ReadyRun")
     {
         if(!gameRunning)
-        {
             rep = playerReady();
-        }
-        // else throw exception XXX_GAME_IS_RUNNING;
+        else
+            rep = "gameIsRunning!";
     }
-    else if (listMsg.at(0) == "checkUserName"){
+    else if (listMsg.at(0) == "checkUserName")
+    {
         if(!gameRunning)
             rep = checkPlayerName(listMsg.at(1));
         else
             rep = "gameIsRunning!";
-        // else throw exception XXX_GAME_NOT_RUNNING;
     }
-    else if (listMsg.at(0) == "playerStatusRequest"){
-        if(gameRunning)
-            sendPlayerStatus();
-        // else throw exception XXX_GAME_NOT_RUNNING;
-    }/*
-    else if(header == "playerAction"){
+/*  else if(header == "playerAction"){
         if(gameRunning)
             requestServerConnection();
             //playerAction();
         // else throw exception XXX_GAME_NOT_RUNNING;
     }*/
     else
-    {
-        qDebug()<<"SERVER: readRequest / no planned action";
-        rep = "NODATA";
-        // throw exception XXX_BAD_CLIENT_REQUEST;
-    }
+        rep = "NO PLANNED ACTION FOR";
 
-    buildClientResponse(rep);
-    //sendClientResponse();
-    endConversation();
-}
-
-QList<QString> Server::parse(QString clientMessage)
-{
-    QList<QString> listMsg = clientMessage.split("#");
-    return listMsg;
+    return rep;
 }
 
 bool Server::checkAvailableSocket()
@@ -381,12 +348,7 @@ bool Server::checkAvailableSocket()
         clientConnections.append(activeSocket);
 
         connect(activeSocket, SIGNAL(readyRead()), this, SLOT(readRequest()));
-
-        //clientConnection[playerId.toInt()] = tcpServer->nextPendingConnection();
-        //connect(clientConnection[playerId.toInt()], SIGNAL(readyRead()), this, SLOT(readRequest()));
-
         qDebug()<<"SERVER: checkAvailableSocket / playerNumber: "<<playerNumber;
-
         return true;
     }
     else
@@ -415,69 +377,24 @@ QString Server::playerReady()
 {
     qDebug()<<"SERVER: playerReady";
 
-    //lPlayersReady.at(playerNumber-1)->setText("Ready");
-    lPlayersReady.at(playerNumber-1)->setText(listPlayers.at(playerNumber-1)->addCount());
-    clientMessage = "clientReady";
-
-    blockSize = 0;
-    return "OK";
+    lPlayersReady.at(playerNumber-1)->setText("Ready");
+    return "clientReadyOK";
 }
 
-void Server::buildClientResponse(QString msg)
+void Server::sendClientResponse(QString msg)
 {
-    //block.clear();
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_4_0);
-
-    qDebug()<<"SERVER: buildClientResponse / block.size() before: "<<block.size();
 
     qDebug()<<"SERVER: buildClientResponse / msg: "<<msg;
 
     out << (quint16)0;
     out << msg;
     out.device()->seek(0);
-    qDebug()<<"SERVER: buildClientResponse / block.size() after: "<<block.size();
-    qDebug()<<"SERVER: buildClientResponse / block.size()- sizeof(quint16) after: "<<block.size()- sizeof(quint16);
     out << (quint16)(block.size() - sizeof(quint16));
 
     QString w = QString::number(activeSocket->write(block));
     qDebug() << "w: " << w;
     activeSocket->flush();
-}
-
-void Server::sendClientResponse()
-{
-
-    if(activeSocket == NULL)
-        qDebug()<<"SERVER: sendClientResponse / activeSocket == NULL";
-    else
-    {
-        qDebug()<<"SERVER: sendClientResponse / activeSocket: "<<activeSocket->state();
-    }
-    qDebug()<<"SERVER: sendClientResponse / playerNumber: "<<playerNumber;
-    //activeSocket->write(block);
-    qDebug()<<"SERVER: sendClientResponse / write done";
-    //clientConnection[playerId]->disconnectFromHost();
-    //qDebug()<<"SERVER: sendClientResponse/ disconnected";
-}
-
-void Server::sendPlayerStatus()
-{
-    qDebug()<<"SERVER: sendPlayerStatus";
-    QByteArray block;
-
-    QDataStream out(&block, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_4_0);
-
-    clientMessage = "playerStatus";
-
-    out << (quint16)0;
-    out << clientMessage;
-    for(int i=0;i<=maxPlayers;i++)
-    {
-        out << listPlayers.at(i)->getPoints();
-    }
-    out.device()->seek(0);
-    out << (quint16)(block.size() - sizeof(quint16));
 }
