@@ -1,0 +1,24 @@
+/***********************************
+//Original way to find ip apdress:
+***********************************/
+    QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
+    // use the first non-localhost IPv4 address
+    for (int i = 0; i < ipAddressesList.size(); ++i) {
+
+        qDebug()<<"SERVER: sessionOpened / ipAddressesList.at(" << i << "): " << ipAddressesList.at(i).toString();
+        if (ipAddressesList.at(i) != QHostAddress::LocalHost &&
+            ipAddressesList.at(i).toIPv4Address()) {
+            qDebug() << "ipAddress found!";
+            ipAddress = ipAddressesList.at(i).toString();
+            break;
+        }
+    }
+
+/**********************************
+// better way to find ipadresses:
+***********************************/
+    foreach (const QHostAddress &address, QNetworkInterface::allAddresses()) {
+        if (address.protocol() == QAbstractSocket::IPv4Protocol && address != QHostAddress(QHostAddress::LocalHost))
+             qDebug() << address.toString();
+    }
+
