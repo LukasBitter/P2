@@ -20,6 +20,7 @@ class Server : public QDialog
 
 public:
     explicit Server(QWidget *parent = 0);
+    int getPort();
 
 private slots:
     void sessionOpened();
@@ -32,9 +33,10 @@ private:
     QLabel *lPlayerH;
     QLabel *lPlayersConnectedH;
     QLabel *lPlayersReadyH;
+    QList<QLabel *> lPlayersNumbers;
+    QList<QLabel *> lPlayersNames;
     QList<QLabel *> lPlayersConnected;
     QList<QLabel *> lPlayersReady;
-    QList<QLabel *> lPlayersNumbers;
     QList<QTcpSocket *> clientConnections;
     QList<QTcpSocket *> clientWaitingList;
     QList<Player *> listPlayers;
@@ -69,12 +71,13 @@ private:
     QString playerReady();
     QString checkPlayerName(QString msg);
     QString parse(QString clientMessage);
+    QString getPlayersStatus();
+    QString labelBuildString(QList<QLabel> &list);
+    void sendAllUsersStatus();
     void endConversation();
     QString getHostIp();
     bool isLinkLocalAddress(QHostAddress addr);
     bool isLocalIp(QHostAddress addr);
-
-
 
 signals:
     void endGame(int winner);

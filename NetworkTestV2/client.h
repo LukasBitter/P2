@@ -20,7 +20,7 @@ class Client : public QDialog
 {
     Q_OBJECT
 public:
-    explicit Client(QWidget *parent = 0);
+    explicit Client(QWidget *parent = 0, bool isHost = 0, int port = 0);
 
 private slots:
     void requestNewConnection();
@@ -30,6 +30,7 @@ private slots:
     void sessionOpened();
     void ReadyRun();
     void runGame();
+    void launchGame();
 
 private:
     QComboBox *hostCombo;
@@ -43,8 +44,10 @@ private:
     int playersInGame;
     int maxPlayers;
     int gameRunning;
+    bool isHost;
     QPushButton *getConnectionButton;
     QPushButton *readyButton;
+    QPushButton *runButton;
     QPushButton *quitButton;
     QDialogButtonBox *buttonBox;
     deleteGame *game;
@@ -56,7 +59,8 @@ private:
     void setPlayerNumber(QString number);
     void setStatus(QString msg);
     void sendServerMessage(QString msg);
-    QList<QString> parse(QString clientMessage);
+    void setUsersStatus(QString msg);
+    QString parse(QString clientMessage);
 
     //QByteArray block;
     QDataStream in;

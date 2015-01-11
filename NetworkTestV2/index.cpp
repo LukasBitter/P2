@@ -6,17 +6,17 @@
 index::index(QWidget *parent) :
     QDialog(parent)
 {
-    pbNewGame = new QPushButton(tr("New Game"));
+    pbHostGame = new QPushButton(tr("Host Game"));
     pbJoinGame = new QPushButton(tr("Join Game"));
     pbQuit = new QPushButton(tr("Quit"));
 
-    connect(pbNewGame, SIGNAL(clicked()), this, SLOT(initNewgame()));
+    connect(pbHostGame, SIGNAL(clicked()), this, SLOT(hostGame()));
     connect(pbJoinGame, SIGNAL(clicked()), this, SLOT(joinGame()));
     connect(pbQuit, SIGNAL(clicked()), this, SLOT(close()));
 
     QVBoxLayout *buttonLayout = new QVBoxLayout;
     buttonLayout->addStretch(1);
-    buttonLayout->addWidget(pbNewGame);
+    buttonLayout->addWidget(pbHostGame);
     buttonLayout->addWidget(pbJoinGame);
     buttonLayout->addWidget(pbQuit);
     buttonLayout->addStretch(1);
@@ -26,15 +26,18 @@ index::index(QWidget *parent) :
 }
 
 
-void index::initNewgame(){
-
-    server = new Server();
+void index::hostGame()
+{
+    server = new Server(this);
     //server->setModal(1);
     server->resize(200, 300);
     server->show();
+    client = new Client(this, true, server->getPort());
+    client->show();
 }
 
-void index::joinGame(){
-    client = new Client();
+void index::joinGame()
+{
+    client = new Client(this, false, 0);
     client->show();
 }

@@ -6,8 +6,11 @@
 #include "client.h"
 #include "deletegame.h"
 
-Client::Client(QWidget *parent) :
-    QDialog(parent), networkSession(0)
+#define SEP_CONX "#"
+#define SEP_STATUS ";"
+
+Client::Client(QWidget *parent, bool isHost, int port) :
+    QDialog(parent), networkSession(0), isHost(isHost)
 {
     maxPlayers = 4;
     hostCombo = new QComboBox;
@@ -36,27 +39,29 @@ Client::Client(QWidget *parent) :
             hostCombo->addItem(ipAddressesList.at(i).toString());
     }
 
-    portLineEdit = new QLineEdit;
-    userNameLineEdit = new QLineEdit;
-    portLineEdit->setValidator(new QIntValidator(1, 65535, this));
-
-
-    statusLabel = new QLabel(tr("To play a Delete game, you must run"
-                                "Delete Game Server as well."));
-
+    readyButton = new QPushButton(tr("Ready"));
+    readyButton->setEnabled(false);
+    runButton = new QPushButton(tr("Run"));
+    runButton->setEnabled(false);
+    quitButton = new QPushButton(tr("Quit"));
     getConnectionButton = new QPushButton(tr("Connection"));
     getConnectionButton->setDefault(true);
     getConnectionButton->setEnabled(false);
 
-    playerNumber = "NULL";
+    portLineEdit = new QLineEdit;
 
-    readyButton = new QPushButton(tr("Run"));
-    readyButton->setEnabled(false);
-    quitButton = new QPushButton(tr("Quit"));
+    userNameLineEdit = new QLineEdit;
+    portLineEdit->setValidator(new QIntValidator(1, 65535, this));
+    portLineEdit->setFocus();
+    setWindowTitle(tr("Basic RTS Game"));
+
+    statusLabel = new QLabel(tr("To play a Delete game, you must run"
+                                "Delete Game Server as well."));
 
     buttonBox = new QDialogButtonBox;
     buttonBox->addButton(getConnectionButton, QDialogButtonBox::ActionRole);
     buttonBox->addButton(readyButton, QDialogButtonBox::RejectRole);
+    buttonBox->addButton(runButton, QDialogButtonBox::RejectRole);
     buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
 
     tcpSocket = new QTcpSocket(this);
@@ -68,16 +73,16 @@ Client::Client(QWidget *parent) :
     connect(getConnectionButton, SIGNAL(clicked()),
             this, SLOT(requestNewConnection()));
     connect(readyButton, SIGNAL(clicked()), this, SLOT(ReadyRun()));
+    connect(runButton, SIGNAL(clicked()), this, SLOT(launchGame()));
     connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readServerResponse()));
     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
             this, SLOT(displayError(QAbstractSocket::SocketError)));
 
+
     init();
     setUI();
 
-    setWindowTitle(tr("Basic RTS Game"));
-    portLineEdit->setFocus();
 
     QNetworkConfigurationManager manager;
     if (manager.capabilities() & QNetworkConfigurationManager::NetworkSessionRequired) {
@@ -101,31 +106,43 @@ Client::Client(QWidget *parent) :
         statusLabel->setText(tr("Opening network session."));
         networkSession->open();
     }
+
+    if(isHost)
+    {
+        portLineEdit->setText(QString::number(port));
+        userNameLineEdit->setFocus();
+        //emit getConnectionButton->clicked();
+    }
 }
 
 void Client::setUI()
 {
-    QLabel *lPlayerH = new QLabel(tr("Player: "));
+    QLabel *lPlayerNumberH = new QLabel(tr("Player: "));
+    QLabel *lPlayerNameH = new QLabel(tr("Name: "));
     QLabel *lPlayersConnectedH = new QLabel(tr("Connexion: "));
     QLabel *lPlayersReadyH = new QLabel(tr("Ready: "));
     QLabel *hostLabel = new QLabel(tr("&Server name:"));
     QLabel *portLabel = new QLabel(tr("S&erver port:"));
     QLabel *userNameLabel = new QLabel(tr("&User name:"));
 
-    QGridLayout *gridLayout= new QGridLayout(this);
-    gridLayout->setColumnStretch(1, 15);
-    gridLayout->setColumnStretch(2, 30);
-    gridLayout->setColumnStretch(3, 30);
-    gridLayout->setColumnStretch(4, 30);
-    gridLayout->setColumnStretch(5, 30);
+//    int rowNumbers = 8;
+//    int colNumbers = 6;
+//    int i;
+//    int j;
 
-    gridLayout->setRowStretch(1,10);
-    gridLayout->setRowStretch(2,10);
-    gridLayout->setRowStretch(3,10);
-    gridLayout->setRowStretch(4,10);
-    gridLayout->setRowStretch(5,10);
-    gridLayout->setRowStretch(6,10);
-    gridLayout->setRowStretch(7,10);
+    QGridLayout *gridLayout= new QGridLayout(this);
+
+//    for (i=0;i<colNumbers;i++)
+//        gridLayout->setColumnStretch(0, 10);
+
+//    gridLayout->setRowStretch(0,10);
+//    gridLayout->setRowStretch(1,10);
+//    gridLayout->setRowStretch(2,10);
+//    gridLayout->setRowStretch(3,10);
+//    gridLayout->setRowStretch(4,10);
+//    gridLayout->setRowStretch(5,10);
+//    gridLayout->setRowStretch(6,10);
+//    gridLayout->setRowStretch(7,10);
 
     gridLayout->addWidget(hostLabel, 0, 1);
     gridLayout->addWidget(hostCombo, 0, 2, 1, 3);
@@ -133,25 +150,30 @@ void Client::setUI()
     gridLayout->addWidget(portLineEdit, 1, 2, 1, 3);
     gridLayout->addWidget(userNameLabel, 2, 1);
     gridLayout->addWidget(userNameLineEdit, 2, 2, 1, 3);
-    gridLayout->addWidget(lPlayerH,3, 1);
+    gridLayout->addWidget(lPlayerNumberH,3, 1);
     gridLayout->addWidget(lPlayersNumbers.at(0),3, 2);
     gridLayout->addWidget(lPlayersNumbers.at(1),3, 3);
     gridLayout->addWidget(lPlayersNumbers.at(2),3, 4);
     gridLayout->addWidget(lPlayersNumbers.at(3),3, 5);
-    gridLayout->addWidget(lPlayersConnectedH,4, 1);
-    gridLayout->addWidget(lPlayersConnected.at(0),4, 2);
-    gridLayout->addWidget(lPlayersConnected.at(1),4, 3);
-    gridLayout->addWidget(lPlayersConnected.at(2),4, 4);
-    gridLayout->addWidget(lPlayersConnected.at(3),4, 5);
-    gridLayout->addWidget(lPlayersReadyH,5, 1);
-    gridLayout->addWidget(lPlayersReady.at(0),5, 2);
-    gridLayout->addWidget(lPlayersReady.at(1),5, 3);
-    gridLayout->addWidget(lPlayersReady.at(2),5, 4);
-    gridLayout->addWidget(lPlayersReady.at(3),5, 5);
-    gridLayout->addWidget(statusLabel, 6, 1, 1, 2);
-    gridLayout->addWidget(buttonBox, 7, 0, 1, 2);
-    gridLayout->addWidget(readyButton,7, 2, 1, 2);
-    gridLayout->addWidget(quitButton,7, 4, 1, 2);
+    gridLayout->addWidget(lPlayerNameH,4, 1);
+    gridLayout->addWidget(lPlayersNames.at(0),4, 2);
+    gridLayout->addWidget(lPlayersNames.at(1),4, 3);
+    gridLayout->addWidget(lPlayersNames.at(2),4, 4);
+    gridLayout->addWidget(lPlayersNames.at(3),4, 5);
+    gridLayout->addWidget(lPlayersConnectedH,5, 1);
+    gridLayout->addWidget(lPlayersConnected.at(0),5, 2);
+    gridLayout->addWidget(lPlayersConnected.at(1),5, 3);
+    gridLayout->addWidget(lPlayersConnected.at(2),5, 4);
+    gridLayout->addWidget(lPlayersConnected.at(3),5, 5);
+    gridLayout->addWidget(lPlayersReadyH,6, 1);
+    gridLayout->addWidget(lPlayersReady.at(0),6, 2);
+    gridLayout->addWidget(lPlayersReady.at(1),6, 3);
+    gridLayout->addWidget(lPlayersReady.at(2),6, 4);
+    gridLayout->addWidget(lPlayersReady.at(3),6, 5);
+    gridLayout->addWidget(statusLabel, 7, 1, 1, 2);
+    gridLayout->addWidget(buttonBox, 8, 0, 1, 4);
+    //gridLayout->addWidget(readyButton,7, 2, 1, 2);
+    //gridLayout->addWidget(quitButton,7, 4, 1, 2);
 
     hostLabel->setBuddy(hostCombo);
     portLabel->setBuddy(portLineEdit);
@@ -165,6 +187,8 @@ void Client::init(){
         lPlayersConnected.append(new QLabel("n/a"));
         lPlayersReady.append(new QLabel(""));
     }
+
+    playerNumber = "NULL";
     playersInGame = 0;
     blockSize = 0;
 
@@ -256,14 +280,14 @@ void Client::runGame()
 void Client::ReadyRun()
 {
     qDebug()<<"CLIENT: ReadyRun / tcpSocket->state() / 1: "<<tcpSocket->state();
-//    runButton->setEnabled(false);
     blockSize = 0;
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_4_0);
     qDebug()<<"CLIENT: ReadyRun / block.size() before: "<<block.size();
 
-    QString sReadyRun("ReadyRun#");
+    QString sReadyRun("ReadyRun");
+    sReadyRun.append(SEP_CONX);
     sReadyRun.append(playerNumber);
     //QString tNumber = "1";
 
@@ -281,6 +305,15 @@ void Client::ReadyRun()
 
     tcpSocket->write(block);
     tcpSocket->flush();
+
+
+    if (isHost)
+        runButton->setEnabled(true);
+}
+
+void Client::launchGame()
+{
+    //do nothing
 }
 
 void Client::sendServerMessage(QString msg)
@@ -291,12 +324,10 @@ void Client::sendServerMessage(QString msg)
     out.setVersion(QDataStream::Qt_4_0);
 
     out << (quint16)0;
-    //out << headerOut;
     out << msg;
     out.device()->seek(0);
     out << (quint16)(block.size() - sizeof(quint16));
 
-    //qDebug()<<"CLIENT: sendServerMessage / headerOut: "<<headerOut;
     qDebug()<<"CLIENT: sendServerMessage / msg: "<<msg;
 
     tcpSocket->write(block);
@@ -328,10 +359,6 @@ void Client::readServerResponse()
             {
                 in >> blockSize;
                 qDebug()<<"CLIENT: readServerResponse / blockSize after: " << blockSize;
-                in >> blockSize;
-                qDebug()<<"CLIENT: readServerResponse / blockSize after: " << blockSize;
-                in >> blockSize;
-                qDebug()<<"CLIENT: readServerResponse / blockSize after: " << blockSize;
             }
          }
         qDebug()<<"CLIENT: readServerResponse / tcpSocket->bytesAvailable(): " << tcpSocket->bytesAvailable();
@@ -345,76 +372,100 @@ void Client::readServerResponse()
         QString serverMessage;
         in >> serverMessage;
 
-        QList<QString> listMsg = parse(serverMessage);
-        QString msgOut;
-
         qDebug()<<"CLIENT: readServerResponse / serverHeader: "<<serverMessage;
-        bool sendMessage = false;
 
-        //test
-        /*if(serverMessage == "")
-        {
-            for (int i= 0;i<4;i++)
-            {
-                in>>serverMessage;
-                qDebug() << "Header" << i << ": " << serverMessage;
-            }
-        }*/
+        QString rep = parse(serverMessage);
 
-
-        if (listMsg.at(0) == "serverConnectionOk")
-        {
-            qDebug()<<"CLIENT: readServerResponse / setPlayerId";
-            setPlayerNumber(listMsg.at(1));
-            setStatus("Connected to server. Checking user name");
-            msgOut = "checkUserName";
-            msgOut += "#" + userNameLineEdit->text();
-            //sendServerMessage(userNameLineEdit->text());
-            sendMessage = true;
-        }
-        else if (listMsg.at(0) == "userNameOK")
-        {
-            setStatus("Connection established. Press RUN when ready");
-            readyButton->setEnabled(true);
-        }
-        else if (listMsg.at(0) == "userNameTaken")
-        {
-            setStatus("userName already taken. Choose another one");
-            getConnectionButton->setEnabled(true);
-        }
-        else if (listMsg.at(0) == "noMoreSocketAvailable" )
-            setStatus("game full!");
-        else if (listMsg.at(0) == "clientReady" )
-            setStatus("Ready for game to begin. Wait for server to start game");
-        else if (listMsg.at(0) == "OK" )
-            // do nothing
-            ;
-        else
-        {
-            setStatus("could not read server header");
-        }
         blockSize = 0;
 
-        if(sendMessage)
+        if(rep.compare("NOACTIONN") != 0)
         {
-            qDebug()<<"CLIENT: sendServerMessage";
+            sendServerMessage(rep);
+        }
+
+        if(rep.compare("NOACTIONN") != 0)
+        {
             QByteArray block;
             QDataStream out(&block, QIODevice::WriteOnly);
             out.setVersion(QDataStream::Qt_4_0);
 
             out << (quint16)0;
-            //out << headerOut;
-            out << msgOut;
+            out << rep;
             out.device()->seek(0);
             out << (quint16)(block.size() - sizeof(quint16));
 
-            qDebug()<<"CLIENT: sendServerMessage / headerOut: "<<headerOut;
-            qDebug()<<"CLIENT: sendServerMessage / msg: "<<msgOut;
+            qDebug()<<"CLIENT: readServerResponse / headerOut: "<<headerOut;
+            qDebug()<<"CLIENT: readServerResponse / msg: "<<rep;
 
             tcpSocket->write(block);
             tcpSocket->flush();
         }
+        else
+
+            qDebug()<<"CLIENT: readServerResponse / NOACTION";
      }
+     qDebug()<<"CLIENT: readServerResponse / END WHILE";
+}
+
+QString Client::parse(QString clientMessage)
+{
+    QList<QString> listMsg = clientMessage.split(SEP_CONX);
+    QString rep = "NOACTION";
+
+    if (listMsg.at(0) == "serverConnectionOk")
+    {
+        qDebug()<<"CLIENT: parse / setPlayerId";
+        setPlayerNumber(listMsg.at(1));
+        setStatus("Connected to server. Checking user name");
+        rep = "checkUserName";
+        rep.append(SEP_CONX);
+        rep.append(userNameLineEdit->text());
+        setUsersStatus(listMsg.at(2));
+    }
+    else if (listMsg.at(0) == "allUsersStatus")
+    {
+        qDebug()<<"CLIENT: parse / allUsersStatus";
+        setUsersStatus(listMsg.at(1));
+        rep = "OK";
+    }
+    else if (listMsg.at(0) == "userNameOK")
+    {
+        setStatus("Connection established. Press \"Ready\" when readyto start");
+        readyButton->setEnabled(true);
+        userNameLineEdit->setDisabled(true);
+    }
+    else if (listMsg.at(0) == "userNameTaken")
+    {
+        setStatus("userName already taken. Choose another one");
+        getConnectionButton->setEnabled(true);
+    }
+    else if (listMsg.at(0) == "noMoreSocketAvailable" )
+        setStatus("game full!");
+    else if (listMsg.at(0) == "clientReady" )
+        setStatus("Ready for game to begin. Wait for server to start game");
+    else if (listMsg.at(0) == "OK" )
+        // do nothing
+        ;
+    else
+    {
+        setStatus("could not read server header");
+    }
+
+    return rep;
+}
+
+void Client ::setUsersStatus(QString msg)
+{
+    qDebug()<<"CLIENT: setUsersStatus";
+    QList<QString> listStatus = msg.split(SEP_STATUS);
+
+    for(int i = 0; i<4;i++)
+    {
+        lPlayersNumbers.at(i)->setText(listStatus.at(i));
+        lPlayersNames.at(i)->setText(listStatus.at(i+1*maxPlayers));
+        lPlayersConnected.at(i)->setText(listStatus.at(i+2*maxPlayers));
+        lPlayersReady.at(i)->setText(listStatus.at(i+3*maxPlayers));
+    }
 }
 
 void Client::setStatus(QString msg)
@@ -427,11 +478,4 @@ void Client::setPlayerNumber(QString number)
     playerNumber = number;
 
     qDebug()<<"CLIENT: setPlayerId / playerId: "<<playerNumber;
-
-}
-
-QList<QString> Client::parse(QString clientMessage)
-{
-    QList<QString> listMsg = clientMessage.split("#");
-    return listMsg;
 }

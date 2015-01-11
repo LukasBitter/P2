@@ -12,7 +12,7 @@ class QPushButton;
 class index : public QDialog
 {
     Q_OBJECT
-    QPushButton *pbNewGame;
+    QPushButton *pbHostGame;
     QPushButton *pbJoinGame;
     QPushButton *pbQuit;
     Server *server;
@@ -24,7 +24,7 @@ public:
 signals:
 
 public slots:
-    void initNewgame();
+    void hostGame();
     void joinGame();
 
 };

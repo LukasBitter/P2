@@ -6,6 +6,9 @@
 #include "server.h"
 #include <process.h>
 
+#define SEP_CONX "#"
+#define SEP_STATUS ";"
+
 Server::Server(QWidget *parent)
 :   QDialog(parent), tcpServer(0), networkSession(0)
 {
@@ -61,6 +64,7 @@ void Server::init(){
     {
         listPlayers.append(new Player(i, maxPts));
         lPlayersNumbers.append(new QLabel(QString("#").append(QString::number(i+1))));
+        lPlayersNames.append(new QLabel(""));
         lPlayersConnected.append(new QLabel("n/a"));
         lPlayersReady.append(new QLabel(""));
     }
@@ -149,6 +153,11 @@ void Server::sessionOpened()
                          .arg(ipAddress).arg(tcpServer->serverPort()));
 }
 
+int Server::getPort()
+{
+    return tcpServer->serverPort() ;
+}
+
 QString Server::getHostIp(){
     qWarning()<<__FUNCTION__;
     QHostInfo hostInfo = QHostInfo::fromName(QHostInfo::localHostName());
@@ -228,8 +237,11 @@ void Server::onNewClientRequest()
     QString msg;
     if(checkAvailableSocket())
     {
-        msg = "serverConnectionOk#";
+        msg = "serverConnectionOk";
+        msg.append(SEP_CONX);
         msg.append(QString::number(playerNumber));
+        msg.append(SEP_CONX);
+        msg.append(getPlayersStatus());
         lPlayersConnected.at(playerNumber-1)->setText("Connected");
         lPlayersReady.at(playerNumber-1)->setText("n/a");
     }
@@ -239,6 +251,39 @@ void Server::onNewClientRequest()
 
     sendClientResponse(msg);
     endConversation();
+}
+
+QString Server::getPlayersStatus()
+{
+    QString rep;
+    //rep= labelBuildString(lPlayersNumbers);
+    QLabel *ele;
+    foreach(ele, lPlayersNumbers)
+        rep += ele->text().remove(0, 1) + SEP_STATUS;
+    foreach(ele, lPlayersNames)
+        rep += ele->text() + SEP_STATUS;
+    foreach(ele, lPlayersConnected)
+        rep += ele->text() + SEP_STATUS;
+    foreach(ele, lPlayersReady)
+        rep += ele->text() + SEP_STATUS;
+
+    rep.remove(rep.length()-1, 1);
+    qDebug() << "rep" << rep;
+    return rep;
+}
+
+QString Server::labelBuildString(QList<QLabel> &list)
+{
+    QString str;
+    QLabel ele;
+    /*
+    foreach(ele , list)
+    {
+        str += ele.text() + STATUS_SEP;
+    }*/
+    qDebug() <<"str: " << str;
+
+    return str;
 }
 
 void Server::endConversation()
@@ -299,11 +344,36 @@ void Server::readRequest()
     QString rep = parse(clientMessage);
     sendClientResponse(rep);
     endConversation();
+    if(rep.compare("userNameOK") == 0)
+    {
+        sendAllUsersStatus();
+    }
+}
+
+void Server::sendAllUsersStatus()
+{
+    for (int i=0; i < maxPlayers; i++)
+    {
+        qDebug() << "SERVER: sendAllUsersStatus / lPlayersConnected: " << lPlayersConnected.at(i)->text()   ;
+        qDebug() << "SERVER: sendAllUsersStatus / lPlayersConnected.at(i)->text().compare(\"Connected\"): " << lPlayersConnected.at(i)->text().compare("Connected");
+        if(lPlayersConnected.at(i)->text().compare("Connected") == 0);
+        {
+
+            qDebug() << "SERVER: sendAllUsersStatus / lPlayersConnected: " << i;
+            activeSocket = clientConnections.at(i);
+
+            QString msg = "allUsersStatus";
+            msg.append(SEP_CONX);
+            msg.append(getPlayersStatus());
+
+            sendClientResponse(msg);
+        }
+    }
 }
 
 QString Server::parse(QString clientMessage)
 {
-    QList<QString> listMsg = clientMessage.split("#");
+    QList<QString> listMsg = clientMessage.split(SEP_CONX);
     QString rep;
 
     if(listMsg.at(0) == "ReadyRun")
@@ -367,6 +437,7 @@ QString Server::checkPlayerName(QString playerName)
             return "userNameTaken";
     }
 
+    lPlayersNames.at(playerNumber-1)->setText(playerName);
     listPlayers.at(playerNumber-1)->setPlayerName(playerName);
 
     return "userNameOK";
