@@ -52,6 +52,8 @@ public:
     int getRadius() const;
     int getArmorLvl() const;
     void setArmorLvl(int a);
+    bool getInvicibility() const;
+    void setInvicibility(bool b);
     const Gamer* getOwner();
     void connect(Node &n);
     bool isConnected(Node &n) const;
@@ -73,6 +75,7 @@ private:
     const int posX;
     const int posY;
     const Gamer *owner;
+    bool invicible;
 QColor c;
 
     /*TOOL*/

@@ -62,7 +62,6 @@ private:
     QHash<int, Connexion *> lstConnexion;
     Node *currentSelection;
     Node *lastSelection;
-    Power power;
     float percentToSend;
 
 private slots:

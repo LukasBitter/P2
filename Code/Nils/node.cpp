@@ -32,7 +32,8 @@ Node *Node::getNode(int idNode)
 
 Node::Node(int x, int y, int radius, int ressourcesMax, Gamer *g, QGraphicsItem *parent)
     : QGraphicsObject(parent), posX(x), posY(y), radius(radius), owner(g),
-      ressourcesMax(ressourcesMax), nbRessources(0), counterAdvance(0), armorLvl(0)
+      ressourcesMax(ressourcesMax), nbRessources(0), counterAdvance(0), armorLvl(0),
+      invicible(false)
 {
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setAcceptHoverEvents(true);
@@ -183,6 +184,16 @@ void Node::setArmorLvl(int a)
     armorLvl = a;
 }
 
+bool Node::getInvicibility() const
+{
+    return invicible;
+}
+
+void Node::setInvicibility(bool b)
+{
+    invicible = b;
+}
+
 int Node::getPosY() const
 {
     return posY;
@@ -279,6 +290,7 @@ void Node::incoming(Squad &s)
     else
     {
         //Entrée d'ennemis
+        if(invicible) ressource = 0;
         ressource = dealDamageOnArmor(ressource);
         if (nbRessources < ressource)
         {

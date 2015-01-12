@@ -11,9 +11,10 @@ HEADERS += \
     map.h \
     squad.h \
     identitytoken.h \
-    power.h \
     gamerinterface.h \
-    gamescene.h
+    gamescene.h \
+    powerinterface.h \
+    power.h
 
 SOURCES += \
     connexion.cpp \
@@ -23,9 +24,10 @@ SOURCES += \
     map.cpp \
     squad.cpp \
     identitytoken.cpp \
-    power.cpp \
     gamerinterface.cpp \
-    gamescene.cpp
+    gamescene.cpp \
+    powerinterface.cpp \
+    power.cpp
 
 OTHER_FILES += \
     Notes.txt
