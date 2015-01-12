@@ -1,5 +1,6 @@
 QT       += core gui
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QMAKE_CXXFLAGS_WARN_ON += -Wno-reorder
 
 TARGET = Nils
 TEMPLATE = app
@@ -14,7 +15,12 @@ HEADERS += \
     gamerinterface.h \
     gamescene.h \
     powerinterface.h \
-    power.h
+    power.h \
+    powerarmore.h \
+    powerdestroy.h \
+    powerinvincibility.h \
+    powerteleportation.h \
+    button.h
 
 SOURCES += \
     connexion.cpp \
@@ -27,7 +33,12 @@ SOURCES += \
     gamerinterface.cpp \
     gamescene.cpp \
     powerinterface.cpp \
-    power.cpp
+    power.cpp \
+    powerarmore.cpp \
+    powerdestroy.cpp \
+    powerinvincibility.cpp \
+    powerteleportation.cpp \
+    button.cpp
 
 OTHER_FILES += \
     Notes.txt

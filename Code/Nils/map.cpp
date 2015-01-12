@@ -133,7 +133,6 @@ void Map::mousePressEvent(QMouseEvent *e)
             sendSquad(currentSelection->getId(), n->getId());
         }
     }
-    qDebug()<<"test";
     QGraphicsView::mousePressEvent(e);
 }
 void Map::dropEvent(QDropEvent *event)
@@ -159,7 +158,7 @@ void Map::addNode(Node &n)
     scene->addItem(&n);
 }
 
-bool Map::addConnexion(Node &n1, Node &n2)
+void Map::addConnexion(Node &n1, Node &n2)
 {
     n1.connect(n2);
     Connexion *c = n1.getConnexion(n2);

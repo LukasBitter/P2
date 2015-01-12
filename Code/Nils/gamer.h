@@ -27,10 +27,6 @@ public:
     /*ASSESSEUR / MUTATEUR*/
     QColor getColor() const;
 private:
-    /*CONSTRUCTEUR / DESTRUCTEUR*/
-    //Ne pas implementer, les copies ne sont pas voulues
-    Gamer(Gamer &c);
-    Gamer& operator=(const Gamer&);
 
     /*TOOL*/
     QColor color;

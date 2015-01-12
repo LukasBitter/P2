@@ -30,7 +30,7 @@ public:
 
     /*ASSESSEUR / MUTATEUR*/
     void addNode(Node &n);
-    bool addConnexion(Node &n1, Node &n2);
+    void addConnexion(Node &n1, Node &n2);
     int getTotalRessources(Gamer &g);
     int getAvrageRessourcesRate(Gamer &g);
     int getTotalRessources();

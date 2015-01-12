@@ -9,7 +9,6 @@ class Gamer;
 class Connexion;
 class Squad;
 class QPainter;
-class QObject;
 
 namespace GameComponent {
     class Node;

@@ -59,6 +59,8 @@ QRectF Connexion::boundingRect() const
 void Connexion::paint(QPainter *painter,
                       const QStyleOptionGraphicsItem *option,QWidget *widget)
 {
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
     painter->save();
     painter->translate(n1.getPosX(), n1.getPosY());
     qreal angle = qRadiansToDegrees(qAtan2(n1.getPosY()-n2.getPosY(),n1.getPosX()-n2.getPosX()))+90;

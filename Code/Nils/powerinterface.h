@@ -1,50 +1,59 @@
-#ifndef POWER_H
-#define POWER_H
+#ifndef POWERINTERFACE_H
+#define POWERINTERFACE_H
 
-#include <QWidget>
-class QPushButton;
+#include <QGraphicsWidget>
+
 class Node;
+class Power;
+class Button;
 
-class PowerInterface : public QWidget
+namespace GameInterface {
+    class PowerInterface;
+}
+
+class PowerInterface : public QGraphicsWidget
 {
+    Q_OBJECT
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    PowerInterface(QWidget * parent = 0);
+    PowerInterface(QGraphicsItem * parent = 0);
     ~PowerInterface();
 
     /*ASSESSEUR / MUTATEUR*/
     void setMana(int mana);
     void addMana(int mana);
     int getMana()const;
+
+    /*SIGNALS/SLOTS*/
 signals:
-    void btPowerDestroyPressed()const;
-    void btPowerInvincibilityPressed()const;
-    void btPowerTeleportationPressed()const;
-    void btPowerArmorePressed()const;
+    void powerDestroyPressed()const;
+    void powerInvincibilityPressed()const;
+    void powerTeleportationPressed()const;
+    void powerArmorePressed()const;
 public slots:
     void usePowerDestroy(Node *n);
     void usePowerInvincibility(Node *n);
     void usePowerTeleportation(Node *from, Node *to, int nbUnit);
     void usePowerArmore(Node *n, int nbArmore);
+private slots:
+    void btPowerDestroyPressed()const;
+    void btPowerInvincibilityPressed()const;
+    void btPowerTeleportationPressed()const;
+    void btPowerArmorePressed()const;
 
 private:
-    /*CONSTRUCTEUR / DESTRUCTEUR*/
-    //Ne pas implementer, les copies ne sont pas voulues
-    PowerInterface(PowerInterface &c);
-    PowerInterface& operator=(const PowerInterface&);
-
     /*INTERFACE*/
-    QPushButton *btPowerDestroy;
-    QPushButton *btPowerInvincibility;
-    QPushButton *btPowerTeleportation;
-    QPushButton *btPowerArmore;
+    Button *btPowerDestroy;
+    Button *btPowerInvincibility;
+    Button *btPowerTeleportation;
+    Button *btPowerArmore;
 
     /*TOOL*/
     int mana;
-    int cdPowerDestroy;
-    int cdPowerInvincibility;
-    int cdPowerTeleportation;
-    int cdPowerArmore;
+    Power *powerDestroy;
+    Power *powerInvincibility;
+    Power *powerTeleportation;
+    Power *powerArmore;
 };
 
-#endif // POWER_H
+#endif // POWERINTERFACE_H

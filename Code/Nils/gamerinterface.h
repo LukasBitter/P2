@@ -13,11 +13,6 @@ public:
     ~GamerInterface();
 
 private:
-    /*CONSTRUCTEUR / DESTRUCTEUR*/
-    //Ne pas implementer, les copies ne sont pas voulues
-    GamerInterface(GamerInterface &c);
-    GamerInterface& operator=(const GamerInterface&);
-
     QPushButton *btPower1;
     QPushButton *btPower2;
     QPushButton *btPower3;

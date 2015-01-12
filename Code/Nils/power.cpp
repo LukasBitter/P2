@@ -13,9 +13,39 @@ Power::~Power()
 {
 }
 
+void Power::enablePower()
+{
+
+}
 bool Power::isReady() const
 {
     return ready;
+}
+
+
+void Power::enablePower(Node *n)
+{
+    activateCountDown();
+}
+
+void Power::enablePower(Node *n1, Node *n2)
+{
+    activateCountDown();
+}
+
+void Power::enablePower(int v, Node *n)
+{
+    activateCountDown();
+}
+
+void Power::enablePower(int v, Node *n1, Node *n2)
+{
+    activateCountDown();
+}
+
+void Power::onPowerFinishing()
+{
+
 }
 
 void Power::activateCountDown()
@@ -26,5 +56,6 @@ void Power::activateCountDown()
 
 void Power::restorCountDown()
 {
+    onPowerFinishing();
     ready = true;
 }
