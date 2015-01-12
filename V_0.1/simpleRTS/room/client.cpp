@@ -4,7 +4,7 @@
 #include <QStringBuilder>
 
 #include "client.h"
-#include "deletegame.h"
+#include "map.h"
 
 #define SEP_CONX "#"
 #define SEP_STATUS ";"
@@ -73,7 +73,7 @@ Client::Client(QWidget *parent, bool isHost, int port) :
     connect(getConnectionButton, SIGNAL(clicked()),
             this, SLOT(requestNewConnection()));
     connect(readyButton, SIGNAL(clicked()), this, SLOT(ReadyRun()));
-    connect(runButton, SIGNAL(clicked()), this, SLOT(launchGame()));
+    connect(runButton, SIGNAL(clicked()), this, SLOT(runGame()));
     connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readServerResponse()));
     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
@@ -279,7 +279,15 @@ void Client::sessionOpened()
 
 void Client::runGame()
 {
-    game = new deleteGame();
+    QString msg = "runGame";
+    sendServerMessage(msg);
+
+}
+
+void Client::LaunchGame()
+{
+    Gamer g = new Gamer();
+    game = new Map(g);
     //this->hide();
     game->show();
 }
@@ -437,6 +445,10 @@ QString Client::parse(QString clientMessage)
         setStatus("userName already taken. Choose another one");
         getConnectionButton->setText(tr("Validate Name"));
         getConnectionButton->setEnabled(true);
+    }
+    else if (listMsg.at(0) == "lauchGame")
+    {
+
     }
     else if (listMsg.at(0) == "noMoreSocketAvailable" )
         setStatus("game full!");

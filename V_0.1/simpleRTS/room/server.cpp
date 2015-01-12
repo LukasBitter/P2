@@ -398,6 +398,13 @@ QString Server::parse(QString clientMessage)
         qDebug() << "Host disconnected";
 
     }
+    else if (listMsg.at(0) == "runGame")
+    {
+        for (int i=0; i < maxPlayers; i++)
+        {
+            sendClientResponse("lauchGame");
+        }
+    }
 /*  else if(header == "playerAction"){
         if(gameRunning)
             requestServerConnection();

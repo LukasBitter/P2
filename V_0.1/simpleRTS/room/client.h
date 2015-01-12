@@ -5,8 +5,6 @@
 #include <QTcpSocket>
 #include <QDataStream>
 
-#include "map.h"
-
 QT_BEGIN_NAMESPACE
 class QComboBox;
 class QDialogButtonBox;
@@ -15,7 +13,7 @@ class QLineEdit;
 class QPushButton;
 class QTcpSocket;
 class QNetworkSession;
-class Map;
+class deleteGame;
 QT_END_NAMESPACE
 
 class Client : public QDialog
@@ -31,6 +29,7 @@ private slots:
     void sessionOpened();
     void ReadyRun();
     void runGame();
+    void launchGame();
 
 private:
     QComboBox *hostCombo;
@@ -50,7 +49,7 @@ private:
     QPushButton *runButton;
     QPushButton *quitButton;
     QDialogButtonBox *buttonBox;
-    Map *game;
+    deleteGame *game;
     QString playerNumber;
     QString headerOut;
     QString headerIn;

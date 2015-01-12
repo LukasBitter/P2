@@ -5,7 +5,6 @@
 #include <QTcpSocket>
 #include <QDataStream>
 
-#include "map.h"
 
 QT_BEGIN_NAMESPACE
 class QComboBox;
