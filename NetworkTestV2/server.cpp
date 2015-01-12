@@ -272,20 +272,6 @@ QString Server::getPlayersStatus()
     return rep;
 }
 
-QString Server::labelBuildString(QList<QLabel> &list)
-{
-    QString str;
-    QLabel ele;
-    /*
-    foreach(ele , list)
-    {
-        str += ele.text() + STATUS_SEP;
-    }*/
-    qDebug() <<"str: " << str;
-
-    return str;
-}
-
 void Server::endConversation()
 {
     activeSocket = NULL;

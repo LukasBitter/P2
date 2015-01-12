@@ -72,7 +72,6 @@ private:
     QString checkPlayerName(QString msg);
     QString parse(QString clientMessage);
     QString getPlayersStatus();
-    QString labelBuildString(QList<QLabel> &list);
     void sendAllUsersStatus();
     void endConversation();
     QString getHostIp();
