@@ -33,6 +33,7 @@ int main(int argc, char *argv[])
 
     campsBaseNils->setNbRessources(50);
     campsBaseLukas->setNbRessources(50);
+    lienLukasNils->setNbRessources(50);
 
     m.addNode(*campsBaseNils);
     m.addNode(*campsBaseLukas);
@@ -43,12 +44,12 @@ int main(int argc, char *argv[])
     m.addConnexion(*aventageNils, *campsBaseNils);
     m.addConnexion(*campsBaseNils, *campsBaseLukas);
 
-    campsBaseNils->sendSquad(30,*lienLukasNils);
+    //campsBaseNils->sendSquad(30,*lienLukasNils);
 
     //*/
     QTimer timer;
     QObject::connect(&timer, SIGNAL(timeout()), &m, SLOT(advance()));
-    timer.start(200);
+    timer.start(100);
 
     m.show();
     return a.exec();

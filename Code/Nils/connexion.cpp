@@ -91,9 +91,19 @@ void Connexion::advance(int step)
 {
     if(step == 0) return;
 
+    //Wait number of tic
+    if(counterAdvance != 2)
+    {
+        ++counterAdvance;
+        return;
+    }
+    counterAdvance = 0;
+
     advanceSquad();
     resolveSquadFigth();
     checkSquadArrive();
+
+    update();
 }
 
 /*----------------------------------------------------*/
@@ -115,30 +125,62 @@ bool Connexion::isConnextedTo(Node &n) const
     return &n == &n1 || &n == &n2;
 }
 
-void Connexion::sendSquad(Squad &s, Node &from)
+void Connexion::sendSquad(Squad *s, Node &from)
 {
+    if(s == 0)return;
+
+    qDebug()<<"debut "<<lstSquad1To2.size();
+    qDebug()<<"debut "<<lstSquad2To1.size();
     if(&from == &n1)
     {
-        Squad *sTemps;
-        foreach(*s, lstSquad1To2)
+        Squad *sMin = 0;
+        if(!lstSquad1To2.empty())
         {
-            int p = sTemps->getProgress();
-            if(p == n1.getRadius())break;
-        }
-        if(sTemps==0){
-            s.setProgress(n1.getRadius());
-            lstSquad1To2.push_front(&s);
+            sMin = lstSquad1To2.first();
+
+            if(sMin->getProgress() == n1.getRadius() && &sMin->getOwner() == &s->getOwner())
+            {
+                sMin->setNbRessources(sMin->getNbRessources()+s->getNbRessources());
+                delete s;
+            }
+            else
+            {
+                s->setProgress(n1.getRadius());
+                lstSquad1To2.push_front(s);
+            }
         }
         else
         {
-            sTemps->setNbRessources();
+            s->setProgress(n1.getRadius());
+            lstSquad1To2.push_front(s);
         }
     }
     else if(&from == &n2)
     {
-        s.setProgress(pathLength-n2.getRadius());
-        lstSquad2To1.push_front(&s);
+        Squad *sMin = 0;
+        if(!lstSquad2To1.empty())
+        {
+            sMin = lstSquad2To1.first();
+
+            if(sMin->getProgress() == pathLength-n2.getRadius() && &sMin->getOwner() == &s->getOwner())
+            {
+                sMin->setNbRessources(sMin->getNbRessources()+s->getNbRessources());
+                delete s;
+            }
+            else
+            {
+                s->setProgress(pathLength-n2.getRadius());
+                lstSquad2To1.push_front(s);
+            }
+        }
+        else
+        {
+            s->setProgress(pathLength-n2.getRadius());
+            lstSquad2To1.push_front(s);
+        }
     }
+    qDebug()<<"fin "<<lstSquad1To2.size();
+    qDebug()<<"fin "<<lstSquad2To1.size();
 }
 
 /*----------------------------------------------------*/
@@ -185,11 +227,11 @@ void Connexion::updateFromString(QString &s)
             Squad *squad = new Squad(*Gamer::getGamer(ownerId));
             if(direction==0)
             {
-                sendSquad(*squad, n1);
+                sendSquad(squad, n1);
             }
             else
             {
-                sendSquad(*squad, n2);
+                sendSquad(squad, n2);
             }
             squad->setNbRessources(nbRessources);
             squad->setProgress(progress);
@@ -200,26 +242,6 @@ void Connexion::updateFromString(QString &s)
 /*----------------------------------------------------*/
 /*METHODE PRIVE*/
 /*----------------------------------------------------*/
-
-Squad * Connexion::getSquadAtNode1()
-{
-    foreach(Squad *s, lstSquad1To2)
-    {
-        int p = s->getProgress();
-        if(p == n1.getRadius())return s;
-    }
-    return 0;
-}
-
-Squad * Connexion::getSquadAtNode2()
-{
-    foreach(Squad *s, lstSquad2To1)
-    {
-        int p = s->getProgress();
-        if(p == pathLength-n2.getRadius())return s;
-    }
-    return 0;
-}
 
 void Connexion::advanceSquad()
 {

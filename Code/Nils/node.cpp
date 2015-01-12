@@ -31,7 +31,8 @@ Node *Node::getNode(int idNode)
 /*----------------------------------------------------*/
 
 Node::Node(int x, int y, int radius, int ressourcesMax, Gamer *g, QGraphicsItem *parent)
-    : QGraphicsObject(parent), posX(x), posY(y), radius(radius), owner(g), ressourcesMax(ressourcesMax), nbRessources(0)
+    : QGraphicsObject(parent), posX(x), posY(y), radius(radius), owner(g),
+      ressourcesMax(ressourcesMax), nbRessources(0), counterAdvance(0)
 {
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setAcceptHoverEvents(true);
@@ -92,6 +93,14 @@ void Node::paint(QPainter *painter,
 void Node::advance(int step)
 {
     if(step == 0) return;
+
+    //Wait number of tic
+    if(counterAdvance != 10)
+    {
+        ++counterAdvance;
+        return;
+    }
+    counterAdvance = 0;
 
     if(nbRessources < ressourcesMax && owner != 0)
     {
@@ -272,7 +281,7 @@ void Node::sendSquad(int ressource, Node &n)
             nbRessources -= nbToSend;
             Squad *s = new Squad(*owner);
             s->setNbRessources(nbToSend);
-            mapConnexion.value(&n)->sendSquad(*s, *this);
+            mapConnexion.value(&n)->sendSquad(s, *this);
         }
     }
 

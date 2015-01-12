@@ -4,6 +4,7 @@
 #include "gamer.h"
 #include <QGraphicsScene>
 #include <QKeyEvent>
+#include <QMouseEvent>
 
 #include <QDebug>
 
@@ -117,12 +118,26 @@ void Map::keyPressEvent(QKeyEvent *e)
     }
 }
 
+void Map::mousePressEvent(QMouseEvent *e)
+{
+    if(e->button()== Qt::RightButton)
+    {
+        Node *n = dynamic_cast <Node*>(itemAt(e->pos()));
+        if(n != 0)
+        {
+
+        }
+    }
+    QGraphicsView::mousePressEvent(e);
+}
+
 /*----------------------------------------------------*/
 /*ASSESSEUR / MUTATEUR*/
 /*----------------------------------------------------*/
 
 void Map::addNode(Node &n)
 {
+    n.setZValue(10);
     lstNode.append(&n);
     scene->addItem(&n);
 }
@@ -131,6 +146,7 @@ bool Map::addConnexion(Node &n1, Node &n2)
 {
     n1.connect(n2);
     Connexion *c = n1.getConnexion(n2);
+    c->setZValue(1);
     lstConnexion.append(c);
     scene->addItem(c);
 }
@@ -286,7 +302,7 @@ void Map::selectionChange()
     QList<QGraphicsItem *> lst = scene->selectedItems();
     if(!lst.isEmpty())
     {
-        currentSelection = static_cast<Node*>(lst.first());
+        currentSelection = dynamic_cast <Node*>(lst.first());
     }
     else
     {

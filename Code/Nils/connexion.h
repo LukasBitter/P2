@@ -41,7 +41,7 @@ public:
     Node & getNode1() const;
     Node & getNode2() const;
     bool isConnextedTo(Node &n) const;
-    void sendSquad(Squad &s, Node &from);
+    void sendSquad(Squad *s, Node &from);
 
     /*PARSING*/
     QString getUpdateString();
@@ -60,13 +60,13 @@ private:
     /*TOOL*/
     QQueue<Squad *> lstSquad1To2;   //Ressource critique
     QQueue<Squad *> lstSquad2To1;   //Ressource critique
+    int counterAdvance;
 
     /*METHODE PRIVE*/
     void advanceSquad();
     void resolveSquadFigth();
     void checkSquadArrive();
     QList<QPair<Squad *, Squad *> > checkSquadColision();
-    Squad *getSquadAtNode1();
 };
 
 #endif // CONNEXION_H

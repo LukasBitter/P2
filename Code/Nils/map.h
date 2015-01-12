@@ -26,6 +26,7 @@ public:
 
     /*SURCHARGE*/
     void keyPressEvent(QKeyEvent *e);
+    void mousePressEvent(QMouseEvent *event);
 
     /*ASSESSEUR / MUTATEUR*/
     void addNode(Node &n);

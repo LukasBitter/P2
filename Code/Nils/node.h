@@ -80,6 +80,7 @@ private:
     /*TOOL*/
     int radius;
     QMap<Node *, Connexion *> mapConnexion; //Cle = noeud distant, Valeur = pinteur sur sa connextion //Ressource critique
+    int counterAdvance;
 
     /*METHODE PRIVE*/
     void addConnexion(Connexion *c);
