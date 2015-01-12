@@ -92,7 +92,7 @@ void Connexion::advance(int step)
     if(step == 0) return;
 
     //Wait number of tic
-    if(counterAdvance != 2)
+    if(counterAdvance < 2)
     {
         ++counterAdvance;
         return;
@@ -102,8 +102,6 @@ void Connexion::advance(int step)
     advanceSquad();
     resolveSquadFigth();
     checkSquadArrive();
-
-    update();
 }
 
 /*----------------------------------------------------*/

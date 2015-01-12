@@ -2,11 +2,15 @@
 #include "node.h"
 #include "connexion.h"
 #include "gamer.h"
-#include <QGraphicsScene>
+#include "gamescene.h"
 #include <QKeyEvent>
 #include <QMouseEvent>
 
+#include <QDropEvent>
+#include <QMimeData>
+
 #include <QDebug>
+
 
 using namespace std;
 
@@ -16,18 +20,19 @@ using namespace std;
 /*----------------------------------------------------*/
 
 Map::Map(const Gamer *g, QWidget *parent) :
-    QGraphicsView(parent), owner(g)
+    QGraphicsView(parent), owner(g), percentToSend(100)
 {
-    scene = new QGraphicsScene(this);
+    scene = new GameScene(this);
     setScene(scene);
     scene->setSceneRect(-1000,-1000,2000,2000);
 
     connect(scene,SIGNAL(selectionChanged()),this,SLOT(selectionChange()));
+
     // Désactivation des scrollbars
     setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
-    setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
-    setRenderHint(QPainter::Antialiasing, true);
+    setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate );
+    setRenderHint( QPainter::Antialiasing, true );
     //setDragMode(QGraphicsView::RubberBandDrag);
 
     currentSelection = 0;
@@ -86,7 +91,7 @@ Map::Map(QString create, const Gamer *g, QWidget *parent):
 
                 n1->addConnexion(c);
                 n2->addConnexion(c);
-                lstConnexion.append(c);
+                lstConnexion.insert(c->getId(), c);
                 scene->addItem(c);
             }
         }
@@ -114,7 +119,7 @@ void Map::keyPressEvent(QKeyEvent *e)
             (lastSelection->getOwner() == owner || owner==0) &&
             lastSelection->getOwner() !=0)
     {
-        lastSelection->sendSquad(lastSelection->getNbRessources()/2,*currentSelection);
+        sendSquad(lastSelection->getId(), currentSelection->getId());
     }
 }
 
@@ -123,12 +128,23 @@ void Map::mousePressEvent(QMouseEvent *e)
     if(e->button()== Qt::RightButton)
     {
         Node *n = dynamic_cast <Node*>(itemAt(e->pos()));
-        if(n != 0)
+        if(n != 0 && currentSelection != 0)
         {
-
+            sendSquad(currentSelection->getId(), n->getId());
         }
     }
     QGraphicsView::mousePressEvent(e);
+}
+void Map::dropEvent(QDropEvent *event)
+{
+    if(event->mimeData()->hasText())
+    {
+        event->accept();
+        int s = qvariant_cast<QString>(event->mimeData()->text()).toInt();
+        Node *n = dynamic_cast <Node*>(this->itemAt(event->pos()));
+        if(n != 0)sendSquad(s, n->getId());
+    }
+    QGraphicsView::dropEvent(event);
 }
 
 /*----------------------------------------------------*/
@@ -138,7 +154,7 @@ void Map::mousePressEvent(QMouseEvent *e)
 void Map::addNode(Node &n)
 {
     n.setZValue(10);
-    lstNode.append(&n);
+    lstNode.insert(n.getId(),&n);
     scene->addItem(&n);
 }
 
@@ -147,7 +163,7 @@ bool Map::addConnexion(Node &n1, Node &n2)
     n1.connect(n2);
     Connexion *c = n1.getConnexion(n2);
     c->setZValue(1);
-    lstConnexion.append(c);
+    lstConnexion.insert(c->getId(),c);
     scene->addItem(c);
 }
 
@@ -193,14 +209,9 @@ int Map::getAvrageRessourcesRate()
     return sum / lstNode.size();
 }
 
-const QList<Connexion *> &Map::getLstConnexion() const
+void Map::setPercentToSend(int percent)
 {
-    return lstConnexion;
-}
-
-const QList<Node *> &Map::getLstNode() const
-{
-    return lstNode;
+    if(percent>=0 && percent<=100) percentToSend = percent;
 }
 
 /*----------------------------------------------------*/
@@ -309,3 +320,21 @@ void Map::selectionChange()
         currentSelection = 0;
     }
 }
+
+void Map::sendSquad(int nodeIdFrom, int nodeIdTo)
+{
+    if(!lstNode.isEmpty())
+    {
+        Node *nodeFrom = lstNode.value(nodeIdFrom);
+        Node *nodeTo = lstNode.value(nodeIdTo);
+        int nbRessource = nodeFrom->getNbRessources()*(int)(percentToSend/100);
+
+        if(nodeFrom != 0 && nodeTo != 0 &&
+                nodeFrom->getOwner() == owner)
+        {
+            nodeFrom->sendSquad(nbRessource, *nodeTo);
+        }
+    }
+}
+
+

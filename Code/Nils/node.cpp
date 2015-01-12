@@ -100,8 +100,9 @@ void Node::advance(int step)
 {
     if(step == 0) return;
 
+    update();
     //Wait number of tic
-    if(counterAdvance != 10)
+    if(counterAdvance < 10)
     {
         ++counterAdvance;
         return;
@@ -117,18 +118,15 @@ void Node::advance(int step)
         nbRessources = ressourcesMax;
     }
 
-    update();
 }
 
 void Node::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    QGraphicsItem::mousePressEvent(event);
-    update();
+    setCursor(Qt::ArrowCursor);
 }
 
 void Node::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    //Deplacement inferieur au seuil de drag&drop
     if (QLineF(event->screenPos(), event->buttonDownScreenPos(Qt::LeftButton))
         .length() < QApplication::startDragDistance()) {
         return;
@@ -137,11 +135,16 @@ void Node::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     QDrag *drag = new QDrag(event->widget());
     QMimeData *mime = new QMimeData;
     drag->setMimeData(mime);
+
+    mime->setText(QString("%1").arg(getId()));
+
+    drag->exec();
+    setCursor(Qt::ClosedHandCursor);
 }
 
 void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-
+    setCursor(Qt::ArrowCursor);
 }
 
 /*----------------------------------------------------*/

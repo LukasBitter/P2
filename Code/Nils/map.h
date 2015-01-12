@@ -1,15 +1,14 @@
 #ifndef MAP_H
 #define MAP_H
-
-#include <QMap>
 #include <QWidget>
 #include <QGraphicsView>
 #include "connexion.h"
 #include "power.h"
 
-class QGraphicsScene;
+class GameScene;
 class Node;
 class Connexion;
+class QDropEvent;
 
 namespace GameComponent {
     class Map;
@@ -27,6 +26,7 @@ public:
     /*SURCHARGE*/
     void keyPressEvent(QKeyEvent *e);
     void mousePressEvent(QMouseEvent *event);
+    void dropEvent(QDropEvent *event);
 
     /*ASSESSEUR / MUTATEUR*/
     void addNode(Node &n);
@@ -35,8 +35,7 @@ public:
     int getAvrageRessourcesRate(Gamer &g);
     int getTotalRessources();
     int getAvrageRessourcesRate();
-    const QList<Connexion *> & getLstConnexion()const;
-    const QList<Node *> & getLstNode()const;
+    void setPercentToSend(int percent);
 
     /*PARSING*/
     QString getUpdateString();
@@ -58,16 +57,17 @@ private:
     const Gamer *owner;
 
     /*TOOL*/
-    QGraphicsScene * scene;
-    QList<Node *> lstNode;
-    QList<Connexion *> lstConnexion;
+    GameScene * scene;
+    QHash<int, Node *> lstNode;
+    QHash<int, Connexion *> lstConnexion;
     Node *currentSelection;
     Node *lastSelection;
     Power power;
+    float percentToSend;
 
 private slots:
     void selectionChange();
-
+    void sendSquad(int nodeIdFrom, int nodeIdTo);
 };
 
 #endif // MAP_H

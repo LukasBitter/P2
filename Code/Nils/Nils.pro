@@ -10,10 +10,10 @@ HEADERS += \
     node.h \
     map.h \
     squad.h \
-    parsermap.h \
     identitytoken.h \
     power.h \
-    gamerinterface.h
+    gamerinterface.h \
+    gamescene.h
 
 SOURCES += \
     connexion.cpp \
@@ -22,10 +22,10 @@ SOURCES += \
     node.cpp \
     map.cpp \
     squad.cpp \
-    parsermap.cpp \
     identitytoken.cpp \
     power.cpp \
-    gamerinterface.cpp
+    gamerinterface.cpp \
+    gamescene.cpp
 
 OTHER_FILES += \
     Notes.txt

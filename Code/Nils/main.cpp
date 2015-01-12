@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
     Gamer *nils = new Gamer(Qt::red);
     Gamer *lukas = new Gamer(Qt::green);
 
-    Map m;
+    Map m(nils);
 
     /*Map m("6.5.2/7.5.3/8.4.2/9.2.3/@2.180.-150.50.100.0/3.0.-200.30.100.1/4.180.10.10.10.-1/5.-10.-20.50.110.-1/",
           nils); //*/

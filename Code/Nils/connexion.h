@@ -47,11 +47,6 @@ public:
     QString getUpdateString();
     void updateFromString(QString &s);
 private:
-    /*CONSTRUCTEUR / DESTRUCTEUR*/
-    //Ne pas implementer, les copies ne sont pas voulues
-    Connexion(Connexion &c);
-    Connexion& operator=(const Connexion&);
-
     /*INPUT*/
     Node &n1;
     Node &n2;

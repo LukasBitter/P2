@@ -65,11 +65,6 @@ public:
     void incoming(Squad &s);
     void sendSquad(int ressource, Node &n);
 private:
-    /*CONSTRUCTEUR / DESTRUCTEUR*/
-    //Ne pas implementer, les copies ne sont pas voulues
-    Node(Node &n);
-    Node& operator=(const Node&);
-
     /*INPUT*/
     int nbRessources;
     int armorLvl;
@@ -78,6 +73,7 @@ private:
     const int posX;
     const int posY;
     const Gamer *owner;
+QColor c;
 
     /*TOOL*/
     int radius;

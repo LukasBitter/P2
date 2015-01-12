@@ -7,3 +7,4 @@ Cumuler les squad qui sont sur la meme progression -> eviter bug popinter vide M
 Demander si besoin dissocier objet graphique et logique
 Supprimer les graphicsitem parent qui ne seront jamais utilisé
 Remplacer les for each par des while dans connexion.sendSquad
+vérifier pourquoi il ne faut pas appelker dragMoveEvent de la scene
