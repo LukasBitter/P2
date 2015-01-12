@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
     m.addConnexion(*campsBaseNils, *campsBaseLukas);
 
     //campsBaseNils->sendSquad(30,*lienLukasNils);
-
+    campsBaseNils->setArmorLvl(30);
     //*/
     QTimer timer;
     QObject::connect(&timer, SIGNAL(timeout()), &m, SLOT(advance()));

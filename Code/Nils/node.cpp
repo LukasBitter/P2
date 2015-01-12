@@ -32,7 +32,7 @@ Node *Node::getNode(int idNode)
 
 Node::Node(int x, int y, int radius, int ressourcesMax, Gamer *g, QGraphicsItem *parent)
     : QGraphicsObject(parent), posX(x), posY(y), radius(radius), owner(g),
-      ressourcesMax(ressourcesMax), nbRessources(0), counterAdvance(0)
+      ressourcesMax(ressourcesMax), nbRessources(0), counterAdvance(0), armorLvl(0)
 {
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setAcceptHoverEvents(true);
@@ -86,8 +86,14 @@ void Node::paint(QPainter *painter,
 
     painter->drawEllipse(posX - radius, posY - radius,
                              2* radius, 2* radius);
-
-    painter->drawText(QPoint(posX , posY),QString("%1").arg(nbRessources) );
+    if(armorLvl > 0)
+    {
+        painter->drawText(QPoint(posX , posY),QString("%1 + %2").arg(nbRessources).arg(armorLvl));
+    }
+    else
+    {
+        painter->drawText(QPoint(posX , posY),QString("%1").arg(nbRessources));
+    }
 }
 
 void Node::advance(int step)
@@ -102,13 +108,13 @@ void Node::advance(int step)
     }
     counterAdvance = 0;
 
-    if(nbRessources < ressourcesMax && owner != 0)
+    if(owner != 0)
     {
         nbRessources += ressourcesRate;
-        if(nbRessources > ressourcesMax)
-        {
-            nbRessources = ressourcesMax;
-        }
+    }
+    if(nbRessources > ressourcesMax && ressourcesMax > 0)
+    {
+        nbRessources = ressourcesMax;
     }
 
     update();
@@ -161,6 +167,17 @@ int Node::getRadius() const
 {
     return radius;
 }
+
+int Node::getArmorLvl() const
+{
+    return armorLvl;
+}
+
+void Node::setArmorLvl(int a)
+{
+    armorLvl = a;
+}
+
 int Node::getPosY() const
 {
     return posY;
@@ -220,8 +237,8 @@ QString Node::getUpdateString()
 {
     int id  = -1;
     if(owner != 0)id = owner->getId();
-    return QString("%1,%2,%3").arg(nbRessources).
-            arg(ressourcesRate).arg(id);
+    return QString("%1,%2,%3,%4").arg(nbRessources).
+            arg(ressourcesRate).arg(id).arg(armorLvl);
 }
 
 void Node::updateFromString(QString &s)
@@ -234,6 +251,8 @@ void Node::updateFromString(QString &s)
         ressourcesRate = nodeStr.first().toInt();
         nodeStr.pop_front();
         owner = Gamer::getGamer(nodeStr.first().toInt());
+        nodeStr.pop_front();
+        armorLvl = nodeStr.first().toInt();
     }
 }
 
@@ -255,6 +274,7 @@ void Node::incoming(Squad &s)
     else
     {
         //Entrée d'ennemis
+        ressource = dealDamageOnArmor(ressource);
         if (nbRessources < ressource)
         {
             //Changement de propriétaire
@@ -288,6 +308,7 @@ void Node::sendSquad(int ressource, Node &n)
     update();
 }
 
+
 /*----------------------------------------------------*/
 /*METHODE PRIVE*/
 /*----------------------------------------------------*/
@@ -311,4 +332,19 @@ void Node::addConnexion(Connexion *c)
 void Node::removeConnexion(Node &n)
 {
     mapConnexion.remove(&n);
+}
+
+int Node::dealDamageOnArmor(int damage)
+{
+    if(damage <= armorLvl)
+    {
+        armorLvl -= damage;
+        return 0;
+    }
+    else
+    {
+        int tmp = damage - armorLvl;
+        armorLvl = 0;
+        return tmp;
+    }
 }

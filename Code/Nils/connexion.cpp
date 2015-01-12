@@ -129,8 +129,6 @@ void Connexion::sendSquad(Squad *s, Node &from)
 {
     if(s == 0)return;
 
-    qDebug()<<"debut "<<lstSquad1To2.size();
-    qDebug()<<"debut "<<lstSquad2To1.size();
     if(&from == &n1)
     {
         Squad *sMin = 0;
@@ -179,8 +177,6 @@ void Connexion::sendSquad(Squad *s, Node &from)
             lstSquad2To1.push_front(s);
         }
     }
-    qDebug()<<"fin "<<lstSquad1To2.size();
-    qDebug()<<"fin "<<lstSquad2To1.size();
 }
 
 /*----------------------------------------------------*/

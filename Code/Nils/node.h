@@ -50,6 +50,8 @@ public:
     int getPosY() const;
     int getPosX() const;
     int getRadius() const;
+    int getArmorLvl() const;
+    void setArmorLvl(int a);
     const Gamer* getOwner();
     void connect(Node &n);
     bool isConnected(Node &n) const;
@@ -62,7 +64,6 @@ public:
     /*EVENEMENT*/
     void incoming(Squad &s);
     void sendSquad(int ressource, Node &n);
-
 private:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     //Ne pas implementer, les copies ne sont pas voulues
@@ -70,7 +71,8 @@ private:
     Node& operator=(const Node&);
 
     /*INPUT*/
-    int nbRessources;   //Ressource critique
+    int nbRessources;
+    int armorLvl;
     int ressourcesRate;
     const int ressourcesMax;
     const int posX;
@@ -79,12 +81,13 @@ private:
 
     /*TOOL*/
     int radius;
-    QMap<Node *, Connexion *> mapConnexion; //Cle = noeud distant, Valeur = pinteur sur sa connextion //Ressource critique
+    QMap<Node *, Connexion *> mapConnexion; //Cle = noeud distant, Valeur = pinteur sur sa connextion
     int counterAdvance;
 
     /*METHODE PRIVE*/
     void addConnexion(Connexion *c);
     void removeConnexion(Node &n);
+    int dealDamageOnArmor(int damage);
 };
 
 #endif // NODE_H

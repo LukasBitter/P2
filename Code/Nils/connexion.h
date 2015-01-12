@@ -58,8 +58,8 @@ private:
     int pathLength;
 
     /*TOOL*/
-    QQueue<Squad *> lstSquad1To2;   //Ressource critique
-    QQueue<Squad *> lstSquad2To1;   //Ressource critique
+    QQueue<Squad *> lstSquad1To2;
+    QQueue<Squad *> lstSquad2To1;
     int counterAdvance;
 
     /*METHODE PRIVE*/
