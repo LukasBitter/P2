@@ -341,33 +341,25 @@ void Server::readRequest()
     //qDebug() << "status :" << in.status();
     //return;
 
-    if(clientMessage != "NOACTION")
-    {
-        QString rep = parse(clientMessage);
-        sendClientResponse(rep);
-
-        if(rep.compare("userNameOK") == 0)
-            sendAllUsersStatus();
-    }
+    QString rep = parse(clientMessage);
+    sendClientResponse(rep);
     endConversation();
+    if(rep.compare("userNameOK") == 0)
+    {
+        sendAllUsersStatus();
+    }
 }
 
 void Server::sendAllUsersStatus()
 {
     for (int i=0; i < maxPlayers; i++)
     {
-        qDebug() << "SERVER: sendAllUsersStatus / i: " << i  ;
         qDebug() << "SERVER: sendAllUsersStatus / lPlayersConnected: " << lPlayersConnected.at(i)->text()   ;
         qDebug() << "SERVER: sendAllUsersStatus / lPlayersConnected.at(i)->text().compare(\"Connected\"): " << lPlayersConnected.at(i)->text().compare("Connected");
-        bool comp;
-        comp = (lPlayersConnected.at(i)->text().compare("Connected") == 0);
-        qDebug() << "SERVER: sendAllUsersStatus / lPlayersConnected.at(i)->text().compare(\"Connected\") == 0: " << (lPlayersConnected.at(i)->text().compare("Connected") == 0);
-
-        qDebug() << "SERVER: sendAllUsersStatus / lPlayersConnected: " << comp;
-        if(comp)
+        if(lPlayersConnected.at(i)->text().compare("Connected") == 0);
         {
 
-            qDebug() << "SERVER: sendAllUsersStatus / send to: " << i;
+            qDebug() << "SERVER: sendAllUsersStatus / lPlayersConnected: " << i;
             activeSocket = clientConnections.at(i);
 
             QString msg = "allUsersStatus";
