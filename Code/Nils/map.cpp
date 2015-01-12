@@ -133,6 +133,7 @@ void Map::mousePressEvent(QMouseEvent *e)
             sendSquad(currentSelection->getId(), n->getId());
         }
     }
+    qDebug()<<"test";
     QGraphicsView::mousePressEvent(e);
 }
 void Map::dropEvent(QDropEvent *event)

@@ -122,6 +122,7 @@ void Node::advance(int step)
 
 void Node::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    QGraphicsObject::mousePressEvent(event);
     setCursor(Qt::ArrowCursor);
 }
 
@@ -144,6 +145,7 @@ void Node::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+    QGraphicsObject::mouseReleaseEvent(event);
     setCursor(Qt::ArrowCursor);
 }
 
