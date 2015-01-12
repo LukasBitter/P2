@@ -441,7 +441,7 @@ QString Client::parse(QString clientMessage)
     }
     else if (listMsg.at(0) == "noMoreSocketAvailable" )
         setStatus("game full!");
-    else if (listMsg.at(0) == "clientReady" )
+    else if (listMsg.at(0) == "clientReadyOK" )
         setStatus("Ready for game to begin. Wait for server to start game");
     else if (listMsg.at(0) == "OK" )
         // do nothing
