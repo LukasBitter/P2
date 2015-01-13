@@ -30,8 +30,8 @@ Node *Node::getNode(int idNode)
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-Node::Node(int x, int y, int radius, int ressourcesMax, Gamer *g, QGraphicsItem *parent)
-    : QGraphicsObject(parent), posX(x), posY(y), radius(radius), owner(g),
+Node::Node(int x, int y, int radius, int ressourcesMax, Gamer *g)
+    : QGraphicsObject(0), posX(x), posY(y), radius(radius), owner(g),
       ressourcesMax(ressourcesMax), nbRessources(0), counterAdvance(0), armorLvl(0),
       invicible(false)
 {
@@ -156,7 +156,7 @@ void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 /*ASSESSEUR / MUTATEUR*/
 /*----------------------------------------------------*/
 
-int Node::getNbRessources() const
+int Node::getRessources() const
 {
     return nbRessources;
 }
@@ -215,11 +215,18 @@ int Node::getRessourcesMax() const
     return ressourcesMax;
 }
 
-void Node::setNbRessources(int r)
+void Node::setRessources(int r)
 {
     nbRessources = r;
 
-    update();
+    if(nbRessources < 0)
+    {
+        nbRessources = 0;
+    }
+    if(nbRessources > ressourcesMax)
+    {
+        nbRessources = ressourcesMax;
+    }
 }
 
 void Node::connect(Node &n)
@@ -287,7 +294,7 @@ void Node::incoming(Squad &s)
     if(&g == owner)
     {
         //Entrée d'allier
-        nbRessources += ressource;
+        setRessources(nbRessources+ressource);
     }
     else
     {
@@ -298,12 +305,12 @@ void Node::incoming(Squad &s)
         {
             //Changement de propriétaire
             ressource -= nbRessources;
-            nbRessources = ressource;
+            setRessources(ressource);
             owner = &g;
         }
         else
         {
-            nbRessources -= ressource;
+            setRessources(nbRessources-ressource);
         }
     }
 

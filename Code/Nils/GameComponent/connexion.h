@@ -5,7 +5,6 @@
 #include <QQueue>
 #include "identitytoken.h"
 
-
 class Node;
 class QPainter;
 class Gamer;
@@ -27,7 +26,7 @@ public:
     static Connexion * getConnexion(int idConnexion);
 
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    explicit Connexion(Node &n1, Node &n2, QGraphicsItem *parent=0);
+    explicit Connexion(Node &n1, Node &n2);
     virtual ~Connexion();
 
     /*SURCHARGE*/

@@ -1,5 +1,5 @@
 #include "powerdestroy.h"
-#include "node.h"
+#include "GameComponent/node.h"
 
 PowerDestroy::PowerDestroy(int countDown, QObject *parent) :
     Power(countDown, parent)
@@ -15,7 +15,7 @@ void PowerDestroy::enablePower(Node *n)
 {
     if(isReady())
     {
-        n->setNbRessources(0);
+        n->setRessources(0);
         Power::enablePower(n);
     }
 }

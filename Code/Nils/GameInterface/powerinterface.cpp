@@ -1,11 +1,11 @@
 #include "powerinterface.h"
-#include "node.h"
-#include "button.h"
-#include "power.h"
-#include "powerarmore.h"
-#include "powerdestroy.h"
-#include "powerinvincibility.h"
-#include "powerteleportation.h"
+#include "GameComponent/node.h"
+#include "GameInterface/button.h"
+#include "GameInterface/Powers/power.h"
+#include "GameInterface/Powers/powerarmore.h"
+#include "GameInterface/Powers/powerdestroy.h"
+#include "GameInterface/Powers/powerinvincibility.h"
+#include "GameInterface/Powers/powerteleportation.h"
 
 
 PowerInterface::PowerInterface(QGraphicsItem * parent) : QGraphicsWidget(parent),mana(0)
@@ -20,11 +20,19 @@ PowerInterface::PowerInterface(QGraphicsItem * parent) : QGraphicsWidget(parent)
     powerInvincibility = new PowerInvincibility(20000, this);
     powerTeleportation = new PowerTeleportation(15000, this);
 
-    connect(btPowerDestroy, SIGNAL(clicked()), this, SLOT(btPowerDestroyPressed()));
-    connect(btPowerInvincibility, SIGNAL(clicked()), this, SLOT(btPowerInvincibilityPressed()));
-    connect(btPowerTeleportation, SIGNAL(clicked()), this, SLOT(btPowerTeleportationPressed()));
-    connect(btPowerArmore, SIGNAL(clicked()), this, SLOT(btPowerArmorePressed()));
+    connect(btPowerDestroy, SIGNAL(pressed()), this, SLOT(btPowerDestroyPressed()));
+    connect(btPowerInvincibility, SIGNAL(pressed()), this, SLOT(btPowerInvincibilityPressed()));
+    connect(btPowerTeleportation, SIGNAL(pressed()), this, SLOT(btPowerTeleportationPressed()));
+    connect(btPowerArmore, SIGNAL(pressed()), this, SLOT(btPowerArmorePressed()));
 
+    btPowerDestroy->setX(10);
+    btPowerInvincibility->setX(10);
+    btPowerTeleportation->setX(10);
+    btPowerArmore->setX(10);
+    btPowerDestroy->setY(0);
+    btPowerInvincibility->setY(50);
+    btPowerTeleportation->setY(100);
+    btPowerArmore->setY(150);
 }
 
 PowerInterface::~PowerInterface()
@@ -84,7 +92,7 @@ void PowerInterface::usePowerTeleportation(Node *from, Node *to, int nbUnit)
     }
 }
 
-void PowerInterface::usePowerArmore(Node *n, int nbArmore)
+void PowerInterface::usePowerArmore(Node *n)
 {
     const int cost = 10;
     if(mana >= cost)
@@ -96,20 +104,20 @@ void PowerInterface::usePowerArmore(Node *n, int nbArmore)
 
 void PowerInterface::btPowerDestroyPressed() const
 {
-    emit powerDestroyPressed();
+    emit powerPressed(Destroy);
 }
 
 void PowerInterface::btPowerInvincibilityPressed() const
 {
-    emit powerInvincibilityPressed();
+    emit powerPressed(Invincibility);
 }
 
 void PowerInterface::btPowerTeleportationPressed() const
 {
-    emit powerTeleportationPressed();
+    emit powerPressed(Teleportation);
 }
 
 void PowerInterface::btPowerArmorePressed() const
 {
-    emit powerArmorePressed();
+    emit powerPressed(Armore);
 }

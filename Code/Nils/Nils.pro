@@ -6,39 +6,40 @@ TARGET = Nils
 TEMPLATE = app
 
 HEADERS += \
-    connexion.h \
-    gamer.h \
-    node.h \
-    map.h \
-    squad.h \
-    identitytoken.h \
-    gamerinterface.h \
-    gamescene.h \
-    powerinterface.h \
-    power.h \
-    powerarmore.h \
-    powerdestroy.h \
-    powerinvincibility.h \
-    powerteleportation.h \
-    button.h
+    GameComponent\connexion.h \
+    GameComponent\gamer.h \
+    GameComponent\node.h \
+    GameComponent\map.h \
+    GameComponent\squad.h \
+    GameComponent\identitytoken.h \
+    GameInterface\gamerinterface.h \
+    GameComponent\gamescene.h \
+    GameInterface\powerinterface.h \
+    GameInterface\Powers\power.h \
+    GameInterface\Powers\powerarmore.h \
+    GameInterface\Powers\powerdestroy.h \
+    GameInterface\Powers\powerinvincibility.h \
+    GameInterface\Powers\powerteleportation.h \
+    GameInterface\button.h \
+    GameInterface/ennum.h
 
 SOURCES += \
-    connexion.cpp \
-    gamer.cpp \
+    GameComponent\connexion.cpp \
+    GameComponent\gamer.cpp \
     main.cpp \
-    node.cpp \
-    map.cpp \
-    squad.cpp \
-    identitytoken.cpp \
-    gamerinterface.cpp \
-    gamescene.cpp \
-    powerinterface.cpp \
-    power.cpp \
-    powerarmore.cpp \
-    powerdestroy.cpp \
-    powerinvincibility.cpp \
-    powerteleportation.cpp \
-    button.cpp
+    GameComponent\node.cpp \
+    GameComponent\map.cpp \
+    GameComponent\squad.cpp \
+    GameComponent\identitytoken.cpp \
+    GameInterface\gamerinterface.cpp \
+    GameComponent\gamescene.cpp \
+    GameInterface\powerinterface.cpp \
+    GameInterface\Powers\power.cpp \
+    GameInterface\Powers\powerarmore.cpp \
+    GameInterface\Powers\powerdestroy.cpp \
+    GameInterface\Powers\powerinvincibility.cpp \
+    GameInterface\Powers\powerteleportation.cpp \
+    GameInterface\button.cpp
 
 OTHER_FILES += \
     Notes.txt

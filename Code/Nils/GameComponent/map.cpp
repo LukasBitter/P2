@@ -3,6 +3,7 @@
 #include "connexion.h"
 #include "gamer.h"
 #include "gamescene.h"
+#include "GameInterface/powerinterface.h"
 #include <QKeyEvent>
 #include <QMouseEvent>
 
@@ -34,6 +35,13 @@ Map::Map(const Gamer *g, QWidget *parent) :
     setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate );
     setRenderHint( QPainter::Antialiasing, true );
     //setDragMode(QGraphicsView::RubberBandDrag);
+
+    p = new PowerInterface();
+    p->setX(-200);
+    p->setY(-200);
+    p->setMana(1000);
+    scene->addItem(p);
+    connect(p,SIGNAL(powerPressed(PowerName)),this,SLOT(powerPressed(PowerName)));
 
     currentSelection = 0;
     lastSelection = 0;
@@ -172,7 +180,7 @@ int Map::getTotalRessources(Gamer &g)
     int total = 0;
     foreach (Node *n, lstNode)
     {
-        if(n->getOwner() == &g)total += n->getNbRessources();
+        if(n->getOwner() == &g)total += n->getRessources();
     }
     return total;
 }
@@ -194,7 +202,7 @@ int Map::getTotalRessources()
     int total = 0;
     foreach (Node *n, lstNode)
     {
-        total += n->getNbRessources();
+        total += n->getRessources();
     }
     return total;
 }
@@ -295,12 +303,44 @@ QString Map::getCreationString()
 }
 
 /*----------------------------------------------------*/
-/*DELEGUE*/
+/*SIGNALS/SLOTS*/
 /*----------------------------------------------------*/
 
 void Map::advance()
 {
     scene->advance();
+}
+
+void Map::powerPressed(PowerName n)
+{
+    switch (n) {
+    case Destroy:
+        if(currentSelection != 0)
+        {
+            p->usePowerDestroy(currentSelection);
+        }
+        break;
+    case Invincibility:
+        if(currentSelection != 0 && currentSelection->getOwner() == owner)
+        {
+            p->usePowerInvincibility(currentSelection);
+        }
+        break;
+    case Armore:
+        if(currentSelection != 0 && currentSelection->getOwner() == owner)
+        {
+            p->usePowerArmore(currentSelection);
+        }
+        break;
+    case Teleportation:
+        if(currentSelection != 0 && lastSelection != 0 && lastSelection->getOwner() == owner)
+        {
+            p->usePowerTeleportation(lastSelection, currentSelection, lastSelection->getRessources()/2);
+        }
+        break;
+    default:
+        break;
+    }
 }
 
 /*----------------------------------------------------*/
@@ -327,7 +367,7 @@ void Map::sendSquad(int nodeIdFrom, int nodeIdTo)
     {
         Node *nodeFrom = lstNode.value(nodeIdFrom);
         Node *nodeTo = lstNode.value(nodeIdTo);
-        int nbRessource = nodeFrom->getNbRessources()*(int)(percentToSend/100);
+        int nbRessource = nodeFrom->getRessources()*(int)(percentToSend/100);
 
         if(nodeFrom != 0 && nodeTo != 0 &&
                 nodeFrom->getOwner() == owner)

@@ -3,12 +3,13 @@
 #include <QWidget>
 #include <QGraphicsView>
 #include "connexion.h"
-#include "power.h"
+#include "ennum.h"
 
 class GameScene;
 class Node;
 class Connexion;
 class QDropEvent;
+class PowerInterface;
 
 namespace GameComponent {
     class Map;
@@ -41,11 +42,11 @@ public:
     QString getUpdateString();
     void updateFromString(QString &s);
     QString getCreationString();
+    /*SIGNALS/SLOTS*/
 public slots:
     void advance();
-
-protected:
-
+private slots:
+    void powerPressed(PowerName n);
 
 private:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
@@ -63,6 +64,7 @@ private:
     Node *currentSelection;
     Node *lastSelection;
     float percentToSend;
+    PowerInterface *p;
 
 private slots:
     void selectionChange();

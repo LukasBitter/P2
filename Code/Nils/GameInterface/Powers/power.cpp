@@ -25,21 +25,29 @@ bool Power::isReady() const
 
 void Power::enablePower(Node *n)
 {
+    Q_UNUSED(n);
     activateCountDown();
 }
 
 void Power::enablePower(Node *n1, Node *n2)
 {
+    Q_UNUSED(n1);
+    Q_UNUSED(n2);
     activateCountDown();
 }
 
 void Power::enablePower(int v, Node *n)
 {
+    Q_UNUSED(v);
+    Q_UNUSED(n);
     activateCountDown();
 }
 
 void Power::enablePower(int v, Node *n1, Node *n2)
 {
+    Q_UNUSED(v);
+    Q_UNUSED(n1);
+    Q_UNUSED(n2);
     activateCountDown();
 }
 

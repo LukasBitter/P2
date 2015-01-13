@@ -1,6 +1,6 @@
 #include "powerteleportation.h"
-#include "node.h"
-#include "squad.h"
+#include "GameComponent/node.h"
+#include "GameComponent/squad.h"
 
 PowerTeleportation::PowerTeleportation(int countDown, QObject *parent) :
     Power(countDown, parent)
@@ -16,8 +16,8 @@ void PowerTeleportation::enablePower(Node *n1, Node *n2)
 {
     if(isReady())
     {
-        int ressources = n1->getNbRessources()/2;
-        n1->setNbRessources(n1->getNbRessources() - ressources);
+        int ressources = n1->getRessources()/2;
+        n1->setRessources(n1->getRessources() - ressources);
         Squad *s = new Squad(*n1->getOwner());
         s->setNbRessources(ressources);
         n2->incoming(*s);

@@ -27,7 +27,7 @@ public:
 
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     explicit Node(int x, int y, int radius, int ressourcesMax,
-                  Gamer *g=0, QGraphicsItem *parent=0);
+                  Gamer *g=0);
     virtual ~Node();
 
     /*SURCHARGE*/
@@ -41,8 +41,8 @@ public:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
     /*ASSESSEUR / MUTATEUR*/
-    int getNbRessources() const;
-    void setNbRessources(int r);
+    int getRessources() const;
+    void setRessources(int r);
     int getRessourcesRate() const;
     void setRessourcesRate(int r);
     int getRessourcesMax() const;

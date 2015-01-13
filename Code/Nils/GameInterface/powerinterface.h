@@ -2,6 +2,7 @@
 #define POWERINTERFACE_H
 
 #include <QGraphicsWidget>
+#include "ennum.h"
 
 class Node;
 class Power;
@@ -26,15 +27,12 @@ public:
 
     /*SIGNALS/SLOTS*/
 signals:
-    void powerDestroyPressed()const;
-    void powerInvincibilityPressed()const;
-    void powerTeleportationPressed()const;
-    void powerArmorePressed()const;
+    void powerPressed(PowerName name)const;
 public slots:
     void usePowerDestroy(Node *n);
     void usePowerInvincibility(Node *n);
     void usePowerTeleportation(Node *from, Node *to, int nbUnit);
-    void usePowerArmore(Node *n, int nbArmore);
+    void usePowerArmore(Node *n);
 private slots:
     void btPowerDestroyPressed()const;
     void btPowerInvincibilityPressed()const;

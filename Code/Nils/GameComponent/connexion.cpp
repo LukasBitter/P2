@@ -29,8 +29,8 @@ Connexion *Connexion::getConnexion(int idConnexion)
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-Connexion::Connexion(Node &n1, Node &n2, QGraphicsItem *parent)
-    : QGraphicsObject(parent), n1(n1), n2(n2)
+Connexion::Connexion(Node &n1, Node &n2)
+    : QGraphicsObject(0), n1(n1), n2(n2)
 {
     qreal dist = sqrt(pow(abs(n1.getPosX()-n2.getPosX()),2)+
                       pow(abs(n1.getPosY()-n2.getPosY()),2));

@@ -1,5 +1,5 @@
 #include "powerinvincibility.h"
-#include "node.h"
+#include "GameComponent/node.h"
 
 PowerInvincibility::PowerInvincibility(int countDown, QObject *parent) :
     Power(countDown, parent), memory(0)

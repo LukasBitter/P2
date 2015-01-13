@@ -1,6 +1,6 @@
-#include "map.h"
-#include "gamer.h"
-#include "node.h"
+#include "GameComponent/map.h"
+#include "GameComponent/gamer.h"
+#include "GameComponent/node.h"
 #include <QtWidgets>
 #include <QApplication>
 #include <qdebug.h>
@@ -21,19 +21,19 @@ int main(int argc, char *argv[])
 
 
     //Création de la map
-    Node *campsBaseNils = new Node(180,-150,50,100,nils,0);
-    Node *campsBaseLukas = new Node(-0,-200,30,100,lukas,0);
-    Node *aventageNils = new Node(180,10,10,10,0,0);
-    Node *lienLukasNils = new Node(-10,-20,50,110,0,0);
+    Node *campsBaseNils = new Node(180,-150,50,100,nils);
+    Node *campsBaseLukas = new Node(-0,-200,30,100,lukas);
+    Node *aventageNils = new Node(180,10,10,10,0);
+    Node *lienLukasNils = new Node(-10,-20,50,110,0);
 
     campsBaseNils->setRessourcesRate(1);
     campsBaseLukas->setRessourcesRate(1);
     aventageNils->setRessourcesRate(1);
     lienLukasNils->setRessourcesRate(1);
 
-    campsBaseNils->setNbRessources(50);
-    campsBaseLukas->setNbRessources(50);
-    lienLukasNils->setNbRessources(50);
+    campsBaseNils->setRessources(50);
+    campsBaseLukas->setRessources(50);
+    lienLukasNils->setRessources(50);
 
     m.addNode(*campsBaseNils);
     m.addNode(*campsBaseLukas);
@@ -44,8 +44,7 @@ int main(int argc, char *argv[])
     m.addConnexion(*aventageNils, *campsBaseNils);
     m.addConnexion(*campsBaseNils, *campsBaseLukas);
 
-    //campsBaseNils->sendSquad(30,*lienLukasNils);
-    campsBaseNils->setArmorLvl(30);
+    campsBaseLukas->sendSquad(30,*campsBaseNils);
     //*/
     QTimer timer;
     QObject::connect(&timer, SIGNAL(timeout()), &m, SLOT(advance()));

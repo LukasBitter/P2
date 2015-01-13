@@ -11,7 +11,7 @@ Button::Button(const QString &s, QGraphicsItem *parent)
 
 QRectF Button::boundingRect() const
 {
-    return QRectF(-65, -65, 130, 130);
+    return QRectF(-20, -20, 40, 40);
 }
 
 QPainterPath Button::shape() const
@@ -39,7 +39,8 @@ void Button::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     if (down)
         painter->translate(2, 2);
     painter->drawEllipse(r.adjusted(5, 5, -5, -5));
-    painter->drawText(QPoint(x() , y()),text);
+    painter->setPen( Qt::SolidLine);
+    painter->drawText(QPoint(x()-10, y()-10),text);
 }
 
 

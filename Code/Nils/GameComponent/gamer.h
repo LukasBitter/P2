@@ -26,10 +26,20 @@ public:
 
     /*ASSESSEUR / MUTATEUR*/
     QColor getColor() const;
+    bool isConnected()const;
+    bool isReady()const;
+    QString * getName()const;
+    void setConnected(bool b);
+    void setReady(bool b);
+    void setName(QString *s);
+
 private:
 
     /*TOOL*/
     QColor color;
+    QString *name;
+    bool connected;
+    bool ready;
 };
 
 #endif // GAMER_H

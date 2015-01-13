@@ -1,5 +1,8 @@
 #include "powerarmore.h"
-#include "node.h"
+#include "GameComponent/node.h"
+
+
+#include <QDebug>
 
 PowerArmore::PowerArmore(int countDown, QObject *parent) :
     Power(countDown, parent), memory(0), armorLvl(20)
@@ -25,4 +28,6 @@ void PowerArmore::onPowerFinishing()
 {
     memory->setArmorLvl(0);
     memory = 0;
+    Power::onPowerFinishing();
+    qDebug()<<"teds";
 }
