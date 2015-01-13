@@ -14,11 +14,10 @@ class PowerArmore : public Power
     Q_OBJECT
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    PowerArmore(int countDown, QObject *parent=0);
-    ~PowerArmore();
+    PowerArmore(QObject *parent=0);
 
     /*SURCHARGE*/
-    void enablePower(Node *n);
+    void powerAction(Node *n);
     void onPowerFinishing();
 
 private:

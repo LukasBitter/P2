@@ -12,11 +12,10 @@ class PowerInvincibility : public Power
     Q_OBJECT
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    PowerInvincibility(int countDown, QObject *parent=0);
-    ~PowerInvincibility();
+    PowerInvincibility(QObject *parent=0);
 
     /*SURCHARGE*/
-    void enablePower(Node *n);
+    void powerAction(Node *n);
     void onPowerFinishing();
 
 private:

@@ -31,7 +31,7 @@ signals:
 public slots:
     void usePowerDestroy(Node *n);
     void usePowerInvincibility(Node *n);
-    void usePowerTeleportation(Node *from, Node *to, int nbUnit);
+    void usePowerTeleportation(Node *from, Node *to);
     void usePowerArmore(Node *n);
 private slots:
     void btPowerDestroyPressed()const;

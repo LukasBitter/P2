@@ -315,7 +315,7 @@ void Map::powerPressed(PowerName n)
 {
     switch (n) {
     case Destroy:
-        if(currentSelection != 0)
+        if(currentSelection != 0 && currentSelection->getOwner() != owner)
         {
             p->usePowerDestroy(currentSelection);
         }
@@ -335,7 +335,7 @@ void Map::powerPressed(PowerName n)
     case Teleportation:
         if(currentSelection != 0 && lastSelection != 0 && lastSelection->getOwner() == owner)
         {
-            p->usePowerTeleportation(lastSelection, currentSelection, lastSelection->getRessources()/2);
+            p->usePowerTeleportation(lastSelection, currentSelection);
         }
         break;
     default:

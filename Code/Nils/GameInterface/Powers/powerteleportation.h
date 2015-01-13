@@ -14,12 +14,10 @@ class PowerTeleportation : public Power
     Q_OBJECT
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    PowerTeleportation(int countDown, QObject *parent=0);
-    ~PowerTeleportation();
+    PowerTeleportation(QObject *parent=0);
 
     /*SURCHARGE*/
-    void enablePower(Node *n1, Node *n2);
-    void onPowerFinishing();
+    void powerAction(Node *n1, Node *n2);
 };
 
 #endif // POWERTELEPORTATION_H

@@ -1,28 +1,25 @@
 #include "powerinvincibility.h"
 #include "GameComponent/node.h"
 
-PowerInvincibility::PowerInvincibility(int countDown, QObject *parent) :
-    Power(countDown, parent), memory(0)
+PowerInvincibility::PowerInvincibility(QObject *parent) :
+    Power(20000,5000, parent), memory(0)
 {
 }
 
-PowerInvincibility::~PowerInvincibility()
+void PowerInvincibility::powerAction(Node *n)
 {
-
-}
-
-void PowerInvincibility::enablePower(Node *n)
-{
-    if(isReady())
+    if(n != 0)
     {
         memory = n;
         memory->setInvicibility(true);
-        Power::enablePower(n);
     }
 }
 
 void PowerInvincibility::onPowerFinishing()
 {
-    memory->setInvicibility(false);
-    memory = 0;
+    if(memory != 0)
+    {
+        memory->setInvicibility(false);
+        memory = 0;
+    }
 }

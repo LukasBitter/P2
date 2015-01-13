@@ -2,6 +2,6 @@
 resolveSquadFigth et checkSquadColision pourrais travaillez sur des pointeur de afin de minimiser les copie
 Je n'aime pas bcp comment sont implementer les méthode de parsing, sans pointeur il se passe des copie implicite
 Tester si la virgule en trop en fin de parsing peu faire du chenis
-Supprimer les graphicsitem parent qui ne seront jamais utilisé
 Remplacer les for each par des while dans connexion.sendSquad
 vérifier pourquoi il ne faut pas appelker dragMoveEvent de la scene
+ACCES CONCURENT DEPUIS LES TIMER!!!!!

@@ -15,10 +15,10 @@ PowerInterface::PowerInterface(QGraphicsItem * parent) : QGraphicsWidget(parent)
     btPowerTeleportation = new Button("Teleportation", this);
     btPowerArmore = new Button("Armor", this);
 
-    powerArmore = new PowerArmore(5000, this);
-    powerDestroy = new PowerDestroy(30000, this);
-    powerInvincibility = new PowerInvincibility(20000, this);
-    powerTeleportation = new PowerTeleportation(15000, this);
+    powerArmore = new PowerArmore(this);
+    powerDestroy = new PowerDestroy(this);
+    powerInvincibility = new PowerInvincibility(this);
+    powerTeleportation = new PowerTeleportation(this);
 
     connect(btPowerDestroy, SIGNAL(pressed()), this, SLOT(btPowerDestroyPressed()));
     connect(btPowerInvincibility, SIGNAL(pressed()), this, SLOT(btPowerInvincibilityPressed()));
@@ -82,13 +82,13 @@ void PowerInterface::usePowerInvincibility(Node *n)
     }
 }
 
-void PowerInterface::usePowerTeleportation(Node *from, Node *to, int nbUnit)
+void PowerInterface::usePowerTeleportation(Node *from, Node *to)
 {
     const int cost = 40;
     if(mana >= cost)
     {
         mana -= cost;
-        powerTeleportation->enablePower(nbUnit, from, to);
+        powerTeleportation->enablePower(from, to);
     }
 }
 

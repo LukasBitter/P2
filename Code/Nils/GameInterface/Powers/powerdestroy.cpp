@@ -1,25 +1,17 @@
 #include "powerdestroy.h"
 #include "GameComponent/node.h"
 
-PowerDestroy::PowerDestroy(int countDown, QObject *parent) :
-    Power(countDown, parent)
+#include <QDebug>
+
+PowerDestroy::PowerDestroy(QObject *parent) :
+    Power(30000,0, parent)
 {
 }
 
-PowerDestroy::~PowerDestroy()
+void PowerDestroy::powerAction(Node *n)
 {
-
-}
-
-void PowerDestroy::enablePower(Node *n)
-{
-    if(isReady())
+    if(n != 0)
     {
         n->setRessources(0);
-        Power::enablePower(n);
     }
-}
-
-void PowerDestroy::onPowerFinishing()
-{
 }

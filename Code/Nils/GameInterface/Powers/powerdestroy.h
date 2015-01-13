@@ -14,12 +14,10 @@ class PowerDestroy : public Power
     Q_OBJECT
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    PowerDestroy(int countDown, QObject *parent=0);
-    ~PowerDestroy();
+    PowerDestroy(QObject *parent=0);
 
     /*SURCHARGE*/
-    void enablePower(Node *n);
-    void onPowerFinishing();
+    void powerAction(Node *n);
 
 private:
 };

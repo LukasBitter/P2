@@ -236,7 +236,7 @@ void Connexion::updateFromString(QString &s)
 }
 
 /*----------------------------------------------------*/
-/*METHODE PRIVE*/
+/*PRIVATES METHODS*/
 /*----------------------------------------------------*/
 
 void Connexion::advanceSquad()

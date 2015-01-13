@@ -2,32 +2,25 @@
 #include "GameComponent/node.h"
 
 
-#include <QDebug>
-
-PowerArmore::PowerArmore(int countDown, QObject *parent) :
-    Power(countDown, parent), memory(0), armorLvl(20)
+PowerArmore::PowerArmore(QObject *parent) :
+    Power(5000,5000,parent), memory(0), armorLvl(20)
 {
 }
 
-PowerArmore::~PowerArmore()
+void PowerArmore::powerAction(Node *n)
 {
-
-}
-
-void PowerArmore::enablePower(Node *n)
-{
-    if(isReady())
+    if(n != 0)
     {
         memory = n;
         memory->setArmorLvl(armorLvl);
-        Power::enablePower(n);
     }
 }
 
 void PowerArmore::onPowerFinishing()
 {
-    memory->setArmorLvl(0);
-    memory = 0;
-    Power::onPowerFinishing();
-    qDebug()<<"teds";
+    if(memory != 0)
+    {
+        memory->setArmorLvl(0);
+        memory = 0;
+    }
 }
