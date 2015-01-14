@@ -5,11 +5,6 @@ GameScene::GameScene(QObject * parent) : QGraphicsScene(parent)
 {
 }
 
-GameScene::~GameScene()
-{
-
-}
-
 void GameScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 {
     Q_UNUSED(event);

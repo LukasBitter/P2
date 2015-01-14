@@ -16,8 +16,9 @@ namespace GameComponent {
 class Gamer : public QObject, public IdentityToken
 {
     Q_OBJECT
+
 public:
-    /*STATIC*/
+    /*METHODE DE CLASSE*/
     static const QHash<int,Gamer *> & getLstGamer();
     static Gamer * getGamer(int idGamer);
     static QString getLstGamerUpdateString();
@@ -37,12 +38,12 @@ public:
     void setReady(bool b);
     void setName(QString *s);
 
-    /*PARSING*/
+    /*MISE A JOUR*/
     QString getUpdateString();
     void updateFromString(QString &s);
-private:
 
-    /*TOOL*/
+private:
+    /*OUTIL*/
     QColor color;
     QString *name;
     bool connected;

@@ -9,10 +9,11 @@
 
 
 /*----------------------------------------------------*/
-/*STATIC*/
+/*METHODE DE CLASSE*/
 /*----------------------------------------------------*/
 
 QHash<int,Connexion *> lstConnexions;
+
 Connexion *Connexion::getConnexion(int idConnexion)
 {
     if(lstConnexions.contains(idConnexion))
@@ -180,7 +181,7 @@ void Connexion::sendSquad(Squad *s, Node &from)
 }
 
 /*----------------------------------------------------*/
-/*PARSING*/
+/*MISE A JOUR*/
 /*----------------------------------------------------*/
 
 QString Connexion::getUpdateString()
@@ -236,7 +237,7 @@ void Connexion::updateFromString(QString &s)
 }
 
 /*----------------------------------------------------*/
-/*PRIVATES METHODS*/
+/*METHODE PRIVE*/
 /*----------------------------------------------------*/
 
 void Connexion::advanceSquad()

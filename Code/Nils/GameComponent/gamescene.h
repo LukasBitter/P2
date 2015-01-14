@@ -9,9 +9,10 @@
 class GameScene : public QGraphicsScene
 {
 public:
+    /*CONSTRUCTEUR / DESTRUCTEUR*/
     GameScene(QObject * parent = 0);
-    ~GameScene();
 
+    /*SURCHARGE*/
     void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
 };
 

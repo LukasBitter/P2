@@ -21,8 +21,9 @@ namespace GameComponent {
 class Connexion : public QGraphicsObject, public IdentityToken
 {
     Q_OBJECT
+
 public:
-    /*STATIC*/
+    /*METHODE DE CLASSE*/
     static Connexion * getConnexion(int idConnexion);
 
     /*CONSTRUCTEUR / DESTRUCTEUR*/
@@ -42,16 +43,17 @@ public:
     bool isConnextedTo(Node &n) const;
     void sendSquad(Squad *s, Node &from);
 
-    /*PARSING*/
+    /*MISE A JOUR*/
     QString getUpdateString();
     void updateFromString(QString &s);
+
 private:
-    /*INPUT*/
+    /*ENTREE*/
     Node &n1;
     Node &n2;
     int pathLength;
 
-    /*TOOL*/
+    /*SORTIE*/
     QQueue<Squad *> lstSquad1To2;
     QQueue<Squad *> lstSquad2To1;
     int counterAdvance;

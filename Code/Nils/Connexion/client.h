@@ -5,7 +5,6 @@
 #include <QtNetwork/QTcpSocket>
 #include <QDataStream>
 
-QT_BEGIN_NAMESPACE
 class QDialogButtonBox;
 class QLabel;
 class QLineEdit;
@@ -13,13 +12,16 @@ class QPushButton;
 class QTcpSocket;
 class QNetworkSession;
 class Map;
-QT_END_NAMESPACE
 
-class Client : public QDialog
+namespace Connexion {
+    class Client;
+}
+
+class Client
 {
     Q_OBJECT
 public:
-    explicit Client(QWidget *parent = 0, bool isHost = 0, int port = 0);
+    explicit Client(bool isHost = 0, int port = 0);
     int getMaxPlayers();
 private slots:
     void requestNewConnection();
@@ -37,8 +39,12 @@ private:
     int gameRunning;
     bool isHost;
     Map *game;
-    //QString headerOut;
-    //QString headerIn;
+    QDataStream in;
+    QTcpSocket *tcpSocket;
+    quint16 blockSize;
+    QNetworkSession *networkSession;
+
+    /*METHODE PRIVE*/
     void init();
     void setPlayerNumber(QString number);
     void setStatus(QString msg);
@@ -48,10 +54,6 @@ private:
     QString parse(QString clientMessage);
     QString checkUserNameString();
     void closeEvent( QCloseEvent * event );
-    QDataStream in;
-    QTcpSocket *tcpSocket;
-    quint16 blockSize;
-    QNetworkSession *networkSession;
 
 };
 
