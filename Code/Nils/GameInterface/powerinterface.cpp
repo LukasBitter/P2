@@ -6,6 +6,7 @@
 #include "GameInterface/Powers/powerdestroy.h"
 #include "GameInterface/Powers/powerinvincibility.h"
 #include "GameInterface/Powers/powerteleportation.h"
+#include <QPainter>
 
 
 PowerInterface::PowerInterface(QGraphicsItem * parent) : QGraphicsWidget(parent),mana(0)
@@ -25,18 +26,29 @@ PowerInterface::PowerInterface(QGraphicsItem * parent) : QGraphicsWidget(parent)
     connect(btPowerTeleportation, SIGNAL(pressed()), this, SLOT(btPowerTeleportationPressed()));
     connect(btPowerArmore, SIGNAL(pressed()), this, SLOT(btPowerArmorePressed()));
 
-    btPowerDestroy->setX(10);
-    btPowerInvincibility->setX(10);
-    btPowerTeleportation->setX(10);
-    btPowerArmore->setX(10);
-    btPowerDestroy->setY(0);
-    btPowerInvincibility->setY(50);
-    btPowerTeleportation->setY(100);
-    btPowerArmore->setY(150);
+    btPowerDestroy->setX(75);
+    btPowerInvincibility->setX(75);
+    btPowerTeleportation->setX(75);
+    btPowerArmore->setX(75);
+    btPowerDestroy->setY(25);
+    btPowerInvincibility->setY(75);
+    btPowerTeleportation->setY(125);
+    btPowerArmore->setY(175);
 }
 
 PowerInterface::~PowerInterface()
 {
+}
+
+QRectF PowerInterface::boundingRect() const
+{
+    return QRectF(0, 0, 100, 200);
+}
+
+void PowerInterface::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
+{
+    painter->setBrush(Qt::lightGray);
+    painter->drawRect(boundingRect());
 }
 
 /*----------------------------------------------------*/

@@ -20,6 +20,10 @@ public:
     PowerInterface(QGraphicsItem * parent = 0);
     ~PowerInterface();
 
+    /*SURCHARGE*/
+    QRectF boundingRect() const;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *);
+
     /*ASSESSEUR / MUTATEUR*/
     void setMana(int mana);
     void addMana(int mana);

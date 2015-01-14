@@ -36,11 +36,12 @@ void Button::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     grad.setColorAt(down ? 0 : 1, Qt::lightGray);
     painter->setPen(Qt::NoPen);
     painter->setBrush(grad);
-    if (down)
-        painter->translate(2, 2);
+    if (down)painter->translate(2, 2);
     painter->drawEllipse(r.adjusted(5, 5, -5, -5));
+    if (down)painter->translate(-2, -2);
+
     painter->setPen( Qt::SolidLine);
-    painter->drawText(QPoint(x()-10, y()-10),text);
+    painter->drawText(QPoint(0, 0),text);
 }
 
 
