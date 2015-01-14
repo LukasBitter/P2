@@ -33,8 +33,8 @@ Connexion *Connexion::getConnexion(int idConnexion)
 Connexion::Connexion(Node &n1, Node &n2)
     : QGraphicsObject(0), n1(n1), n2(n2)
 {
-    qreal dist = sqrt(pow(abs(n1.getPosX()-n2.getPosX()),2)+
-                      pow(abs(n1.getPosY()-n2.getPosY()),2));
+    qreal dist = sqrt(pow(abs(n1.x()-n2.x()),2)+
+                      pow(abs(n1.y()-n2.y()),2));
     pathLength = dist;
     setNextId();
     lstConnexions.insert(getId(), this);
@@ -54,7 +54,7 @@ Connexion::~Connexion()
 
 QRectF Connexion::boundingRect() const
 {
-    return QRectF(n1.getPosX(), n1.getPosY(), n2.getPosX()-n1.getPosX(), n2.getPosY()-n1.getPosY());
+    return QRectF(n1.x(), n1.y(), n2.x()-n1.x(), n2.y()-n1.y());
 }
 
 void Connexion::paint(QPainter *painter,
@@ -63,8 +63,8 @@ void Connexion::paint(QPainter *painter,
     Q_UNUSED(option);
     Q_UNUSED(widget);
     painter->save();
-    painter->translate(n1.getPosX(), n1.getPosY());
-    qreal angle = qRadiansToDegrees(qAtan2(n1.getPosY()-n2.getPosY(),n1.getPosX()-n2.getPosX()))+90;
+    painter->translate(n1.x(), n1.y());
+    qreal angle = qRadiansToDegrees(qAtan2(n1.y()-n2.y(),n1.x()-n2.x()))+90;
     painter->rotate(angle);
     //painter->setPen(QPen(Qt::black, 1));
     painter->drawLine(0, n1.getRadius(), 0, pathLength-n2.getRadius());
@@ -305,7 +305,7 @@ void Connexion::checkSquadArrive()
         int p = s->getProgress();
         if(p == pathLength-n2.getRadius())
         {
-            n2.incoming(*s);
+            n2.incoming(s);
             lstSquad1To2.pop_back();
         }
     }
@@ -314,7 +314,7 @@ void Connexion::checkSquadArrive()
         int p = s->getProgress();
         if(p == n1.getRadius())
         {
-            n1.incoming(*s);
+            n1.incoming(s);
             lstSquad2To1.pop_back();
         }
     }

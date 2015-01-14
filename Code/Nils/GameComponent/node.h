@@ -61,7 +61,7 @@ public:
     void connect(Node &n);
     bool isConnected(Node &n) const;
     Connexion* getConnexion(Node &n) const;
-    void incoming(Squad &s);
+    void incoming(Squad *s);
     void sendSquad(int ressource, Node &n);
 
     /*MISE A JOUR*/

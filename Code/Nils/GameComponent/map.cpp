@@ -293,8 +293,8 @@ QString Map::getCreationString()
         int id = -1;
         if(n->getOwner()!= 0)id = n->getOwner()->getId();
         s.append(QString("%1.%2.%3.%4.%5.%6/").arg(n->getId()).
-                 arg(n->getPosX()).
-                 arg(n->getPosY()).
+                 arg(n->x()).
+                 arg(n->y()).
                  arg(n->getRadius()).
                  arg(n->getRessourcesMax()).
                  arg(id));

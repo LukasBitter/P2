@@ -65,7 +65,7 @@ Node::~Node()
 
 QRectF Node::boundingRect() const
 {
-    return QRectF(posX - radius, posY - radius,
+    return QRectF(x() - radius, y() - radius,
                   2* radius, 2* radius);
 }
 
@@ -88,15 +88,15 @@ void Node::paint(QPainter *painter,
         painter->setPen(Qt::SolidLine);
     }
 
-    painter->drawEllipse(posX - radius, posY - radius,
+    painter->drawEllipse(x() - radius, y() - radius,
                          2* radius, 2* radius);
     if(armorLvl > 0)
     {
-        painter->drawText(QPoint(posX , posY),QString("%1 + %2").arg(nbRessources).arg(armorLvl));
+        painter->drawText(QPoint(x() , y()),QString("%1 + %2").arg(nbRessources).arg(armorLvl));
     }
     else
     {
-        painter->drawText(QPoint(posX , posY),QString("%1").arg(nbRessources));
+        painter->drawText(QPoint(x() , y()),QString("%1").arg(nbRessources));
     }
 }
 
@@ -167,11 +167,6 @@ int Node::getRessourcesRate() const
     return ressourcesRate;
 }
 
-int Node::getPosX() const
-{
-    return posX;
-}
-
 int Node::getRadius() const
 {
     return radius;
@@ -197,10 +192,6 @@ void Node::setInvicibility(bool b)
     invicible = b;
 }
 
-int Node::getPosY() const
-{
-    return posY;
-}
 const Gamer* Node::getOwner()
 {
     return owner;
@@ -255,10 +246,12 @@ Connexion * Node::getConnexion(Node &n) const
     return c;
 }
 
-void Node::incoming(Squad &s)
+void Node::incoming(Squad *s)
 {
-    const Gamer &g = s.getOwner();
-    int ressource = s.getNbRessources();
+    if(s == 0) return;
+
+    const Gamer &g = s->getOwner();
+    int ressource = s->getNbRessources();
     delete &s;
 
     if(&g == owner)
