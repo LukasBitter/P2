@@ -260,10 +260,10 @@ Connexion * Node::getConnexion(Node &n) const
 
 QString Node::getUpdateString()
 {
-    int id  = -1;
-    if(owner != 0)id = owner->getId();
+    int idGamer  = -1;
+    if(owner != 0)idGamer = owner->getId();
     return QString("%1,%2,%3,%4").arg(nbRessources).
-            arg(ressourcesRate).arg(id).arg(armorLvl);
+            arg(ressourcesRate).arg(idGamer).arg(armorLvl);
 }
 
 void Node::updateFromString(QString &s)

@@ -18,13 +18,17 @@ class Gamer : public QObject, public IdentityToken
     Q_OBJECT
 public:
     /*STATIC*/
+    static const QHash<int,Gamer *> & getLstGamer();
     static Gamer * getGamer(int idGamer);
+    static QString getLstGamerUpdateString();
+    static void updateLstGamerFromString(QString &s);
 
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    explicit Gamer(QColor color, QObject *parent=0);
+    explicit Gamer(QObject *parent=0);
     virtual ~Gamer();
 
     /*ASSESSEUR / MUTATEUR*/
+    void setColor(QColor c);
     QColor getColor() const;
     bool isConnected()const;
     bool isReady()const;
@@ -33,6 +37,9 @@ public:
     void setReady(bool b);
     void setName(QString *s);
 
+    /*PARSING*/
+    QString getUpdateString();
+    void updateFromString(QString &s);
 private:
 
     /*TOOL*/

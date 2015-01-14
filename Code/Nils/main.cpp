@@ -9,10 +9,11 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-
     //Créatoin des joueur
-    Gamer *nils = new Gamer(Qt::red);
-    Gamer *lukas = new Gamer(Qt::green);
+    Gamer *nils = new Gamer();
+    Gamer *lukas = new Gamer();
+    nils->setColor(Qt::red);
+    lukas->setColor(Qt::green);
 
     Map m(nils);
 

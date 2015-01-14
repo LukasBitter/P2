@@ -1,11 +1,19 @@
 #include "gamer.h"
 
+#include <qdebug.h>
+
 
 /*----------------------------------------------------*/
 /*STATIC*/
 /*----------------------------------------------------*/
 
 QHash<int,Gamer *> lstGamers;
+
+const QHash<int, Gamer *> &Gamer::getLstGamer()
+{
+    return lstGamers;
+}
+
 Gamer *Gamer::getGamer(int idGamer)
 {
     if(lstGamers.contains(idGamer))
@@ -18,15 +26,50 @@ Gamer *Gamer::getGamer(int idGamer)
     }
 }
 
+QString Gamer::getLstGamerUpdateString()
+{
+    QString s;
+    foreach (Gamer *g, lstGamers)
+    {
+        s.append(QString("%1.%2/").arg(g->getId()).arg(g->getUpdateString()));
+    }
+    return s;
+}
+
+void Gamer::updateLstGamerFromString(QString &s)
+{
+    QStringList allGamers = s.split("/");
+
+    foreach (QString s, allGamers)
+    {
+        QStringList gamerStr = s.split(".");
+        if(gamerStr.size() == 2)
+        {
+            int numberId = gamerStr.first().toInt();
+            gamerStr.pop_front();
+            QString &data = gamerStr.first();
+
+            Gamer *g = Gamer::getGamer(numberId);
+            if(g == 0)
+            {
+                g = new Gamer();
+                g->setId(numberId);
+            }
+            g->updateFromString(data);
+        }
+    }
+}
+
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-Gamer::Gamer(QColor color, QObject *parent)
-    : QObject(parent), color(color), connected(0), ready(0)
+Gamer::Gamer(QObject *parent)
+    : QObject(parent), connected(0), ready(0)
 {
     setNextId();
     lstGamers.insert(getId(), this);
+    //name = new QString("");
 }
 
 Gamer::~Gamer()
@@ -37,6 +80,13 @@ Gamer::~Gamer()
 /*----------------------------------------------------*/
 /*ASSESSEUR / MUTATEUR*/
 /*----------------------------------------------------*/
+
+void Gamer::setColor(QColor c)
+{
+    color.setRed(c.red());
+    color.setGreen(c.green());
+    color.setBlue(c.blue());
+}
 
 QColor Gamer::getColor() const
 {
@@ -70,5 +120,39 @@ void Gamer::setReady(bool b)
 
 void Gamer::setName(QString *s)
 {
-    name = s;
+    if(s == 0)
+    {
+        name = new QString("");
+    }
+    else
+    {
+        name = s;
+    }
+}
+
+QString Gamer::getUpdateString()
+{
+    return QString("%1,%2,%3,%4,%5,%6").arg(color.red()).
+            arg(color.green()).arg(color.blue()).arg(*name).
+            arg(connected).arg(ready);
+}
+
+void Gamer::updateFromString(QString &s)
+{
+    QStringList nodeStr = s.split(",");
+    if(nodeStr.size() == 6)
+    {
+        color.setRed(nodeStr.first().toInt());
+        nodeStr.pop_front();
+        color.setGreen(nodeStr.first().toInt());
+        nodeStr.pop_front();
+        color.setBlue(nodeStr.first().toInt());
+        nodeStr.pop_front();
+        delete name;
+        name = new QString(nodeStr.first());
+        nodeStr.pop_front();
+        connected = (nodeStr.first() == "1" ? true : false);
+        nodeStr.pop_front();
+        ready = (nodeStr.first() == "1" ? true : false);
+    }
 }
