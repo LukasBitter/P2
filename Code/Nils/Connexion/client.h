@@ -21,7 +21,7 @@ class Client
 {
     Q_OBJECT
 public:
-    explicit Client(bool isHost = 0, int port = 0);
+    explicit Client(QWidget *parent = 0, bool isHost = 0, int port = 0);
     int getMaxPlayers();
 private slots:
     void requestNewConnection();

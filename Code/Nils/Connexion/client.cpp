@@ -1,5 +1,5 @@
 #include <QtWidgets>
-#include <QtNetwork/QtNetwork>
+#include <QtNetwork>
 #include <QDebug>
 #include <QStringBuilder>
 
@@ -13,8 +13,9 @@
 Client::Client(QWidget *parent, bool isHost, int port) :
     QDialog(parent), networkSession(0), isHost(isHost), maxPlayers(4)
 {
-    hostCombo = new QComboBox;
-    hostCombo->setEditable(true);
+    // a mettre dans le client d'affichage
+    //hostCombo = new QComboBox;
+    //hostCombo->setEditable(true);
 
     // find out name of this machine
     QString name = QHostInfo::localHostName();
