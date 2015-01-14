@@ -12,6 +12,7 @@ namespace GameInterface {
 class PowerArmore : public Power
 {
     Q_OBJECT
+
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     PowerArmore(QObject *parent=0);
@@ -21,6 +22,7 @@ public:
     void onPowerFinishing();
 
 private:
+    /*OUTIL*/
     Node *memory;
     const int armorLvl;
 };

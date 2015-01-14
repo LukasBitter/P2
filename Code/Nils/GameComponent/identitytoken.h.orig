@@ -2,7 +2,7 @@
 #define IDENTITYTOKEN_H
 
 namespace GameComponent {
-class IdentityToken;
+    class IdentityToken;
 }
 
 /**

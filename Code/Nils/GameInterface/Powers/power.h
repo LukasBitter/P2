@@ -13,6 +13,7 @@ namespace GameInterface {
 class Power : public QObject
 {
     Q_OBJECT
+
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     Power(int countDown, int powerTime, QObject *parent=0);
@@ -41,12 +42,14 @@ public:
 private slots:
     void restorCountDown();
     void powerEnd();
+
 private:
+    /*OUTIL*/
     QTimer *countDown;
     QTimer *endPower;
     bool ready;
 
-    /*PRIVATES*/
+    /*METHODE PRIVE*/
     void activateCountDown();
 };
 

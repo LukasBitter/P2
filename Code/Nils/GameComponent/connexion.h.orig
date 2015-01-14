@@ -21,14 +21,12 @@ class Connexion;
 class Connexion : public QGraphicsObject, public IdentityToken
 {
     Q_OBJECT
-
 public:
     /*METHODE DE CLASSE*/
     static Connexion * getConnexion(int idConnexion);
 
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    explicit Connexion(Node &n1, Node &n2);
-    virtual ~Connexion();
+    explicit Connexion(Node &n1, Node &n2);    virtual ~Connexion();
 
     /*SURCHARGE*/
     QRectF boundingRect() const;
@@ -46,14 +44,13 @@ public:
     /*MISE A JOUR*/
     QString getUpdateString();
     void updateFromString(QString &s);
-
 private:
     /*ENTREE*/
     Node &n1;
     Node &n2;
     int pathLength;
 
-    /*OUTIL*/
+    /*SORTIE*/
     QQueue<Squad *> lstSquad1To2;
     QQueue<Squad *> lstSquad2To1;
     int counterAdvance;

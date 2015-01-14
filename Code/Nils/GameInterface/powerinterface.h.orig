@@ -9,7 +9,7 @@ class Power;
 class Button;
 
 namespace GameInterface {
-class PowerInterface;
+    class PowerInterface;
 }
 
 class PowerInterface : public QGraphicsWidget

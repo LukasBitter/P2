@@ -10,6 +10,7 @@ namespace GameInterface {
 class PowerInvincibility : public Power
 {
     Q_OBJECT
+
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     PowerInvincibility(QObject *parent=0);
@@ -19,6 +20,7 @@ public:
     void onPowerFinishing();
 
 private:
+    /*OUTIL*/
     Node *memory;
 };
 

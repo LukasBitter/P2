@@ -12,7 +12,7 @@ class Client;
 class Server;
 
 namespace GameInterface {
-class ClientAffichage;
+    class ClientAffichage;
 }
 
 class ClientAffichage : public QWidget

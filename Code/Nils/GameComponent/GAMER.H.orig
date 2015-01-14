@@ -7,7 +7,7 @@
 #include <QHash>
 
 namespace GameComponent {
-class Gamer;
+    class Gamer;
 }
 
 /**

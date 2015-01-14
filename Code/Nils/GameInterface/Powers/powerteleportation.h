@@ -12,6 +12,7 @@ namespace GameInterface {
 class PowerTeleportation : public Power
 {
     Q_OBJECT
+
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     PowerTeleportation(QObject *parent=0);

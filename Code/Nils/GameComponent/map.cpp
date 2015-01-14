@@ -223,7 +223,7 @@ void Map::setPercentToSend(int percent)
 }
 
 /*----------------------------------------------------*/
-/*PARSING*/
+/*MISE A JOUR*/
 /*----------------------------------------------------*/
 
 QString Map::getUpdateString()

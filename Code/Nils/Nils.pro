@@ -12,7 +12,6 @@ HEADERS += \
     GameComponent\map.h \
     GameComponent\squad.h \
     GameComponent\identitytoken.h \
-    GameInterface\gamerinterface.h \
     GameComponent\gamescene.h \
     GameInterface\powerinterface.h \
     GameInterface\clientaffichage.h \
@@ -36,7 +35,6 @@ SOURCES += \
     GameComponent\map.cpp \
     GameComponent\squad.cpp \
     GameComponent\identitytoken.cpp \
-    GameInterface\gamerinterface.cpp \
     GameComponent\gamescene.cpp \
     GameInterface\powerinterface.cpp \
     GameInterface\clientaffichage.cpp \

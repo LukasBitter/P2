@@ -11,8 +11,11 @@ class Gamer;
 class Squad : public IdentityToken
 {
 public:
+    /*CONSTRUCTEUR / DESTRUCTEUR*/
     Squad(const Gamer &g);
     virtual ~Squad();
+
+    /*ASSESSEUR / MUTATEUR*/
     int getProgress() const;
     void setProgress(int p);
     int getNbRessources() const;
@@ -20,10 +23,12 @@ public:
     const Gamer & getOwner() const;
 
 private:
-    int progress;
-    int nbRessource;
+    /*ENTREE*/
     const Gamer &owner;
 
+    /*OUTIL*/
+    int progress;
+    int nbRessource;
 };
 
 #endif // SQUAD_H

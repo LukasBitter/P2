@@ -4,7 +4,7 @@
 #include <QGraphicsWidget>
 
 namespace GameInterface {
-class Button;
+    class Button;
 }
 
 class Button : public QGraphicsWidget

@@ -13,7 +13,7 @@ class QDropEvent;
 class PowerInterface;
 
 namespace GameComponent {
-class Map;
+    class Map;
 }
 
 class Map: public QGraphicsView

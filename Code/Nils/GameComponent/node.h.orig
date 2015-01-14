@@ -11,7 +11,7 @@ class Squad;
 class QPainter;
 
 namespace GameComponent {
-class Node;
+    class Node;
 }
 
 /**
