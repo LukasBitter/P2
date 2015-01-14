@@ -3,10 +3,16 @@
 
 #include "power.h"
 
+class Node;
+
 namespace GameInterface {
     class PowerInvincibility;
 }
 
+/**
+ * @class PowerInvincibility
+ * @brief Rend un noeud invulnérable durant un court instant
+ */
 class PowerInvincibility : public Power
 {
     Q_OBJECT

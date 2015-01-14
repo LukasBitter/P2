@@ -2,12 +2,20 @@
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
+/*----------------------------------------------------*/
+/*CONSTRUCTEUR / DESTRUCTEUR*/
+/*----------------------------------------------------*/
+
 Button::Button(const QString &s, QGraphicsItem *parent)
     : QGraphicsWidget(parent), text(s)
 {
     setAcceptHoverEvents(true);
     setCacheMode(DeviceCoordinateCache);
 }
+
+/*----------------------------------------------------*/
+/*SURCHARGE*/
+/*----------------------------------------------------*/
 
 QRectF Button::boundingRect() const
 {

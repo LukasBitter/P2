@@ -8,6 +8,9 @@
 #include "GameInterface/Powers/powerteleportation.h"
 #include <QPainter>
 
+/*----------------------------------------------------*/
+/*CONSTRUCTEUR / DESTRUCTEUR*/
+/*----------------------------------------------------*/
 
 PowerInterface::PowerInterface(QGraphicsItem * parent) : QGraphicsWidget(parent),mana(0)
 {
@@ -39,6 +42,10 @@ PowerInterface::PowerInterface(QGraphicsItem * parent) : QGraphicsWidget(parent)
 PowerInterface::~PowerInterface()
 {
 }
+
+/*----------------------------------------------------*/
+/*SURCHARGE*/
+/*----------------------------------------------------*/
 
 QRectF PowerInterface::boundingRect() const
 {

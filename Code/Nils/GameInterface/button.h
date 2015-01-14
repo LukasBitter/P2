@@ -7,6 +7,10 @@ namespace GameInterface {
 class Button;
 }
 
+/**
+ * @class Button
+ * @brief Bouton poussoir utilisable avec le GraphicsViewFramwork
+ */
 class Button : public QGraphicsWidget
 {
     Q_OBJECT

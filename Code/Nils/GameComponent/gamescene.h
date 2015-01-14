@@ -4,6 +4,7 @@
 #include <QGraphicsScene>
 
 /**
+ * @class GameScene
  * @brief Scene de jeu
  */
 class GameScene : public QGraphicsScene

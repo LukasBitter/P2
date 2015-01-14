@@ -12,6 +12,12 @@ namespace GameInterface {
 class PowerInterface;
 }
 
+/**
+ * @class PowerInterface
+ * @brief Interface utilisateur
+ *
+ * Regroupe les boutons d'activation des pouvoir et gère le mana du joueur
+ */
 class PowerInterface : public QGraphicsWidget
 {
     Q_OBJECT

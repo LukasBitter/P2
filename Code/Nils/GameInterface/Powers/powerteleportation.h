@@ -9,6 +9,10 @@ namespace GameInterface {
     class PowerTeleportation;
 }
 
+/**
+ * @class PowerTeleportation
+ * @brief Téléporte des unités d'un noeud a un autre
+ */
 class PowerTeleportation : public Power
 {
     Q_OBJECT

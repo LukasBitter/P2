@@ -343,10 +343,6 @@ void Map::powerPressed(PowerName n)
     }
 }
 
-/*----------------------------------------------------*/
-/*METHODE PRIVE*/
-/*----------------------------------------------------*/
-
 void Map::selectionChange()
 {
     lastSelection = currentSelection;
@@ -360,6 +356,10 @@ void Map::selectionChange()
         currentSelection = 0;
     }
 }
+
+/*----------------------------------------------------*/
+/*METHODE PRIVE*/
+/*----------------------------------------------------*/
 
 void Map::sendSquad(int nodeIdFrom, int nodeIdTo)
 {

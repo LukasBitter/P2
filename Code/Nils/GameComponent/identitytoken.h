@@ -6,7 +6,7 @@ class IdentityToken;
 }
 
 /**
-  @class IdentityToken
+ * @class IdentityToken
  * @brief Attribue a l'objet un identifiant unique
  */
 class IdentityToken

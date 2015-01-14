@@ -2,10 +2,18 @@
 #include "GameComponent/node.h"
 #include "GameComponent/squad.h"
 
+/*----------------------------------------------------*/
+/*CONSTRUCTEUR / DESTRUCTEUR*/
+/*----------------------------------------------------*/
+
 PowerTeleportation::PowerTeleportation(QObject *parent) :
     Power(15000,0, parent)
 {
 }
+
+/*----------------------------------------------------*/
+/*SURCHARGE*/
+/*----------------------------------------------------*/
 
 void PowerTeleportation::powerAction(Node *n1, Node *n2)
 {

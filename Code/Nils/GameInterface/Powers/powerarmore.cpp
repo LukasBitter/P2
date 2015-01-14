@@ -1,11 +1,18 @@
 #include "powerarmore.h"
 #include "GameComponent/node.h"
 
+/*----------------------------------------------------*/
+/*CONSTRUCTEUR / DESTRUCTEUR*/
+/*----------------------------------------------------*/
 
 PowerArmore::PowerArmore(QObject *parent) :
     Power(5000,5000,parent), memory(0), armorLvl(20)
 {
 }
+
+/*----------------------------------------------------*/
+/*SURCHARGE*/
+/*----------------------------------------------------*/
 
 void PowerArmore::powerAction(Node *n)
 {

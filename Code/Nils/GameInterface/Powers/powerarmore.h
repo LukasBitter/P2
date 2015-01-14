@@ -9,6 +9,10 @@ namespace GameInterface {
     class PowerArmore;
 }
 
+/**
+ * @class PowerArmore
+ * @brief Ajoute de l'armure à un noeud pendant une durée limité
+ */
 class PowerArmore : public Power
 {
     Q_OBJECT

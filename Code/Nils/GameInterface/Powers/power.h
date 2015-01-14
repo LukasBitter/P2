@@ -10,6 +10,10 @@ namespace GameInterface {
     class Power;
 }
 
+/**
+ * @class Power
+ * @brief Classe parent de tous les pouvoirs
+ */
 class Power : public QObject
 {
     Q_OBJECT
@@ -17,7 +21,6 @@ class Power : public QObject
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     Power(int countDown, int powerTime, QObject *parent=0);
-    ~Power();
 
     /*SURCHARGE*/
     void enablePower();

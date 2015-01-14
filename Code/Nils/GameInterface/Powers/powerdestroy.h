@@ -9,6 +9,10 @@ namespace GameInterface {
     class PowerDestroy;
 }
 
+/**
+ * @class PowerDestroy
+ * @brief Detruit toutes les ressources d'un noeud
+ */
 class PowerDestroy : public Power
 {
     Q_OBJECT

@@ -6,14 +6,17 @@
 class Gamer;
 
 /**
+ * @class Squad
  * @brief Représente les ressources envoyées à travers la connexion
+ *
+ * N'est pas un objet QGraphicsItem utilisé dans la scène, mais une structure
+ * logique utilisé par la classe Connexion
  */
 class Squad : public IdentityToken
 {
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     Squad(const Gamer &g);
-    virtual ~Squad();
 
     /*ASSESSEUR / MUTATEUR*/
     int getProgress() const;

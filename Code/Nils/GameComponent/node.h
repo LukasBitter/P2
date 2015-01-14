@@ -15,6 +15,7 @@ class Node;
 }
 
 /**
+ * @class Node
  * @brief Représente les noeuds
  */
 class Node : public QGraphicsObject, public IdentityToken

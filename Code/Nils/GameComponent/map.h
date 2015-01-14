@@ -16,6 +16,10 @@ namespace GameComponent {
 class Map;
 }
 
+/**
+ * @class Map
+ * @brief Vue du jeu
+ */
 class Map: public QGraphicsView
 {
     Q_OBJECT
@@ -52,7 +56,6 @@ private slots:
     void powerPressed(PowerName n);
 private slots:
     void selectionChange();
-    void sendSquad(int nodeIdFrom, int nodeIdTo);
 
 private:
     /*ENTREE*/
@@ -67,6 +70,8 @@ private:
     float percentToSend;
     PowerInterface *p;
 
+    /*METHODE PRIVE*/
+    void sendSquad(int nodeIdFrom, int nodeIdTo);
 };
 
 #endif // MAP_H

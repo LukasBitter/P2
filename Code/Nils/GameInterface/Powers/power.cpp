@@ -18,10 +18,6 @@ Power::Power(int countDownTime, int powerTime, QObject *parent): QObject(parent)
     connect(endPower, SIGNAL(timeout()), this, SLOT(powerEnd()));
 }
 
-Power::~Power()
-{
-}
-
 /*----------------------------------------------------*/
 /*SURCHARGE*/
 /*----------------------------------------------------*/

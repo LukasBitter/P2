@@ -1,10 +1,18 @@
 #include "powerinvincibility.h"
 #include "GameComponent/node.h"
 
+/*----------------------------------------------------*/
+/*CONSTRUCTEUR / DESTRUCTEUR*/
+/*----------------------------------------------------*/
+
 PowerInvincibility::PowerInvincibility(QObject *parent) :
     Power(20000,5000, parent), memory(0)
 {
 }
+
+/*----------------------------------------------------*/
+/*SURCHARGE*/
+/*----------------------------------------------------*/
 
 void PowerInvincibility::powerAction(Node *n)
 {

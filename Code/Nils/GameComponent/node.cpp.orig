@@ -69,7 +69,7 @@ QRectF Node::boundingRect() const
 }
 
 void Node::paint(QPainter *painter,
-                 const QStyleOptionGraphicsItem *option,QWidget *widget)
+                const QStyleOptionGraphicsItem *option,QWidget *widget)
 {
     Q_UNUSED(option);
     Q_UNUSED(widget);
@@ -88,7 +88,7 @@ void Node::paint(QPainter *painter,
     }
 
     painter->drawEllipse(posX - radius, posY - radius,
-                         2* radius, 2* radius);
+                             2* radius, 2* radius);
     if(armorLvl > 0)
     {
         painter->drawText(QPoint(posX , posY),QString("%1 + %2").arg(nbRessources).arg(armorLvl));
@@ -132,7 +132,7 @@ void Node::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void Node::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     if (QLineF(event->screenPos(), event->buttonDownScreenPos(Qt::LeftButton))
-            .length() < QApplication::startDragDistance()) {
+        .length() < QApplication::startDragDistance()) {
         return;
     }
 
@@ -312,7 +312,7 @@ QString Node::getUpdateString()
     int idGamer  = -1;
     if(owner != 0)idGamer = owner->getId();
     return QString("%1,%2,%3,%4").arg(nbRessources).
-           arg(ressourcesRate).arg(idGamer).arg(armorLvl);
+            arg(ressourcesRate).arg(idGamer).arg(armorLvl);
 }
 
 void Node::updateFromString(QString &s)

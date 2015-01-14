@@ -1,5 +1,4 @@
 #include "gamer.h"
-#include <QTcpSocket>
 
 #include <qdebug.h>
 
@@ -25,15 +24,6 @@ Gamer *Gamer::getGamer(int idGamer)
     {
         return 0;
     }
-}
-
-bool Gamer::isNameExist(QString s)
-{
-    foreach (Gamer *g, lstGamers)
-    {
-        if(g->getName()->compare(s)) return true;
-    }
-    return false;
 }
 
 QString Gamer::getLstGamerUpdateString()
@@ -103,16 +93,6 @@ QColor Gamer::getColor() const
     return color;
 }
 
-void Gamer::setSocket(QTcpSocket *s)
-{
-    socket = s;
-}
-
-QTcpSocket *Gamer::getSocket() const
-{
-    return socket;
-}
-
 bool Gamer::isConnected() const
 {
     return isConnected();
@@ -157,8 +137,8 @@ void Gamer::setName(QString *s)
 QString Gamer::getUpdateString()
 {
     return QString("%1,%2,%3,%4,%5,%6").arg(color.red()).
-           arg(color.green()).arg(color.blue()).arg(*name).
-           arg(connected).arg(ready);
+            arg(color.green()).arg(color.blue()).arg(*name).
+            arg(connected).arg(ready);
 }
 
 void Gamer::updateFromString(QString &s)
