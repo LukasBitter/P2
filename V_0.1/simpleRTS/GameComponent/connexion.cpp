@@ -29,8 +29,8 @@ Connexion *Connexion::getConnexion(int idConnexion)
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-Connexion::Connexion(Node &n1, Node &n2, QGraphicsItem *parent)
-    : QGraphicsObject(parent), n1(n1), n2(n2)
+Connexion::Connexion(Node &n1, Node &n2)
+    : QGraphicsObject(0), n1(n1), n2(n2)
 {
     qreal dist = sqrt(pow(abs(n1.getPosX()-n2.getPosX()),2)+
                       pow(abs(n1.getPosY()-n2.getPosY()),2));
@@ -59,6 +59,8 @@ QRectF Connexion::boundingRect() const
 void Connexion::paint(QPainter *painter,
                       const QStyleOptionGraphicsItem *option,QWidget *widget)
 {
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
     painter->save();
     painter->translate(n1.getPosX(), n1.getPosY());
     qreal angle = qRadiansToDegrees(qAtan2(n1.getPosY()-n2.getPosY(),n1.getPosX()-n2.getPosX()))+90;
@@ -92,7 +94,7 @@ void Connexion::advance(int step)
     if(step == 0) return;
 
     //Wait number of tic
-    if(counterAdvance != 2)
+    if(counterAdvance < 2)
     {
         ++counterAdvance;
         return;
@@ -102,8 +104,6 @@ void Connexion::advance(int step)
     advanceSquad();
     resolveSquadFigth();
     checkSquadArrive();
-
-    update();
 }
 
 /*----------------------------------------------------*/
@@ -236,7 +236,7 @@ void Connexion::updateFromString(QString &s)
 }
 
 /*----------------------------------------------------*/
-/*METHODE PRIVE*/
+/*PRIVATES METHODS*/
 /*----------------------------------------------------*/
 
 void Connexion::advanceSquad()

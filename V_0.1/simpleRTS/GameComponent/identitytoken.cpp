@@ -1,6 +1,6 @@
 #include "identitytoken.h"
 
-int currentID = 0;
+int currentID = 1;
 
 IdentityToken::IdentityToken() : id(0)
 {

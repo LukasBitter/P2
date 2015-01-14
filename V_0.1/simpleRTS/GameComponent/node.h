@@ -9,7 +9,6 @@ class Gamer;
 class Connexion;
 class Squad;
 class QPainter;
-class QObject;
 
 namespace GameComponent {
     class Node;
@@ -28,7 +27,7 @@ public:
 
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     explicit Node(int x, int y, int radius, int ressourcesMax,
-                  Gamer *g=0, QGraphicsItem *parent=0);
+                  Gamer *g=0);
     virtual ~Node();
 
     /*SURCHARGE*/
@@ -42,8 +41,8 @@ public:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
     /*ASSESSEUR / MUTATEUR*/
-    int getNbRessources() const;
-    void setNbRessources(int r);
+    int getRessources() const;
+    void setRessources(int r);
     int getRessourcesRate() const;
     void setRessourcesRate(int r);
     int getRessourcesMax() const;
@@ -52,6 +51,8 @@ public:
     int getRadius() const;
     int getArmorLvl() const;
     void setArmorLvl(int a);
+    bool getInvicibility() const;
+    void setInvicibility(bool b);
     const Gamer* getOwner();
     void connect(Node &n);
     bool isConnected(Node &n) const;
@@ -65,11 +66,6 @@ public:
     void incoming(Squad &s);
     void sendSquad(int ressource, Node &n);
 private:
-    /*CONSTRUCTEUR / DESTRUCTEUR*/
-    //Ne pas implementer, les copies ne sont pas voulues
-    Node(Node &n);
-    Node& operator=(const Node&);
-
     /*INPUT*/
     int nbRessources;
     int armorLvl;
@@ -78,6 +74,8 @@ private:
     const int posX;
     const int posY;
     const Gamer *owner;
+    bool invicible;
+QColor c;
 
     /*TOOL*/
     int radius;

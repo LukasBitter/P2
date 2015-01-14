@@ -35,31 +35,6 @@ void index::hostGame()
     client = new Client(this, true, server->getPort());
     client->show();
 
-
-    //Création de la map
-    Map m = new Map(0);
-    Node *campsBaseNils = new Node(180,-150,50,100,nils,0);
-    Node *campsBaseLukas = new Node(-0,-200,30,100,lukas,0);
-    Node *aventageNils = new Node(180,10,10,10,0,0);
-    Node *lienLukasNils = new Node(-10,-20,50,110,0,0);
-
-    campsBaseNils->setRessourcesRate(1);
-    campsBaseLukas->setRessourcesRate(1);
-    aventageNils->setRessourcesRate(1);
-    lienLukasNils->setRessourcesRate(1);
-
-    campsBaseNils->setNbRessources(50);
-    campsBaseLukas->setNbRessources(50);
-    lienLukasNils->setNbRessources(50);
-
-    m.addNode(*campsBaseNils);
-    m.addNode(*campsBaseLukas);
-    m.addNode(*aventageNils);
-    m.addNode(*lienLukasNils);
-    m.addConnexion(*lienLukasNils, *campsBaseNils);
-    m.addConnexion(*lienLukasNils, *campsBaseLukas);
-    m.addConnexion(*aventageNils, *campsBaseNils);
-    m.addConnexion(*campsBaseNils, *campsBaseLukas);
 }
 
 void index::joinGame()

@@ -3,8 +3,10 @@
 #include <QDebug>
 
 #include <stdlib.h>
-#include "server.h"
 #include <process.h>
+#include "room/server.h"
+#include "map/gamer.h"
+
 
 #define SEP_CONX "#"
 #define SEP_STATUS ";"
@@ -62,7 +64,7 @@ Server::Server(QWidget *parent)
 void Server::init(){
     for(int i= 0; i<maxPlayers;i++)
     {
-        listPlayers.append(new Player(i, maxPts));
+        //listPlayers.append(new Player(i, maxPts));
         lPlayersNumbers.append(new QLabel(QString("#").append(QString::number(i+1))));
         lPlayersNames.append(new QLabel(""));
         lPlayersConnected.append(new QLabel("n/a"));
@@ -238,13 +240,14 @@ void Server::onNewClientRequest()
     checkPlayersConnected();
     if(checkAvailableSocket())
     {
+        Gamer *g = new Gamer();
         msg = "serverConnectionOk";
         msg.append(SEP_CONX);
-        msg.append(QString::number(playerNumber));
+        msg.append(QString::number(g->getId()));
         msg.append(SEP_CONX);
-        msg.append(getPlayersStatus());
-        lPlayersConnected.at(playerNumber-1)->setText("Connected");
-        lPlayersReady.at(playerNumber-1)->setText("n/a");
+        msg.append(Gamer::getLstGamerUpdateString());
+        //lPlayersConnected.at(playerNumber-1)->setText("Connected");
+        //lPlayersReady.at(playerNumber-1)->setText("n/a");
     }
     else
         msg = "noMoreSocketAvailable";
@@ -276,7 +279,7 @@ QString Server::getPlayersStatus()
 void Server::endConversation()
 {
     activeSocket = NULL;
-    playerNumber = 0;
+    //playerNumber = 0;
     blockSize =0;
     qDebug()<<"SERVER: endConversation / END";
 }
@@ -386,10 +389,12 @@ QString Server::parse(QString clientMessage)
     }
     else if (listMsg.at(0) == "checkUserName")
     {
-        if(!gameRunning)
-            rep = checkPlayerName(listMsg.at(1));
-        else
+        if(gameRunning)
             rep = "gameIsRunning!";
+        else if(!Gamer::checkNameExist(listMsg.at(1)))
+            rep = "userNameOK";
+        else
+            rep = "userNameTaken";
     }
     else if (listMsg.at(0) == "clientClose")
     {
@@ -400,6 +405,8 @@ QString Server::parse(QString clientMessage)
     }
     else if (listMsg.at(0) == "runGame")
     {
+        createGamers();
+        buildMap();
         for (int i=0; i < maxPlayers; i++)
         {
             sendClientResponse("lauchGame");
@@ -417,6 +424,45 @@ QString Server::parse(QString clientMessage)
     return rep;
 }
 
+void Server::createGamers()
+{
+    Player *ele;
+    foreach(ele, listPlayers)
+    {
+        Gamer *g = new Gamer();
+        listGamers.append(g);
+    }
+}
+
+void Server::buildMap()
+{
+    //Création de la map
+
+    Map *m = new Map(0);
+    Node *campsBaseNils = new Node(180,-150,50,100,nils,0);
+    Node *campsBaseLukas = new Node(-0,-200,30,100,lukas,0);
+    Node *aventageNils = new Node(180,10,10,10,0,0);
+    Node *lienLukasNils = new Node(-10,-20,50,110,0,0);
+
+    campsBaseNils->setRessourcesRate(1);
+    campsBaseLukas->setRessourcesRate(1);
+    aventageNils->setRessourcesRate(1);
+    lienLukasNils->setRessourcesRate(1);
+
+    campsBaseNils->setNbRessources(50);
+    campsBaseLukas->setNbRessources(50);
+    lienLukasNils->setNbRessources(50);
+
+    m.addNode(*campsBaseNils);
+    m.addNode(*campsBaseLukas);
+    m.addNode(*aventageNils);
+    m.addNode(*lienLukasNils);
+    m.addConnexion(*lienLukasNils, *campsBaseNils);
+    m.addConnexion(*lienLukasNils, *campsBaseLukas);
+    m.addConnexion(*aventageNils, *campsBaseNils);
+    m.addConnexion(*campsBaseNils, *campsBaseLukas);
+}
+
 bool Server::checkAvailableSocket()
 {
     activeSocket = tcpServer->nextPendingConnection();
@@ -426,7 +472,7 @@ bool Server::checkAvailableSocket()
 
         clientsConnectedNb++;
 
-        playerNumber = clientsConnectedNb;
+        //playerNumber = clientsConnectedNb;
 
         //clientConnections->append(clientConnection);
         clientConnections.append(activeSocket);
@@ -455,7 +501,8 @@ void Server::deletePlayer(QString playerNumber)
 QString Server::checkPlayerName(QString playerName)
 {
     qDebug()<<"SERVER: checkPlayerName / playerName" << playerName;
-    foreach(Player *player, listPlayers)
+
+    //foreach(Player *player, listPlayers)
     {
         qDebug()<<"SERVER: checkPlayerName / playerName[i]" << player->getPlayerName();
         if(QString::compare(player->getPlayerName(), playerName) ==0)

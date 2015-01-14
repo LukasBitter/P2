@@ -2,9 +2,9 @@
 #define INDEX_H
 
 #include <QDialog>
-#include "server.h"
-#include "client.h"
-#include "deletegame.h"
+#include "room/server.h"
+#include "room/client.h"
+#include "map/map.h"
 
 class QLabel;
 class QPushButton;

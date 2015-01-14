@@ -1,15 +1,15 @@
 #ifndef MAP_H
 #define MAP_H
-
-#include <QMap>
 #include <QWidget>
 #include <QGraphicsView>
 #include "connexion.h"
-#include "power.h"
+#include "ennum.h"
 
-class QGraphicsScene;
+class GameScene;
 class Node;
 class Connexion;
+class QDropEvent;
+class PowerInterface;
 
 namespace GameComponent {
     class Map;
@@ -27,26 +27,26 @@ public:
     /*SURCHARGE*/
     void keyPressEvent(QKeyEvent *e);
     void mousePressEvent(QMouseEvent *event);
+    void dropEvent(QDropEvent *event);
 
     /*ASSESSEUR / MUTATEUR*/
     void addNode(Node &n);
-    bool addConnexion(Node &n1, Node &n2);
+    void addConnexion(Node &n1, Node &n2);
     int getTotalRessources(Gamer &g);
     int getAvrageRessourcesRate(Gamer &g);
     int getTotalRessources();
     int getAvrageRessourcesRate();
-    const QList<Connexion *> & getLstConnexion()const;
-    const QList<Node *> & getLstNode()const;
+    void setPercentToSend(int percent);
 
     /*PARSING*/
     QString getUpdateString();
     void updateFromString(QString &s);
     QString getCreationString();
+    /*SIGNALS/SLOTS*/
 public slots:
     void advance();
-
-protected:
-
+private slots:
+    void powerPressed(PowerName n);
 
 private:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
@@ -58,16 +58,17 @@ private:
     const Gamer *owner;
 
     /*TOOL*/
-    QGraphicsScene * scene;
-    QList<Node *> lstNode;
-    QList<Connexion *> lstConnexion;
+    GameScene * scene;
+    QHash<int, Node *> lstNode;
+    QHash<int, Connexion *> lstConnexion;
     Node *currentSelection;
     Node *lastSelection;
-    Power power;
+    float percentToSend;
+    PowerInterface *p;
 
 private slots:
     void selectionChange();
-
+    void sendSquad(int nodeIdFrom, int nodeIdTo);
 };
 
 #endif // MAP_H

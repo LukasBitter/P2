@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+#include "room/index.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])

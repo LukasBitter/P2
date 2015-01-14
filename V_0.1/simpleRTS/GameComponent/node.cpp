@@ -30,9 +30,10 @@ Node *Node::getNode(int idNode)
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-Node::Node(int x, int y, int radius, int ressourcesMax, Gamer *g, QGraphicsItem *parent)
-    : QGraphicsObject(parent), posX(x), posY(y), radius(radius), owner(g),
-      ressourcesMax(ressourcesMax), nbRessources(0), counterAdvance(0), armorLvl(0)
+Node::Node(int x, int y, int radius, int ressourcesMax, Gamer *g)
+    : QGraphicsObject(0), posX(x), posY(y), radius(radius), owner(g),
+      ressourcesMax(ressourcesMax), nbRessources(0), counterAdvance(0), armorLvl(0),
+      invicible(false)
 {
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setAcceptHoverEvents(true);
@@ -70,6 +71,8 @@ QRectF Node::boundingRect() const
 void Node::paint(QPainter *painter,
                 const QStyleOptionGraphicsItem *option,QWidget *widget)
 {
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
     painter->setPen(Qt::black);
     if(owner != 0)
     {
@@ -100,8 +103,9 @@ void Node::advance(int step)
 {
     if(step == 0) return;
 
+    update();
     //Wait number of tic
-    if(counterAdvance != 10)
+    if(counterAdvance < 10)
     {
         ++counterAdvance;
         return;
@@ -117,18 +121,16 @@ void Node::advance(int step)
         nbRessources = ressourcesMax;
     }
 
-    update();
 }
 
 void Node::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    QGraphicsItem::mousePressEvent(event);
-    update();
+    QGraphicsObject::mousePressEvent(event);
+    setCursor(Qt::ArrowCursor);
 }
 
 void Node::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    //Deplacement inferieur au seuil de drag&drop
     if (QLineF(event->screenPos(), event->buttonDownScreenPos(Qt::LeftButton))
         .length() < QApplication::startDragDistance()) {
         return;
@@ -137,18 +139,24 @@ void Node::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     QDrag *drag = new QDrag(event->widget());
     QMimeData *mime = new QMimeData;
     drag->setMimeData(mime);
+
+    mime->setText(QString("%1").arg(getId()));
+
+    drag->exec();
+    setCursor(Qt::ClosedHandCursor);
 }
 
 void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-
+    QGraphicsObject::mouseReleaseEvent(event);
+    setCursor(Qt::ArrowCursor);
 }
 
 /*----------------------------------------------------*/
 /*ASSESSEUR / MUTATEUR*/
 /*----------------------------------------------------*/
 
-int Node::getNbRessources() const
+int Node::getRessources() const
 {
     return nbRessources;
 }
@@ -178,6 +186,16 @@ void Node::setArmorLvl(int a)
     armorLvl = a;
 }
 
+bool Node::getInvicibility() const
+{
+    return invicible;
+}
+
+void Node::setInvicibility(bool b)
+{
+    invicible = b;
+}
+
 int Node::getPosY() const
 {
     return posY;
@@ -197,11 +215,18 @@ int Node::getRessourcesMax() const
     return ressourcesMax;
 }
 
-void Node::setNbRessources(int r)
+void Node::setRessources(int r)
 {
     nbRessources = r;
 
-    update();
+    if(nbRessources < 0)
+    {
+        nbRessources = 0;
+    }
+    if(nbRessources > ressourcesMax)
+    {
+        nbRessources = ressourcesMax;
+    }
 }
 
 void Node::connect(Node &n)
@@ -235,10 +260,10 @@ Connexion * Node::getConnexion(Node &n) const
 
 QString Node::getUpdateString()
 {
-    int id  = -1;
-    if(owner != 0)id = owner->getId();
+    int idGamer  = -1;
+    if(owner != 0)idGamer = owner->getId();
     return QString("%1,%2,%3,%4").arg(nbRessources).
-            arg(ressourcesRate).arg(id).arg(armorLvl);
+            arg(ressourcesRate).arg(idGamer).arg(armorLvl);
 }
 
 void Node::updateFromString(QString &s)
@@ -269,22 +294,23 @@ void Node::incoming(Squad &s)
     if(&g == owner)
     {
         //Entrée d'allier
-        nbRessources += ressource;
+        setRessources(nbRessources+ressource);
     }
     else
     {
         //Entrée d'ennemis
+        if(invicible) ressource = 0;
         ressource = dealDamageOnArmor(ressource);
         if (nbRessources < ressource)
         {
             //Changement de propriétaire
             ressource -= nbRessources;
-            nbRessources = ressource;
+            setRessources(ressource);
             owner = &g;
         }
         else
         {
-            nbRessources -= ressource;
+            setRessources(nbRessources-ressource);
         }
     }
 
