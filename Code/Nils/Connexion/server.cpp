@@ -4,8 +4,9 @@
 
 #include <stdlib.h>
 #include <process.h>
-#include "room/server.h"
-#include "map/gamer.h"
+#include "Connexion/server.h"
+#include "GameComponent/gamer.h"
+#include "GameComponent/gamer.h"
 
 
 #define SEP_CONX "#"

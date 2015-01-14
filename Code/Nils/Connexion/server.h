@@ -2,8 +2,6 @@
 #define SERVER_H
 
 #include <QDialog>
-#include <room/player.h>
-//#include <QHostAddress>
 
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -36,14 +34,8 @@ private:
     QLabel *lPlayerH;
     QLabel *lPlayersConnectedH;
     QLabel *lPlayersReadyH;
-    QList<Gamer *> listGamers;
-    QList<QLabel *> lPlayersNumbers;
-    QList<QLabel *> lPlayersNames;
-    QList<QLabel *> lPlayersConnected;
-    QList<QLabel *> lPlayersReady;
     QList<QTcpSocket *> clientConnections;
     QList<QTcpSocket *> clientWaitingList;
-    QList<Player *> listPlayers;
     QPushButton *quitButton;
     QPushButton *runButton;
     QTcpServer *tcpServer;

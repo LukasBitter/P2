@@ -3,9 +3,9 @@
 #include <QDebug>
 #include <QStringBuilder>
 
-#include "room/client.h"
-#include "map/map.h"
-#include "map/gamer.h"
+#include "Connexion/client.h"
+#include "GameComponent/map.h"
+#include "GameComponent/gamer.h"
 
 #define SEP_CONX "#"
 #define SEP_STATUS ";"
@@ -417,4 +417,3 @@ int Client::getMaxPlayers() const
 {
     return maxPlayers;
 }
-

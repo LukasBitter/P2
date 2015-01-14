@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui network
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 QMAKE_CXXFLAGS_WARN_ON += -Wno-reorder
 
@@ -15,6 +15,10 @@ HEADERS += \
     GameInterface\gamerinterface.h \
     GameComponent\gamescene.h \
     GameInterface\powerinterface.h \
+    GameInterface\clientaffichage.h \
+    GameInterface\gamemenu.h \
+    Connexion\client.h \
+    Connexion\server.h \
     GameInterface\Powers\power.h \
     GameInterface\Powers\powerarmore.h \
     GameInterface\Powers\powerdestroy.h \
@@ -35,6 +39,10 @@ SOURCES += \
     GameInterface\gamerinterface.cpp \
     GameComponent\gamescene.cpp \
     GameInterface\powerinterface.cpp \
+    GameInterface\clientaffichage.cpp \
+    GameInterface\gamemenu.cpp \
+    Connexion\client.cpp \
+    Connexion\server.cpp \
     GameInterface\Powers\power.cpp \
     GameInterface\Powers\powerarmore.cpp \
     GameInterface\Powers\powerdestroy.cpp \

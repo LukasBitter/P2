@@ -1,14 +1,19 @@
 #include "clientaffichage.h"
-#include "room/client.h"
-#include "map/gamer.h"
+#include "Connexion/client.h"
+#include "Connexion/server.h"
+#include "GameComponent/gamer.h"
 
-#include <QWidget>
+#include <QComboBox>
+#include <QDialogButtonBox>
 #include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QGridLayout>
+#include "Connexion/client.h"
 
-Clientaffichage::Clientaffichage(QWidget *parent) :
+ClientAffichage::ClientAffichage(int port, QWidget *parent, bool isHost) :
     QWidget(parent)
 {
-
     readyButton = new QPushButton(tr("Ready"));
     readyButton->setEnabled(false);
     runButton = new QPushButton(tr("Run"));
@@ -43,13 +48,23 @@ Clientaffichage::Clientaffichage(QWidget *parent) :
     connect(runButton, SIGNAL(clicked()), this, SLOT(runGame()));
     connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
 
+    if(isHost)
+    {
+        client = new Client();
+        server = new Server();
+    }
+    else
+    {
+        client = new Client();
+        server = 0;
+    }
     initLabels();
     setUI();
 
 }
 
 
-void Clientaffichage::setUI()
+void ClientAffichage::setUI()
 {
     QLabel *lPlayerNumberH = new QLabel(tr("Player: "));
     QLabel *lPlayerNameH = new QLabel(tr("Name: "));
@@ -94,8 +109,8 @@ void Clientaffichage::setUI()
     portLabel->setBuddy(portLineEdit);
 }
 
-void Clientaffichage::initLabels(){
-    for(int i= 0; i<Client::getMaxPlayers() ;i++)
+void ClientAffichage::initLabels(){
+    for(int i= 0; i<client->getMaxPlayers() ;++i)
     {
         lPlayersNumbers.append(new QLabel(QString("#").append(QString::number(i+1))));
         lPlayersNames.append(new QLabel("n/a"));
@@ -104,14 +119,14 @@ void Clientaffichage::initLabels(){
     }
 }
 
-void Clientaffichage::updateScreen()
+void ClientAffichage::updateScreen()
 {
     int i;
     foreach(Gamer *ele, Gamer::getLstGamer())
     {
         i = ele->getId();
-        lPlayersNames.at(i)->setText(ele->getName());
-        lPlayersConnected.at(i)->setText(ele->isConnected());
-        lPlayersReady.at(i)->setText(ele->isReady());
+        lPlayersNames.at(i)->setText(*ele->getName());
+        lPlayersConnected.at(i)->setText(QString::number(ele->isConnected()));
+        lPlayersReady.at(i)->setText(QString::number(ele->isReady()));
     }
 }

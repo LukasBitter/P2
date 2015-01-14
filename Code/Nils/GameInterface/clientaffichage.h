@@ -3,18 +3,26 @@
 
 #include <QWidget>
 
-QT_BEGIN_NAMESPACE
 class QComboBox;
 class QDialogButtonBox;
 class QLabel;
 class QLineEdit;
 class QPushButton;
-QT_END_NAMESPACE
+class Client;
+class Server;
 
-class Clientaffichage : public QWidget
+namespace GameInterface {
+    class ClientAffichage;
+}
+
+class ClientAffichage : public QWidget
 {
     Q_OBJECT
-
+public:
+    explicit ClientAffichage(int port, QWidget *parent = 0, bool isHost = false);
+private slots:
+    void updateScreen();
+private:
     QComboBox *hostCombo;
     QLineEdit *portLineEdit;
     QLineEdit *userNameLineEdit;
@@ -28,18 +36,11 @@ class Clientaffichage : public QWidget
     QList<QLabel *> lPlayersNames;
     QList<QLabel *> lPlayersConnected;
     QList<QLabel *> lPlayersReady;
+    Client *client;
+    Server *server;
 
     void setUI();
     void initLabels();
-    void updateScreen();
-
-public:
-    explicit Clientaffichage(QWidget *parent = 0);
-
-
-signals:
-
-public slots:
 
 };
 
