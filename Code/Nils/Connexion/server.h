@@ -54,6 +54,7 @@ private:
     QString getHostIp();
     bool isLinkLocalAddress(QHostAddress addr);
     bool isLocalIp(QHostAddress addr);
+    void buildMap();
 
 signals:
 };
