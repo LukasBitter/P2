@@ -303,7 +303,7 @@ QString Server::parse(QString clientMessage)
             rep = "gameIsRunning!";
         else if(!Gamer::isNameExist(listMsg.at(2)))
         {
-            g->setName(listMsg.at(2));
+            g->setName(listMsg.at(2)); // const?
             rep = "userNameOK";
         }
         else
