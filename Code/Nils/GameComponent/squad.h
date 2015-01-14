@@ -5,6 +5,10 @@
 
 class Gamer;
 
+namespace GameComponent {
+class Squad;
+}
+
 /**
  * @class Squad
  * @brief Représente les ressources envoyées à travers la connexion

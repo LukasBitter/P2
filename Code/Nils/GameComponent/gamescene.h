@@ -3,6 +3,10 @@
 
 #include <QGraphicsScene>
 
+namespace GameComponent {
+class GameScene;
+}
+
 /**
  * @class GameScene
  * @brief Scene de jeu

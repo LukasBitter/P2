@@ -13,7 +13,7 @@ class QTcpSocket;
 class QNetworkSession;
 class Map;
 
-namespace Connexion {
+namespace Connexions {
     class Client;
 }
 

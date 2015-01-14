@@ -3,7 +3,6 @@
 
 #include <QDialog>
 
-QT_BEGIN_NAMESPACE
 class QLabel;
 class QPushButton;
 class QTcpServer;
@@ -12,7 +11,10 @@ class QNetworkSession;
 class QDataStream;
 class QHostAddress;
 class Gamer;
-QT_END_NAMESPACE
+
+namespace Connexions {
+class Server;
+}
 
 class Server : public QDialog
 {
