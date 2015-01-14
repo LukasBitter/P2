@@ -19,7 +19,6 @@ Server::Server(QWidget *parent)
     maxPlayers = 4;
     clientsConnectedNb = 0;
     blockSize = 0;
-    clientMessage = "";
     playerNumber =0;
 
     connect(tcpServer, SIGNAL(newConnection()), this, SLOT(onNewClientRequest()));
@@ -184,7 +183,7 @@ void Server::onNewClientRequest()
         connect(activeSocket, SIGNAL(readyRead()), this, SLOT(readRequest()));
 
         Gamer *g = new Gamer();
-
+        g->setSocket(activeSocket);
 
         msg = "serverConnectionOk";
         msg.append(SEP_CONX);
@@ -218,13 +217,6 @@ void Server::readRequest()
     //QTcpSocket *client = qobject_cast<QTcpSocket*>(sender());
     activeSocket = qobject_cast<QTcpSocket*>(sender());
 
-    playerNumber = clientConnections.indexOf(activeSocket)+1;
-    if(playerNumber == -1)
-    {
-        qDebug()<<"SERVER: readRequest / id not foud in Hash / ERROR ";
-        return;
-    }
-    qDebug()<<"SERVER: readRequest / id in Hash = " << playerNumber;
     QDataStream in(activeSocket);
     in.setVersion(QDataStream::Qt_4_0);
 
@@ -247,6 +239,7 @@ void Server::readRequest()
     }
 
     // we catch the rest of the data
+    QString clientMessage;
     in >> clientMessage;
 
     qDebug() << "SERVER: readRequest / clientMessage: " <<clientMessage;
@@ -270,20 +263,6 @@ void Server::readRequest()
     endConversation();
 }
 
-void Server::checkPlayersConnected()
-{
-    for (int i=0; i < maxPlayers; i++)
-    {
-        if(lPlayersConnected.at(i)->text().compare("Connected") == 0)
-        {
-
-            activeSocket = clientConnections.at(i);
-            qDebug() << "checkPlayersConnected / activeSocket->ConnectedState" << activeSocket->ConnectedState;
-
-        }
-    }
-}
-
 void Server::sendAllUsersStatus()
 {
     for (int i=0; i < maxPlayers; i++)
@@ -292,12 +271,11 @@ void Server::sendAllUsersStatus()
         foreach(Gamer *ele, Gamer::getLstGamer())
         //if(lPlayersConnected.at(i)->text().compare("Connected") == 0)
         {
-            i = ele->getId();
-            activeSocket = clientConnections.at(i);
+            activeSocket = ele->getSocket();
+            //activeSocket = clientConnections.at(i);
 
             QString msg = "allUsersStatus";
             msg.append(SEP_CONX);
-            //msg.append(getPlayersStatus());
             msg.append(Gamer::getLstGamerUpdateString());
 
             sendClientResponse(msg);
@@ -311,12 +289,13 @@ QString Server::parse(QString clientMessage)
     QString rep = "NOACTION";
 
     playerNumber = listMsg.at(1);
+    Gamer *g = Gamer::getGamer(playerNumber);
 
     if(listMsg.at(0) == "ReadyRun")
     {
         if(!gameRunning)
         {
-            lPlayersReady.at(playerNumber-1)->setText("Ready");
+            g->setReady(true);
             rep = "clientReadyOK";
         }
         else
@@ -327,7 +306,10 @@ QString Server::parse(QString clientMessage)
         if(gameRunning)
             rep = "gameIsRunning!";
         else if(!Gamer::isNameExist(listMsg.at(2)))
+        {
+            g->setName(listMsg.at(2));
             rep = "userNameOK";
+        }
         else
             rep = "userNameTaken";
     }
@@ -347,12 +329,6 @@ QString Server::parse(QString clientMessage)
             sendClientResponse("lauchGame");
         }
     }
-/*  else if(header == "playerAction"){
-        if(gameRunning)
-            requestServerConnection();
-            //playerAction();
-        // else throw exception XXX_GAME_NOT_RUNNING;
-    }*/
     else
         rep = "NO PLANNED ACTION FOR";
 
@@ -387,51 +363,6 @@ void Server::buildMap()
     m.addConnexion(*aventageNils, *campsBaseNils);
     m.addConnexion(*campsBaseNils, *campsBaseLukas);
 }
-
-bool Server::checkAvailableSocket()
-{
-    activeSocket = tcpServer->nextPendingConnection();
-    //QTcpSocket clientConnection = tcpServer->nextPendingConnection();
-
-    if(clientsConnectedNb < maxPlayers){
-
-        clientsConnectedNb++;
-
-        clientConnections.append(activeSocket);
-
-        connect(activeSocket, SIGNAL(readyRead()), this, SLOT(readRequest()));
-        qDebug()<<"SERVER: checkAvailableSocket / playerNumber: "<<playerNumber;
-        return true;
-    }
-    else
-    {
-        clientWaitingList.append(activeSocket);
-        return false;
-    }
-}
-
-QString Server::checkPlayerName(QString playerName)
-{
-    qDebug()<<"SERVER: checkPlayerName / playerName" << playerName;
-
-    int i;
-    foreach(Gamer *ele, Gamer::getLstGamer())
-    //if(lPlayersConnected.at(i)->text().compare("Connected") == 0)
-    {
-        i = ele->getId();
-        qDebug()<<"SERVER: checkPlayerName / playerName[i]" << player->getPlayerName();
-        if(QString::compare(ele->getName(), playerName) ==0)
-            return "userNameTaken";
-    }
-
-    ele->setName();
-
-    lPlayersNames.at(playerNumber-1)->setText(playerName);
-    listPlayers.at(playerNumber-1)->setPlayerName(playerName);
-
-    return "userNameOK";
-}
-
 
 void Server::sendClientResponse(QString msg)
 {

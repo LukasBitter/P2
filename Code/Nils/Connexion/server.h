@@ -37,7 +37,7 @@ private:
     QNetworkSession *networkSession;
     QByteArray block;
     quint16 blockSize;
-    QString clientMessage;
+    Gamer *currentGamer;
     int playerNumber;
     bool gameRunning;
     int clientsConnectedNb;
@@ -47,7 +47,6 @@ private:
     /*METHODE PRIVE*/
     void sendClientResponse(QString ConnectionMsg);
     bool checkAvailableSocket();
-    QString checkPlayerName(QString msg);
     QString parse(QString clientMessage);
     void sendAllUsersStatus();
     void endConversation();
