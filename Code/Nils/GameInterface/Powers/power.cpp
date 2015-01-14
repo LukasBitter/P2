@@ -127,7 +127,7 @@ void Power::powerEnd()
 }
 
 /*----------------------------------------------------*/
-/*PRIVATES METHODS*/
+/*METHODE PRIVE*/
 /*----------------------------------------------------*/
 
 void Power::activateCountDown()

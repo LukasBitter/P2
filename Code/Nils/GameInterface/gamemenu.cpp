@@ -4,6 +4,10 @@
 #include "gamemenu.h"
 #include "GameInterface/clientaffichage.h"
 
+/*----------------------------------------------------*/
+/*CONSTRUCTEUR / DESTRUCTEUR*/
+/*----------------------------------------------------*/
+
 GameMenu::GameMenu(QWidget *parent) :
     QDialog(parent), port(10243)
 {
@@ -24,6 +28,9 @@ GameMenu::GameMenu(QWidget *parent) :
     setWindowTitle(tr("Basic RTS"));
 }
 
+/*----------------------------------------------------*/
+/*SIGNALS/SLOTS*/
+/*----------------------------------------------------*/
 
 void GameMenu::hostGame()
 {

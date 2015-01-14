@@ -11,42 +11,15 @@
 #include <QGridLayout>
 #include "Connexion/client.h"
 
+/*----------------------------------------------------*/
+/*CONSTRUCTEUR / DESTRUCTEUR*/
+/*----------------------------------------------------*/
+
 ClientAffichage::ClientAffichage(int port, QWidget *parent, bool isHost) :
     QWidget(parent)
 {
-    readyButton = new QPushButton(tr("Ready"));
-    readyButton->setEnabled(false);
-    runButton = new QPushButton(tr("Run"));
-    runButton->setEnabled(false);
-    quitButton = new QPushButton(tr("Quit"));
-    getConnectionButton = new QPushButton(tr("Connection"));
-    getConnectionButton->setDefault(true);
-    getConnectionButton->setEnabled(false);
-
-    portLineEdit = new QLineEdit;
-
-    userNameLineEdit = new QLineEdit;
-    portLineEdit->setValidator(new QIntValidator(1, 65535, this));
-    portLineEdit->setFocus();
     setWindowTitle(tr("Basic RTS Game"));
-
-    statusLabel = new QLabel(tr("To play a Delete game, you must run"
-                                "Delete Game Server as well."));
-
-    buttonBox = new QDialogButtonBox;
-    buttonBox->addButton(getConnectionButton, QDialogButtonBox::ActionRole);
-    buttonBox->addButton(readyButton, QDialogButtonBox::RejectRole);
-    buttonBox->addButton(runButton, QDialogButtonBox::RejectRole);
-    buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
-
-
-    connect(portLineEdit, SIGNAL(textChanged(QString)),
-            this, SLOT(enableGetConnectionButton()));
-    connect(getConnectionButton, SIGNAL(clicked()),
-            this, SLOT(requestNewConnection()));
-    connect(readyButton, SIGNAL(clicked()), this, SLOT(ReadyRun()));
-    connect(runButton, SIGNAL(clicked()), this, SLOT(runGame()));
-    connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
+    setUI();
 
     if(isHost)
     {
@@ -58,20 +31,83 @@ ClientAffichage::ClientAffichage(int port, QWidget *parent, bool isHost) :
         client = new Client();
         server = 0;
     }
-    initLabels();
-    setUI();
+
+    connect(portLineEdit, SIGNAL(textChanged(QString)),
+            this, SLOT(enableGetConnectionButton()));
+    connect(getConnectionButton, SIGNAL(clicked()),
+            this, SLOT(requestNewConnection()));
+    connect(readyButton, SIGNAL(clicked()), this, SLOT(ReadyRun()));
+    connect(runButton, SIGNAL(clicked()), this, SLOT(runGame()));
+    connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
 }
 
+ClientAffichage::~ClientAffichage()
+{
+}
+
+/*----------------------------------------------------*/
+/*SIGNALS/SLOTS*/
+/*----------------------------------------------------*/
+
+void ClientAffichage::updateScreen()
+{
+    int i;
+    foreach(Gamer *ele, Gamer::getLstGamer())
+    {
+        i = ele->getId();
+        lPlayersNames.at(i)->setText(*ele->getName());
+        lPlayersConnected.at(i)->setText(QString::number(ele->isConnected()));
+        lPlayersReady.at(i)->setText(QString::number(ele->isReady()));
+    }
+}
+
+/*----------------------------------------------------*/
+/*METHODE PRIVE*/
+/*----------------------------------------------------*/
 
 void ClientAffichage::setUI()
 {
-    QLabel *lPlayerNumberH = new QLabel(tr("Player: "));
-    QLabel *lPlayerNameH = new QLabel(tr("Name: "));
-    QLabel *lPlayersConnectedH = new QLabel(tr("Connection: "));
-    QLabel *lPlayersReadyH = new QLabel(tr("Ready: "));
-    QLabel *hostLabel = new QLabel(tr("&Server name:"));
-    QLabel *portLabel = new QLabel(tr("S&erver port:"));
-    QLabel *userNameLabel = new QLabel(tr("&User name:"));
+    //Creation de l'interface
+    buttonBox = new QDialogButtonBox(this);
+    readyButton = new QPushButton(tr("Ready"), this);
+    runButton = new QPushButton(tr("Run"), this);
+    quitButton = new QPushButton(tr("Quit"), this);
+    getConnectionButton = new QPushButton(tr("Connection"), this);
+    hostCombo = new QComboBox(this);
+    portLineEdit = new QLineEdit(this);
+    userNameLineEdit = new QLineEdit(this);
+    portLineEdit->setValidator(new QIntValidator(1, 65535, this));
+    statusLabel = new QLabel(tr("To play a Delete game, you must run"
+                                "Delete Game Server as well."), this);
+
+    for(int i= 0; i<client->getMaxPlayers() ;++i)
+    {
+        lPlayersNumbers.append(new QLabel(QString("#").append(QString::number(i+1)),this));
+        lPlayersNames.append(new QLabel("n/a",this));
+        lPlayersConnected.append(new QLabel("n/a",this));
+        lPlayersReady.append(new QLabel("",this));
+    }
+
+    runButton->setEnabled(false);
+    hostCombo->setEditable(true);
+    readyButton->setEnabled(false);
+    getConnectionButton->setDefault(true);
+    getConnectionButton->setEnabled(false);
+
+    buttonBox->addButton(getConnectionButton, QDialogButtonBox::ActionRole);
+    buttonBox->addButton(readyButton, QDialogButtonBox::RejectRole);
+    buttonBox->addButton(runButton, QDialogButtonBox::RejectRole);
+    buttonBox->addButton(quitButton, QDialogButtonBox::RejectRole);
+
+    portLineEdit->setFocus();
+
+    QLabel *lPlayerNumberH = new QLabel(tr("Player: "),this);
+    QLabel *lPlayerNameH = new QLabel(tr("Name: "),this);
+    QLabel *lPlayersConnectedH = new QLabel(tr("Connection: "),this);
+    QLabel *lPlayersReadyH = new QLabel(tr("Ready: "),this);
+    QLabel *hostLabel = new QLabel(tr("&Server name:"),this);
+    QLabel *portLabel = new QLabel(tr("S&erver port:"),this);
+    QLabel *userNameLabel = new QLabel(tr("&User name:"),this);
 
     QGridLayout *gridLayout= new QGridLayout(this);
 
@@ -106,26 +142,4 @@ void ClientAffichage::setUI()
 
     hostLabel->setBuddy(hostCombo);
     portLabel->setBuddy(portLineEdit);
-}
-
-void ClientAffichage::initLabels(){
-    for(int i= 0; i<client->getMaxPlayers() ;++i)
-    {
-        lPlayersNumbers.append(new QLabel(QString("#").append(QString::number(i+1))));
-        lPlayersNames.append(new QLabel("n/a"));
-        lPlayersConnected.append(new QLabel("n/a"));
-        lPlayersReady.append(new QLabel(""));
-    }
-}
-
-void ClientAffichage::updateScreen()
-{
-    int i;
-    foreach(Gamer *ele, Gamer::getLstGamer())
-    {
-        i = ele->getId();
-        lPlayersNames.at(i)->setText(*ele->getName());
-        lPlayersConnected.at(i)->setText(QString::number(ele->isConnected()));
-        lPlayersReady.at(i)->setText(QString::number(ele->isReady()));
-    }
 }
