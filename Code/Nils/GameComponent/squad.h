@@ -27,11 +27,11 @@ public:
 
 private:
     /*ENTREE*/
-    const Gamer &owner;
+    const Gamer &owner; ///< Propriétaire de l'equipe
 
     /*OUTIL*/
-    int progress;
-    int nbRessource;
+    int progress; ///< Progression actuelle
+    int nbRessource; ///< Nombre de ressource contenue
 };
 
 #endif // SQUAD_H

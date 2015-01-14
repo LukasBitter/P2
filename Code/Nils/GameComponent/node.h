@@ -20,6 +20,10 @@ class Node;
  */
 class Node : public QGraphicsObject, public IdentityToken
 {
+    /*
+     * Besoin d acceder à la méthode addConnexion lors de
+     * la création de map à partir d'une chaine de création
+     */
     friend class Map;
     Q_OBJECT
 
@@ -48,8 +52,6 @@ public:
     int getRessourcesRate() const;
     void setRessourcesRate(int r);
     int getRessourcesMax() const;
-    int getPosY() const;
-    int getPosX() const;
     int getRadius() const;
     int getArmorLvl() const;
     void setArmorLvl(int a);
@@ -68,19 +70,17 @@ public:
 
 private:
     /*ENTREE*/
-    int nbRessources;
-    int armorLvl;
-    int ressourcesRate;
-    const int ressourcesMax;
-    const int posX;
-    const int posY;
-    const Gamer *owner;
-    bool invicible;
+    int nbRessources; ///< Nombre de ressources acctuellement dans le noeud
+    int armorLvl; ///< Armure du noeud en nombre de ressources
+    int ressourcesRate; ///< Taux de croissance des ressources par "tic"
+    const int ressourcesMax; ///< Capacité maximale du noeud
+    const Gamer *owner; ///< Propriétaire acctuel du noeud
+    bool invicible; ///< Indique si le noeud est invincible
 
     /*TOOL*/
-    int radius;
-    QMap<Node *, Connexion *> mapConnexion; //Cle = noeud distant, Valeur = pinteur sur sa connextion
-    int counterAdvance;
+    int radius; ///< Rayon du noeud
+    QMap<Node *, Connexion *> mapConnexion; ///< Cle = noeud distant, Valeur = pointeur sur sa connextion
+    int counterAdvance; ///< Reducteur de "tic" pour le gain de ressource
 
     /*METHODE PRIVE*/
     void addConnexion(Connexion *c);

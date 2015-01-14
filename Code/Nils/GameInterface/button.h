@@ -32,7 +32,7 @@ signals:
 
 private:
     /*ENTREE*/
-    QString text;
+    QString text; ///< Texte du bouton
 };
 
 #endif // BUTTON_H

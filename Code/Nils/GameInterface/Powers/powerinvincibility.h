@@ -27,7 +27,7 @@ public:
 
 private:
     /*OUTIL*/
-    Node *memory;
+    Node *memory; ///< Memoire temporaire -> reset à la fin de pouvoir
 };
 
 #endif // POWERINVINCIBILITY_H

@@ -27,8 +27,8 @@ public:
 
 private:
     /*OUTIL*/
-    Node *memory;
-    const int armorLvl;
+    Node *memory; ///< Memoire temporaire -> reset à la fin de pouvoir
+    const int armorLvl; ///< Niveau d'armure à rajouter
 };
 
 #endif // POWERARMORE_H

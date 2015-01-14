@@ -58,17 +58,19 @@ private slots:
     void selectionChange();
 
 private:
+    /*INTERFACE*/
+    PowerInterface *p; ///< Interface utilisateur de gestion des pouvoirs
+
     /*ENTREE*/
-    const Gamer *owner;
+    const Gamer *owner; ///< Joueur actuellement au commande de la map
 
     /*OUTIL*/
-    GameScene * scene;
-    QHash<int, Node *> lstNode;
-    QHash<int, Connexion *> lstConnexion;
-    Node *currentSelection;
-    Node *lastSelection;
-    float percentToSend;
-    PowerInterface *p;
+    GameScene * scene; ///< Scene de jeu
+    QHash<int, Node *> lstNode; ///< Liste de tous les noeuds
+    QHash<int, Connexion *> lstConnexion; ///< Liste de toutes les connexions
+    Node *currentSelection; ///< Noeud acctuellement sélectionné
+    Node *lastSelection; ///< Avant dernier noeud sélectionné
+    float percentToSend; ///< Pourcentage du noeud à envoyer lors d'un envoi
 
     /*METHODE PRIVE*/
     void sendSquad(int nodeIdFrom, int nodeIdTo);

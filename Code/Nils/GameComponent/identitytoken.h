@@ -16,11 +16,14 @@ public:
     IdentityToken();
 
     /*ASSESSEUR / MUTATEUR*/
+    ///@warning Utiliser UNIQUEMENT en cas de mise
+    ///a jour, préférer setNextId sinon
     void setId(int i);
     int getId() const;
+    ///@brief Prend comme ID l'ID libre suivant
     void setNextId();
 private:
-    int id;
+    int id; ///< Identifiant unique de l'objet
 };
 
 #endif // IDENTITYTOKEN_H

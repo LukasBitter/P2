@@ -31,14 +31,15 @@ Node *Node::getNode(int idNode)
 /*----------------------------------------------------*/
 
 Node::Node(int x, int y, int radius, int ressourcesMax, Gamer *g)
-    : QGraphicsObject(0), posX(x), posY(y), radius(radius), owner(g),
-      ressourcesMax(ressourcesMax), nbRessources(0), counterAdvance(0), armorLvl(0),
-      invicible(false)
+    : QGraphicsObject(0), radius(radius), owner(g), invicible(false),
+      ressourcesMax(ressourcesMax), nbRessources(0), counterAdvance(0), armorLvl(0)
 {
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setAcceptHoverEvents(true);
     setNextId();
     lstNodes.insert(getId(), this);
+    setX(x);
+    setY(y);
 }
 
 Node::~Node()

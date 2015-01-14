@@ -48,9 +48,9 @@ private slots:
 
 private:
     /*OUTIL*/
-    QTimer *countDown;
-    QTimer *endPower;
-    bool ready;
+    QTimer *countDown; ///< Temps de recharge du pouvoir
+    QTimer *endPower; ///< Durée du pouvoir
+    bool ready; ///< Indique si le pouvoir est pret
 
     /*METHODE PRIVE*/
     void activateCountDown();

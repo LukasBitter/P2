@@ -5,3 +5,4 @@ Tester si la virgule en trop en fin de parsing peu faire du chenis
 Remplacer les for each par des while dans connexion.sendSquad
 vérifier pourquoi il ne faut pas appelker dragMoveEvent de la scene
 ACCES CONCURENT DEPUIS LES TIMER!!!!!
+verifier si le rayon du noeu ne peu etre supprimé

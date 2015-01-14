@@ -58,7 +58,7 @@ private:
     Button *btPowerArmore;
 
     /*OUTIL*/
-    int mana;
+    int mana; ///< Réservoir de ressources consomées par les pouvoirs
     Power *powerDestroy;
     Power *powerInvincibility;
     Power *powerTeleportation;
