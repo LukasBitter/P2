@@ -26,49 +26,29 @@ private slots:
     void sessionOpened();
     void onNewClientRequest();
     void readRequest();
-    //void clientClosed(int number);
-    //void gameEnds(int winner);
 
 private:
     QLabel *statusLabel;
-    QLabel *lPlayerH;
-    QLabel *lPlayersConnectedH;
-    QLabel *lPlayersReadyH;
     QList<QTcpSocket *> clientConnections;
     QList<QTcpSocket *> clientWaitingList;
-    QPushButton *quitButton;
-    QPushButton *runButton;
     QTcpServer *tcpServer;
-    //QList<QTcpSocket *> clientConnections;
-    //QTcpSocket *clientConnection[];
     QTcpSocket *activeSocket;
     QDataStream in;
     QNetworkSession *networkSession;
     QByteArray block;
     quint16 blockSize;
     QString clientMessage;
-    QString *tabStr;
-    //QString playerId;
     int playerNumber;
     bool gameRunning;
     int clientsConnectedNb;
     int playersInGame;
-    int winner;
-    int maxPts;
     int maxPlayers;
-    void init();
-    void setUI();
-    bool getDataStream();
-    void getClientRequest();
-    void sendMessage();
-    void sendPlayerStatus();
+
+    /*METHODE PRIVE*/
     void sendClientResponse(QString ConnectionMsg);
     bool checkAvailableSocket();
-    QString playerReady();
     QString checkPlayerName(QString msg);
     QString parse(QString clientMessage);
-    QString getPlayersStatus();
-    void deletePlayer(QString playerNumber);
     void sendAllUsersStatus();
     void endConversation();
     void checkPlayersConnected();
@@ -77,8 +57,6 @@ private:
     bool isLocalIp(QHostAddress addr);
 
 signals:
-    void endGame(int winner);
-    void playerWinsGame();
 };
 
 #endif // SERVER_H

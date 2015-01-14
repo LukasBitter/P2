@@ -60,7 +60,6 @@ ClientAffichage::ClientAffichage(int port, QWidget *parent, bool isHost) :
     }
     initLabels();
     setUI();
-
 }
 
 

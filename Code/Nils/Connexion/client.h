@@ -2,7 +2,7 @@
 #define CLIENT_H
 
 #include <QDialog>
-#include <QtNetwork/QTcpSocket>
+#include <QTcpSocket>
 #include <QDataStream>
 
 class QDialogButtonBox;
@@ -34,6 +34,7 @@ private slots:
     void launchGame();
 
 private:
+    int playerNumber;
     int playersInGame;
     const int maxPlayers;
     int gameRunning;

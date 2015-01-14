@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <process.h>
 #include "Connexion/server.h"
-#include "GameComponent/gamer.h"
+#include "GameComponent/map.h"
 #include "GameComponent/gamer.h"
 
 
@@ -15,15 +15,14 @@
 Server::Server(QWidget *parent)
 :   QDialog(parent), tcpServer(0), networkSession(0)
 {
-    statusLabel = new QLabel;
-    quitButton = new QPushButton(tr("Quit"));
-    runButton = new QPushButton(tr("Run"));
-    quitButton->setAutoDefault(false);
-    runButton->setAutoDefault(false);
-    maxPts = 20;
+    gameRunning= 0;
     maxPlayers = 4;
+    clientsConnectedNb = 0;
+    blockSize = 0;
     clientMessage = "";
     playerNumber =0;
+
+    connect(tcpServer, SIGNAL(newConnection()), this, SLOT(onNewClientRequest()));
 
     QNetworkConfigurationManager manager;
     if (manager.capabilities() & QNetworkConfigurationManager::NetworkSessionRequired) {
@@ -51,69 +50,6 @@ Server::Server(QWidget *parent)
 
         sessionOpened();
     }
-
-    connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
-    connect(tcpServer, SIGNAL(newConnection()), this, SLOT(onNewClientRequest()));
-
-    init();
-    setUI();
-
-    setWindowTitle(tr("Delete Game Server"));
-
-}
-
-void Server::init(){
-    for(int i= 0; i<maxPlayers;i++)
-    {
-        //listPlayers.append(new Player(i, maxPts));
-        lPlayersNumbers.append(new QLabel(QString("#").append(QString::number(i+1))));
-        lPlayersNames.append(new QLabel(""));
-        lPlayersConnected.append(new QLabel("n/a"));
-        lPlayersReady.append(new QLabel(""));
-    }
-    playersInGame = 0;
-    clientsConnectedNb = 0;
-    blockSize = 0;
-
-    lPlayerH = new QLabel(tr("Player: "));
-    lPlayersConnectedH = new QLabel(tr("Connection: "));
-    lPlayersReadyH = new QLabel(tr("Ready: "));
-    gameRunning= 0;
-}
-
-void Server::setUI()
-{
-    QGridLayout *gridLayout= new QGridLayout(this);
-    gridLayout->setColumnStretch(1, 40);
-    gridLayout->setColumnStretch(2, 25);
-    gridLayout->setColumnStretch(3, 35);
-    gridLayout->setColumnStretch(4, 35);
-    gridLayout->setColumnStretch(5, 35);
-
-    gridLayout->setRowStretch(1,20);
-    gridLayout->setRowStretch(2,10);
-    gridLayout->setRowStretch(3,10);
-    gridLayout->setRowStretch(4,10);
-    gridLayout->setRowStretch(5,10);
-
-    gridLayout->addWidget(statusLabel,1, 1, 1, 4);
-    gridLayout->addWidget(lPlayerH,2, 1);
-    gridLayout->addWidget(lPlayersNumbers.at(0),2, 2);
-    gridLayout->addWidget(lPlayersNumbers.at(1),2, 3);
-    gridLayout->addWidget(lPlayersNumbers.at(2),2, 4);
-    gridLayout->addWidget(lPlayersNumbers.at(3),2, 5);
-    gridLayout->addWidget(lPlayersConnectedH,3, 1);
-    gridLayout->addWidget(lPlayersConnected.at(0),3, 2);
-    gridLayout->addWidget(lPlayersConnected.at(1),3, 3);
-    gridLayout->addWidget(lPlayersConnected.at(2),3, 4);
-    gridLayout->addWidget(lPlayersConnected.at(3),3, 5);
-    gridLayout->addWidget(lPlayersReadyH,4, 1);
-    gridLayout->addWidget(lPlayersReady.at(0),4, 2);
-    gridLayout->addWidget(lPlayersReady.at(1),4, 3);
-    gridLayout->addWidget(lPlayersReady.at(2),4, 4);
-    gridLayout->addWidget(lPlayersReady.at(3),4, 5);
-    gridLayout->addWidget(runButton,5, 2);
-    gridLayout->addWidget(quitButton,5, 3);
 }
 
 void Server::sessionOpened()
@@ -238,43 +174,35 @@ bool Server::isLocalIp(QHostAddress addr){
 void Server::onNewClientRequest()
 {
     QString msg;
-    checkPlayersConnected();
-    if(checkAvailableSocket())
-    {
+    //checkPlayersConnected();
+
+    if(clientsConnectedNb < maxPlayers){
+        clientsConnectedNb++;
+
+        activeSocket = tcpServer->nextPendingConnection();
+        //clientConnections.append(activeSocket);
+        connect(activeSocket, SIGNAL(readyRead()), this, SLOT(readRequest()));
+
         Gamer *g = new Gamer();
+
+
         msg = "serverConnectionOk";
         msg.append(SEP_CONX);
         msg.append(QString::number(g->getId()));
         msg.append(SEP_CONX);
         msg.append(Gamer::getLstGamerUpdateString());
-        //lPlayersConnected.at(playerNumber-1)->setText("Connected");
-        //lPlayersReady.at(playerNumber-1)->setText("n/a");
+        g->setConnected(true);
     }
     else
+    {
+        clientWaitingList.append(activeSocket);
         msg = "noMoreSocketAvailable";
+    }
+
     qDebug()<<"SERVER: onNewClientRequest / msg =" << msg;
 
     sendClientResponse(msg);
     endConversation();
-}
-
-QString Server::getPlayersStatus()
-{
-    QString rep;
-    //rep= labelBuildString(lPlayersNumbers);
-    QLabel *ele;
-    foreach(ele, lPlayersNumbers)
-        rep += ele->text().remove(0, 1) + SEP_STATUS;
-    foreach(ele, lPlayersNames)
-        rep += ele->text() + SEP_STATUS;
-    foreach(ele, lPlayersConnected)
-        rep += ele->text() + SEP_STATUS;
-    foreach(ele, lPlayersReady)
-        rep += ele->text() + SEP_STATUS;
-
-    rep.remove(rep.length()-1, 1);
-    qDebug() << "rep" << rep;
-    return rep;
 }
 
 void Server::endConversation()
@@ -360,13 +288,17 @@ void Server::sendAllUsersStatus()
 {
     for (int i=0; i < maxPlayers; i++)
     {
-        if(lPlayersConnected.at(i)->text().compare("Connected") == 0)
+        int i;
+        foreach(Gamer *ele, Gamer::getLstGamer())
+        //if(lPlayersConnected.at(i)->text().compare("Connected") == 0)
         {
+            i = ele->getId();
             activeSocket = clientConnections.at(i);
 
             QString msg = "allUsersStatus";
             msg.append(SEP_CONX);
-            msg.append(getPlayersStatus());
+            //msg.append(getPlayersStatus());
+            msg.append(Gamer::getLstGamerUpdateString());
 
             sendClientResponse(msg);
         }
@@ -377,6 +309,8 @@ QString Server::parse(QString clientMessage)
 {
     QList<QString> listMsg = clientMessage.split(SEP_CONX);
     QString rep = "NOACTION";
+
+    playerNumber = listMsg.at(1);
 
     if(listMsg.at(0) == "ReadyRun")
     {
@@ -392,21 +326,21 @@ QString Server::parse(QString clientMessage)
     {
         if(gameRunning)
             rep = "gameIsRunning!";
-        else if(!Gamer::checkNameExist(listMsg.at(1)))
+        else if(!Gamer::isNameExist(listMsg.at(2)))
             rep = "userNameOK";
         else
             rep = "userNameTaken";
     }
     else if (listMsg.at(0) == "clientClose")
     {
-        deletePlayer(listMsg.at(1));
+        // delete gamer
         activeSocket->disconnectFromHost();
         qDebug() << "Host disconnected";
 
     }
     else if (listMsg.at(0) == "runGame")
     {
-        createGamers();
+        //createGamers(); // pas besoin car déjà créés
         buildMap();
         for (int i=0; i < maxPlayers; i++)
         {
@@ -423,16 +357,6 @@ QString Server::parse(QString clientMessage)
         rep = "NO PLANNED ACTION FOR";
 
     return rep;
-}
-
-void Server::createGamers()
-{
-    Player *ele;
-    foreach(ele, listPlayers)
-    {
-        Gamer *g = new Gamer();
-        listGamers.append(g);
-    }
 }
 
 void Server::buildMap()
@@ -473,9 +397,6 @@ bool Server::checkAvailableSocket()
 
         clientsConnectedNb++;
 
-        //playerNumber = clientsConnectedNb;
-
-        //clientConnections->append(clientConnection);
         clientConnections.append(activeSocket);
 
         connect(activeSocket, SIGNAL(readyRead()), this, SLOT(readRequest()));
@@ -489,26 +410,21 @@ bool Server::checkAvailableSocket()
     }
 }
 
-void Server::deletePlayer(QString playerNumber)
-{
-    int num = playerNumber.toInt()-1;
-    listPlayers.removeAt(num);
-    lPlayersNumbers.removeAt(num);
-    lPlayersNames.removeAt(num);
-    lPlayersConnected.removeAt(num);
-    lPlayersReady.removeAt(num);
-}
-
 QString Server::checkPlayerName(QString playerName)
 {
     qDebug()<<"SERVER: checkPlayerName / playerName" << playerName;
 
-    //foreach(Player *player, listPlayers)
+    int i;
+    foreach(Gamer *ele, Gamer::getLstGamer())
+    //if(lPlayersConnected.at(i)->text().compare("Connected") == 0)
     {
+        i = ele->getId();
         qDebug()<<"SERVER: checkPlayerName / playerName[i]" << player->getPlayerName();
-        if(QString::compare(player->getPlayerName(), playerName) ==0)
+        if(QString::compare(ele->getName(), playerName) ==0)
             return "userNameTaken";
     }
+
+    ele->setName();
 
     lPlayersNames.at(playerNumber-1)->setText(playerName);
     listPlayers.at(playerNumber-1)->setPlayerName(playerName);

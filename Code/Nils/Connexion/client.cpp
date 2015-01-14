@@ -223,6 +223,7 @@ void Client::ReadyRun()
 
 void Client::sendServerMessage(QString msg)
 {
+    QString str = pla
     qDebug()<<"CLIENT: sendServerMessage";
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
@@ -373,6 +374,8 @@ QString Client::parse(QString clientMessage)
 QString Client::checkUserNameString()
 {
     QString rep = "checkUserName";
+    rep.append(SEP_CONX);
+    rep.append(playerNumber);
     rep.append(SEP_CONX);
     rep.append(userNameLineEdit->text());
 
