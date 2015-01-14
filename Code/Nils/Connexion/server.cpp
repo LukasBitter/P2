@@ -265,21 +265,17 @@ void Server::readRequest()
 
 void Server::sendAllUsersStatus()
 {
-    for (int i=0; i < maxPlayers; i++)
+    foreach(Gamer *ele, Gamer::getLstGamer())
+    //if(lPlayersConnected.at(i)->text().compare("Connected") == 0)
     {
-        int i;
-        foreach(Gamer *ele, Gamer::getLstGamer())
-        //if(lPlayersConnected.at(i)->text().compare("Connected") == 0)
-        {
-            activeSocket = ele->getSocket();
-            //activeSocket = clientConnections.at(i);
+        activeSocket = ele->getSocket();
+        //activeSocket = clientConnections.at(i);
 
-            QString msg = "allUsersStatus";
-            msg.append(SEP_CONX);
-            msg.append(Gamer::getLstGamerUpdateString());
+        QString msg = "allUsersStatus";
+        msg.append(SEP_CONX);
+        msg.append(Gamer::getLstGamerUpdateString());
 
-            sendClientResponse(msg);
-        }
+        sendClientResponse(msg);
     }
 }
 
@@ -288,7 +284,7 @@ QString Server::parse(QString clientMessage)
     QList<QString> listMsg = clientMessage.split(SEP_CONX);
     QString rep = "NOACTION";
 
-    playerNumber = listMsg.at(1);
+    playerNumber = listMsg.at(1).toInt();
     Gamer *g = Gamer::getGamer(playerNumber);
 
     if(listMsg.at(0) == "ReadyRun")
