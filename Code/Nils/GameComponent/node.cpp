@@ -10,23 +10,6 @@
 
 
 /*----------------------------------------------------*/
-/*STATIC*/
-/*----------------------------------------------------*/
-
-QHash<int,Node *> lstNodes;
-Node *Node::getNode(int idNode)
-{
-    if(lstNodes.contains(idNode))
-    {
-        return lstNodes.value(idNode);
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-/*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
@@ -65,8 +48,8 @@ Node::~Node()
 
 QRectF Node::boundingRect() const
 {
-    return QRectF(x() - radius, y() - radius,
-                  2* radius, 2* radius);
+    return QRectF(posX - radius-3, posY - radius-3,
+                      2*radius+7, 2*radius+6);
 }
 
 void Node::paint(QPainter *painter,
@@ -74,30 +57,35 @@ void Node::paint(QPainter *painter,
 {
     Q_UNUSED(option);
     Q_UNUSED(widget);
-    painter->setPen(Qt::black);
     if(owner != 0)
     {
         painter->setBrush(owner->getColor());
     }
-    if(isSelected())
+    if(isSelected() || isUnderMouse())
     {
-        painter->setPen(Qt::DashLine);
+        QPen pen(Qt::gray);
+        pen.setStyle(Qt::SolidLine);
+        pen.setWidth(5);
+        painter->setPen(pen);
+        painter->drawEllipse(QPoint(x(),y()),radius+3,radius+3);
     }
-    else
-    {
-        painter->setPen(Qt::SolidLine);
-    }
-
-    painter->drawEllipse(x() - radius, y() - radius,
-                         2* radius, 2* radius);
+    painter->setPen(Qt::black);
+    painter->drawEllipse(QPoint(x(),y()),radius,radius);
     if(armorLvl > 0)
     {
-        painter->drawText(QPoint(x() , y()),QString("%1 + %2").arg(nbRessources).arg(armorLvl));
+        if(armorLvl<10)
+            painter->drawText(QPoint(x()-12 , y()+15),QString("+%1").arg(armorLvl));
+        else if(armorLvl<100)
+            painter->drawText(QPoint(x()-15 , y()+15),QString("+%1").arg(armorLvl));
+        else
+            painter->drawText(QPoint(x()-19 , y()+15),QString("+%1").arg(armorLvl));
     }
+    if(nbRessources<10)
+        painter->drawText(QPoint(x()-4 , y()+4),QString("%1").arg(nbRessources));
+    else if(nbRessources<100)
+        painter->drawText(QPoint(x()-7 , y()+4),QString("%1").arg(nbRessources));
     else
-    {
-        painter->drawText(QPoint(x() , y()),QString("%1").arg(nbRessources));
-    }
+        painter->drawText(QPoint(x()-11 , y()+4),QString("%1").arg(nbRessources));
 }
 
 void Node::advance(int step)
