@@ -74,6 +74,8 @@ private:
 
     /*METHODE PRIVE*/
     void sendSquad(int nodeIdFrom, int nodeIdTo);
+    Node *getNode(int idNode);
+    Connexion *getConnexion(int idConnexion);
 };
 
 #endif // MAP_H

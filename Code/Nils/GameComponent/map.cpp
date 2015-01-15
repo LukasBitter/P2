@@ -92,8 +92,8 @@ Map::Map(QString create, const Gamer *g, QWidget *parent):
                 connexionStr.pop_front();
                 int idNode2 = connexionStr.first().toInt();
 
-                Node *n1 = Node::getNode(idNode1);
-                Node *n2 = Node::getNode(idNode2);
+                Node *n1 = getNode(idNode1);
+                Node *n2 = getNode(idNode2);
                 Connexion *c = new Connexion(*n1, *n2);
                 c->setId(numberId);
 
@@ -258,7 +258,7 @@ void Map::updateFromString(QString &s)
                 int numberId = connexionStr.first().toInt();
                 connexionStr.pop_front();
                 QString &data = connexionStr.first();
-                Connexion *c = Connexion::getConnexion(numberId);
+                Connexion *c = getConnexion(numberId);
                 c->updateFromString(data);
             }
         }
@@ -271,7 +271,7 @@ void Map::updateFromString(QString &s)
                 int numberId = nodeStr.first().toInt();
                 nodeStr.pop_front();
                 QString &data = nodeStr.first();
-                Node *n = Node::getNode(numberId);
+                Node *n = getNode(numberId);
                 n->updateFromString(data);
             }
         }
@@ -377,4 +377,26 @@ void Map::sendSquad(int nodeIdFrom, int nodeIdTo)
     }
 }
 
+Node *Map::getNode(int idNode)
+{
+    if(lstNode.contains(idNode))
+    {
+        return lstNode.value(idNode);
+    }
+    else
+    {
+        return 0;
+    }
+}
 
+Connexion *Map::getConnexion(int idConnexion)
+{
+    if(lstConnexion.contains(idConnexion))
+    {
+        return lstConnexion.value(idConnexion);
+    }
+    else
+    {
+        return 0;
+    }
+}

@@ -9,24 +9,6 @@
 
 
 /*----------------------------------------------------*/
-/*METHODE DE CLASSE*/
-/*----------------------------------------------------*/
-
-QHash<int,Connexion *> lstConnexions;
-
-Connexion *Connexion::getConnexion(int idConnexion)
-{
-    if(lstConnexions.contains(idConnexion))
-    {
-        return lstConnexions.value(idConnexion);
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-/*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 

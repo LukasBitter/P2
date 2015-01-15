@@ -28,9 +28,6 @@ class Node : public QGraphicsObject, public IdentityToken
     Q_OBJECT
 
 public:
-    /*METHODE DE CLASSE*/
-    static Node * getNode(int idNode);
-
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     explicit Node(int x, int y, int radius, int ressourcesMax,
                   Gamer *g=0);
