@@ -10,47 +10,16 @@
 #define SEP_CONX "#"
 #define SEP_STATUS ";"
 
-Client::Client(QWidget *parent, bool isHost, int port) :
-    QDialog(parent), networkSession(0), isHost(isHost), maxPlayers(4)
+Client::Client(QString host, QObject *parent, int port) : QObject(parent),
+    playerNumber(0), userName(""), port(port), host(host),
+    connexionOk(false), nameOk(false), readyOk(false), blockSize(0),
+    networkSession(0), isHost(isHost)
 {
-    // a mettre dans le client d'affichage
-    //hostCombo = new QComboBox;
-    //hostCombo->setEditable(true);
-
-    // find out name of this machine
-    QString name = QHostInfo::localHostName();
-    if (!name.isEmpty()) {
-        hostCombo->addItem(name);
-        QString domain = QHostInfo::localDomainName();
-        if (!domain.isEmpty())
-            hostCombo->addItem(name + QChar('.') + domain);
-    }
-    if (name != QString("localhost"))
-        hostCombo->addItem(QString("localhost"));
-    // find out IP addresses of this machine
-    QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
-    // add non-localhost addresses
-    for (int i = 0; i < ipAddressesList.size(); ++i) {
-        if (!ipAddressesList.at(i).isLoopback())
-            hostCombo->addItem(ipAddressesList.at(i).toString());
-    }
-    // add localhost addresses
-    for (int i = 0; i < ipAddressesList.size(); ++i) {
-        if (ipAddressesList.at(i).isLoopback())
-            hostCombo->addItem(ipAddressesList.at(i).toString());
-    }
-
-
     tcpSocket = new QTcpSocket(this);
 
-    connect(hostCombo, SIGNAL(editTextChanged(QString)),
-            this, SLOT(enableGetConnectionButton()));
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readServerResponse()));
     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
-            this, SLOT(displayError(QAbstractSocket::SocketError)));
-    //connect(this, SIGNAL(closedSignal()),this, SLOT(sendClientClosed()));
-
-    init();
+            this, SLOT(onErrorOccured(QAbstractSocket::SocketError)));
 
     QNetworkConfigurationManager manager;
     if (manager.capabilities() & QNetworkConfigurationManager::NetworkSessionRequired) {
@@ -68,29 +37,12 @@ Client::Client(QWidget *parent, bool isHost, int port) :
         }
 
         networkSession = new QNetworkSession(config, this);
-        connect(networkSession, SIGNAL(opened()), this, SLOT(sessionOpened()));
+        //connect(networkSession, SIGNAL(opened()), this, SLOT(sessionOpened()));
 
-        //getFortuneButton->setEnabled(false);
-        statusLabel->setText(tr("Opening network session."));
+        //statusLabel->setText(tr("Opening network session."));
+        emit setStatusLabel(tr("Opening network session."));
         networkSession->open();
     }
-
-    if(isHost)
-    {
-        portLineEdit->setText(QString::number(port));
-        userNameLineEdit->setFocus();
-        //emit getConnectionButton->clicked();
-    }
-}
-
-
-void Client::init(){
-
-    playerNumber = "NULL";
-    playersInGame = 0;
-    blockSize = 0;
-
-    gameRunning= 0;
 }
 
 void Client::requestNewConnection()
@@ -112,7 +64,7 @@ void Client::requestNewConnection()
     }
     else
     {
-        QString rep = checkUserNameString();
+        QString rep = buildStringCheckUserName();
         sendServerMessage(rep);
         getConnectionButton->setText(tr("Connection"));
     }
@@ -120,7 +72,7 @@ void Client::requestNewConnection()
     getConnectionButton->setEnabled(false);
 }
 
-void Client::displayError(QAbstractSocket::SocketError socketError)
+void Client::onErrorOccured(QAbstractSocket::SocketError socketError)
 {
     switch (socketError) {
     case QAbstractSocket::RemoteHostClosedError:
@@ -142,36 +94,31 @@ void Client::displayError(QAbstractSocket::SocketError socketError)
                                  tr("The following error occurred: %1.")
                                  .arg(tcpSocket->errorString()));
     }
-}
-
-void Client::enableGetConnectionButton()
-{
-    getConnectionButton->setEnabled((!networkSession || networkSession->isOpen()) &&
-                                 !hostCombo->currentText().isEmpty() &&
-                                 !portLineEdit->text().isEmpty());
 
 }
 
-void Client::sessionOpened()
-{
-    // Save the used configuration
-    QNetworkConfiguration config = networkSession->configuration();
-    QString id;
-    if (config.type() == QNetworkConfiguration::UserChoice)
-        id = networkSession->sessionProperty(QLatin1String("UserChoiceConfiguration")).toString();
-    else
-        id = config.identifier();
 
-    QSettings settings(QSettings::UserScope, QLatin1String("QtProject"));
-    settings.beginGroup(QLatin1String("QtNetwork"));
-    settings.setValue(QLatin1String("DefaultNetworkConfiguration"), id);
-    settings.endGroup();
 
-    statusLabel->setText(tr("This client requires that you run the "
-                            " Delete Game Server example as well."));
+//void Client::sessionOpened()
+//{
+//    // Save the used configuration
+//    QNetworkConfiguration config = networkSession->configuration();
+//    QString id;
+//    if (config.type() == QNetworkConfiguration::UserChoice)
+//        id = networkSession->sessionProperty(QLatin1String("UserChoiceConfiguration")).toString();
+//    else
+//        id = config.identifier();
 
-    enableGetConnectionButton();
-}
+//    QSettings settings(QSettings::UserScope, QLatin1String("QtProject"));
+//    settings.beginGroup(QLatin1String("QtNetwork"));
+//    settings.setValue(QLatin1String("DefaultNetworkConfiguration"), id);
+//    settings.endGroup();
+
+//    statusLabel->setText(tr("This client requires that you run the "
+//                            " Delete Game Server example as well."));
+
+//    enableGetConnectionButton();
+//}
 
 void Client::runGame()
 {
@@ -218,8 +165,6 @@ void Client::ReadyRun()
     tcpSocket->flush();
 
 
-    if (isHost)
-        runButton->setEnabled(true);
 }
 
 void Client::sendServerMessage(QString msg)
@@ -322,17 +267,18 @@ void Client::endConversation()
     updateScreen();
 }
 
-QString Client::parse(QString clientMessage)
+QString Client::parse(QString serverMessage)
 {
-    QList<QString> listMsg = clientMessage.split(SEP_CONX);
+    QList<QString> listMsg = serverMessage.split(SEP_CONX);
     QString rep = "NOACTION";
 
     if (listMsg.at(0) == "serverConnectionOk")
     {
         qDebug()<<"CLIENT: parse / setPlayerId";
         playerNumber = listMsg.at(1);
-        setStatus("Connected to server. Checking user name");
-        rep = checkUserNameString();
+        emit updateStatus(2));
+        //setStatus("Connected to server. Checking user name");
+        rep = buildStringCheckUserName();
         //setUsersStatus(listMsg.at(2));
         Gamer::updateLstGamerFromString(listMsg.at(2));
     }
@@ -342,15 +288,11 @@ QString Client::parse(QString clientMessage)
     }
     else if (listMsg.at(0) == "userNameOK")
     {
-        setStatus("Connection established. Press \"Ready\" when readyto start");
-        readyButton->setEnabled(true);
-        userNameLineEdit->setDisabled(true);
+        emit userNameOk();
     }
     else if (listMsg.at(0) == "userNameTaken")
     {
-        setStatus("userName already taken. Choose another one");
-        getConnectionButton->setText(tr("Validate Name"));
-        getConnectionButton->setEnabled(true);
+        emit userNameTaken();
     }
     else if (listMsg.at(0) == "lauchGame")
     {
@@ -372,7 +314,7 @@ QString Client::parse(QString clientMessage)
     return rep;
 }
 
-QString Client::checkUserNameString()
+QString Client::buildStringCheckUserName()
 {
     QString rep = "checkUserName";
     rep.append(SEP_CONX);
@@ -386,20 +328,17 @@ QString Client::checkUserNameString()
 void Client ::setUsersStatus(QString msg)
 {
     qDebug()<<"CLIENT: setUsersStatus";
-    QList<QString> listStatus = msg.split(SEP_STATUS);
 
-    for(int i = 0; i<4;i++)
-    {
-        lPlayersNumbers.at(i)->setText(listStatus.at(i));
-        lPlayersNames.at(i)->setText(listStatus.at(i+1*maxPlayers));
-        lPlayersConnected.at(i)->setText(listStatus.at(i+2*maxPlayers));
-        lPlayersReady.at(i)->setText(listStatus.at(i+3*maxPlayers));
-    }
-}
+    Gamer::updateLstGamerFromString(msg);
+//    QList<QString> listStatus = msg.split(SEP_STATUS);
 
-void Client::setStatus(QString msg)
-{
-    statusLabel->setText(msg);
+//    for(int i = 0; i<4;i++)
+//    {
+//        lPlayersNumbers.at(i)->setText(listStatus.at(i));
+//        lPlayersNames.at(i)->setText(listStatus.at(i+1*maxPlayers));
+//        lPlayersConnected.at(i)->setText(listStatus.at(i+2*maxPlayers));
+//        lPlayersReady.at(i)->setText(listStatus.at(i+3*maxPlayers));
+//    }
 }
 
 void Client::closeEvent( QCloseEvent *e) {
@@ -414,10 +353,49 @@ void Client::closeEvent( QCloseEvent *e) {
 
 
 /*----------------------------------------------------*/
-/*ASSESSEUR / MUTATEUR*/
+/*ASSESSEUR /
 /*----------------------------------------------------*/
 
 int Client::getMaxPlayers() const
 {
     return maxPlayers;
+}
+
+QString *Client::getUserName() const
+{
+    return userName;
+}
+
+QString Client::getPort() const
+{
+    return port;
+}
+
+/*----------------------------------------------------*/
+/* MUTATEUR*/
+/*----------------------------------------------------*/
+
+void Client::setUserName(QString *name)
+{
+    userName = name;
+}
+
+bool Client::isConnexionOk() const
+{
+    return connexionOk;
+}
+
+bool Client::isNameOk() const
+{
+    return nameOk;
+}
+
+bool Client::isReadyOk() const
+{
+    return readyOk;
+}
+
+void Client::setReady(bool r)
+{
+    readyOk = r;
 }

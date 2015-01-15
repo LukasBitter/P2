@@ -31,6 +31,7 @@ public:
     /*SIGNALS/SLOTS*/
 private slots:
     void updateScreen();
+    void userNameTaken();
 
 private:
     /*INTERFACE*/

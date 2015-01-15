@@ -22,20 +22,18 @@ ClientAffichage::ClientAffichage(int port, QWidget *parent, bool isHost) :
     setUI();
 
     if(isHost)
-    {
-        client = new Client();
         server = new Server();
-    }
     else
-    {
-        client = new Client();
         server = 0;
-    }
 
+    client = new Client(this, isHost, port);
+
+    connect(hostCombo, SIGNAL(editTextChanged(QString)),
+            this, SLOT(enableGetConnectionButton()));
     connect(portLineEdit, SIGNAL(textChanged(QString)),
             this, SLOT(enableGetConnectionButton()));
     connect(getConnectionButton, SIGNAL(clicked()),
-            this, SLOT(requestNewConnection()));
+            client, SLOT(requestNewConnection()));
     connect(readyButton, SIGNAL(clicked()), this, SLOT(ReadyRun()));
     connect(runButton, SIGNAL(clicked()), this, SLOT(runGame()));
     connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
@@ -61,6 +59,31 @@ void ClientAffichage::updateScreen()
     }
 }
 
+void ClientAffichage::setStatusLabel(int status)
+{
+    QString label;
+    if (str == 2)
+        label = tr("Connected to server. Checking user name";
+
+    this->statusLabel->setText(label);
+}
+
+void ClientAffichage::userNameOk()
+{
+    this->statusLabel->setText(tr("Connection established. Press \"Ready\" when readyto start"));
+    readyButton->setEnabled(true);
+    userNameLineEdit->setDisabled(true);
+    updateScreen();
+}
+
+void ClientAffichage::userNameTaken()
+{
+    this->statusLabel->setText(tr("userName already taken. Choose another one"));
+    getConnectionButton->setText(tr("Validate Name"));
+    getConnectionButton->setEnabled(true);
+    updateScreen();
+}
+
 /*----------------------------------------------------*/
 /*METHODE PRIVE*/
 /*----------------------------------------------------*/
@@ -77,7 +100,7 @@ void ClientAffichage::setUI()
     portLineEdit = new QLineEdit(this);
     userNameLineEdit = new QLineEdit(this);
     portLineEdit->setValidator(new QIntValidator(1, 65535, this));
-    statusLabel = new QLabel(tr("To play a Delete game, you must run"
+    statusLabel = new QLabel(tr("To play a Basic RTS, you must run"
                                 "Delete Game Server as well."), this);
 
     for(int i= 0; i<client->getMaxPlayers() ;++i)
@@ -142,4 +165,12 @@ void ClientAffichage::setUI()
 
     hostLabel->setBuddy(hostCombo);
     portLabel->setBuddy(portLineEdit);
+}
+
+void ClientAffichage::enableGetConnectionButton()
+{
+    getConnectionButton->setEnabled((!networkSession || networkSession->isOpen()) &&
+                                 !hostCombo->currentText().isEmpty() &&
+                                 !portLineEdit->text().isEmpty());
+
 }

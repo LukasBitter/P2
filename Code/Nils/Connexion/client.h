@@ -1,7 +1,7 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include <QDialog>
+#include <QObject>
 #include <QTcpSocket>
 #include <QDataStream>
 
@@ -17,45 +17,57 @@ namespace Connexions {
     class Client;
 }
 
-class Client
+class Client : QObject
 {
     Q_OBJECT
 public:
-    explicit Client(QWidget *parent = 0, bool isHost = 0, int port = 0);
-    int getMaxPlayers();
-private slots:
+    explicit Client(QString host = "localhost", QObject *parent = 0, int port = 0);
+    int getMaxPlayers() const;
+    QString *getUserName() const;
+    void setUserName(QString *name);
+    int getPort() const;
+    bool isConnexionOk() const;
+    bool isNameOk() const;
+    bool isReadyOk() const;
+
+signals:
+    void updateClient();
+    void errorOccured(QAbstractSocket::SocketError socketError);
+
+public slots:
+    void setReady(bool r);
     void requestNewConnection();
-    void readServerResponse();
-    void displayError(QAbstractSocket::SocketError socketError);
-    void enableGetConnectionButton();
-    void sessionOpened();
     void ReadyRun();
-    void runGame();
-    void launchGame();
+
+private slots:
+    void readServerResponse();
+    void onErrorOccured(QAbstractSocket::SocketError socketError);
+    //void sessionOpened();
 
 private:
     int playerNumber;
-    int playersInGame;
-    const int maxPlayers;
-    int gameRunning;
-    bool isHost;
-    Map *game;
+    QString *userName;
+    int port;
+    QString host;
+    bool connexionOk;
+    bool nameOk;
+    bool readyOk;
     QDataStream in;
     QTcpSocket *tcpSocket;
     quint16 blockSize;
     QNetworkSession *networkSession;
 
     /*METHODE PRIVE*/
-    void init();
-    void setPlayerNumber(QString number);
-    void setStatus(QString msg);
     void sendServerMessage(QString msg);
     void setUsersStatus(QString msg);
     void endConversation();
-    QString parse(QString clientMessage);
-    QString checkUserNameString();
+    QString parse(QString serverMessage);
     void closeEvent( QCloseEvent * event );
+    void launchGame();
 
+    /*METHODE PRIVE CONSTRUCTION MESSAGE*/
+    QString buildStringCheckUserName();
+    void buildStringRunGame();
 };
 
 #endif // CLIENT_H
