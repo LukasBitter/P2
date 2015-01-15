@@ -12,43 +12,16 @@
 #define SEP_CONX "#"
 #define SEP_STATUS ";"
 
-Server::Server(QWidget *parent)
-:   QDialog(parent), tcpServer(0), networkSession(0)
+
+Server::Server(int port, int maxConnexion, QWidget *parent) :
+    QObject(parent), tcpServer(0), networkSession(0), blockSize(0)
 {
-    gameRunning= 0;
-    maxPlayers = 4;
-    clientsConnectedNb = 0;
-    blockSize = 0;
-    playerNumber =0;
+    this->maxConnexion = maxConnexion;
+    tcpServer = new QTcpServer(this);
 
     connect(tcpServer, SIGNAL(newConnection()), this, SLOT(onNewClientRequest()));
 
-    QNetworkConfigurationManager manager;
-    if (manager.capabilities() & QNetworkConfigurationManager::NetworkSessionRequired) {
-        // Get saved network configuration
-
-        QSettings settings(QSettings::UserScope, QLatin1String("QtProject"));
-        settings.beginGroup(QLatin1String("QtNetwork"));
-        const QString id = settings.value(QLatin1String("DefaultNetworkConfiguration")).toString();
-        settings.endGroup();
-
-        // If the saved network configuration is not currently discovered use the system default
-        QNetworkConfiguration config = manager.configurationFromIdentifier(id);
-        if ((config.state() & QNetworkConfiguration::Discovered) !=
-            QNetworkConfiguration::Discovered) {
-            config = manager.defaultConfiguration();
-        }
-
-        networkSession = new QNetworkSession(config, this);
-        connect(networkSession, SIGNAL(opened()), this, SLOT(sessionOpened()));
-
-        statusLabel->setText(tr("Opening network session."));
-        networkSession->open();
-
-    } else {
-
-        sessionOpened();
-    }
+    tcpServer->setMaxPendingConnections(maxConnexion);
 }
 
 void Server::sessionOpened()
@@ -89,11 +62,6 @@ void Server::sessionOpened()
     statusLabel->setText(tr("The server is running on\n\nIP adresse(s): %1\nport: %2\n\n"
                             "Wait until all players connect and run the Delete Game Client now:")
                          .arg(ipAddress).arg(tcpServer->serverPort()));
-}
-
-int Server::getPort()
-{
-    return tcpServer->serverPort() ;
 }
 
 QString Server::getHostIp(){
@@ -277,87 +245,6 @@ void Server::sendAllUsersStatus()
 
         sendClientResponse(msg);
     }
-}
-
-QString Server::parse(QString clientMessage)
-{
-    QList<QString> listMsg = clientMessage.split(SEP_CONX);
-    QString rep = "NOACTION";
-
-    playerNumber = listMsg.at(1).toInt();
-    Gamer *g = Gamer::getGamer(playerNumber);
-
-    if(listMsg.at(0) == "ReadyRun")
-    {
-        if(!gameRunning)
-        {
-            g->setReady(true);
-            rep = "clientReadyOK";
-        }
-        else
-            rep = "gameIsRunning!";
-    }
-    else if (listMsg.at(0) == "checkUserName")
-    {
-        if(gameRunning)
-            rep = "gameIsRunning!";
-        else if(!Gamer::isNameExist(listMsg.at(2)))
-        {
-            g->setName(new QString(listMsg.at(2))); // const?
-            rep = "userNameOK";
-        }
-        else
-            rep = "userNameTaken";
-    }
-    else if (listMsg.at(0) == "clientClose")
-    {
-        // delete gamer
-        activeSocket->disconnectFromHost();
-        qDebug() << "Host disconnected";
-
-    }
-    else if (listMsg.at(0) == "runGame")
-    {
-        //createGamers(); // pas besoin car déjà créés
-        buildMap();
-        for (int i=0; i < maxPlayers; i++)
-        {
-            sendClientResponse("lauchGame");
-        }
-    }
-    else
-        rep = "NO PLANNED ACTION FOR";
-
-    return rep;
-}
-
-void Server::buildMap()
-{
-    //Création de la map
-
-    Map *m = new Map(0);
-    Node *campsBaseNils = new Node(180,-150,50,100,nils,0);
-    Node *campsBaseLukas = new Node(-0,-200,30,100,lukas,0);
-    Node *aventageNils = new Node(180,10,10,10,0,0);
-    Node *lienLukasNils = new Node(-10,-20,50,110,0,0);
-
-    campsBaseNils->setRessourcesRate(1);
-    campsBaseLukas->setRessourcesRate(1);
-    aventageNils->setRessourcesRate(1);
-    lienLukasNils->setRessourcesRate(1);
-
-    campsBaseNils->setNbRessources(50);
-    campsBaseLukas->setNbRessources(50);
-    lienLukasNils->setNbRessources(50);
-
-    m.addNode(*campsBaseNils);
-    m.addNode(*campsBaseLukas);
-    m.addNode(*aventageNils);
-    m.addNode(*lienLukasNils);
-    m.addConnexion(*lienLukasNils, *campsBaseNils);
-    m.addConnexion(*lienLukasNils, *campsBaseLukas);
-    m.addConnexion(*aventageNils, *campsBaseNils);
-    m.addConnexion(*campsBaseNils, *campsBaseLukas);
 }
 
 void Server::sendClientResponse(QString msg)

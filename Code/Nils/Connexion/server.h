@@ -1,14 +1,12 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-class QLabel;
-class QPushButton;
+#include <QObject>
+
 class QTcpServer;
 class QTcpSocket;
-class QNetworkSession;
 class QDataStream;
 class QHostAddress;
-class Gamer;
 
 namespace Connexions {
 class Server;
@@ -19,8 +17,8 @@ class Server : public QObject
     Q_OBJECT
 
 public:
-    explicit Server(QWidget *parent = 0);
-    int getPort();
+    explicit Server(int port, int maxConnexion, QWidget *parent = 0);
+    bool isConnexionOk() const;
 
 private slots:
     void sessionOpened();
@@ -28,7 +26,7 @@ private slots:
     void readRequest();
 
 private:
-    QLabel *statusLabel;
+    bool connexionOk;
     QList<QTcpSocket *> clientConnections;
     QList<QTcpSocket *> clientWaitingList;
     QTcpServer *tcpServer;
@@ -37,12 +35,7 @@ private:
     QNetworkSession *networkSession;
     QByteArray block;
     quint16 blockSize;
-    Gamer *currentGamer;
-    int playerNumber;
-    bool gameRunning;
-    int clientsConnectedNb;
-    int playersInGame;
-    int maxPlayers;
+    int maxConnexion;
 
     /*METHODE PRIVE*/
     void sendClientResponse(QString ConnectionMsg);
@@ -54,7 +47,6 @@ private:
     QString getHostIp();
     bool isLinkLocalAddress(QHostAddress addr);
     bool isLocalIp(QHostAddress addr);
-    void buildMap();
 
 signals:
 };
