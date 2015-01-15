@@ -20,22 +20,23 @@ public:
     explicit Server(int port, int maxConnexion, QWidget *parent = 0);
     bool isConnexionOk() const;
 
+signals:
+    void errorOccured(QAbstractSocket::SocketError socketError);
+    void messageRecive(QString);
+
 private slots:
-    void sessionOpened();
-    void onNewClientRequest();
-    void readRequest();
+    void readFromSocket();
+    void onErrorOccured(QAbstractSocket::SocketError socketError);
+    void onNewClient();
 
 private:
     bool connexionOk;
-    QList<QTcpSocket *> clientConnections;
-    QList<QTcpSocket *> clientWaitingList;
+    QList<QTcpSocket *> lstClient;
     QTcpServer *tcpServer;
     QTcpSocket *activeSocket;
     QDataStream in;
-    QNetworkSession *networkSession;
     QByteArray block;
     quint16 blockSize;
-    int maxConnexion;
 
     /*METHODE PRIVE*/
     void sendClientResponse(QString ConnectionMsg);
@@ -44,7 +45,6 @@ private:
     void sendAllUsersStatus();
     void endConversation();
     void checkPlayersConnected();
-    QString getHostIp();
     bool isLinkLocalAddress(QHostAddress addr);
     bool isLocalIp(QHostAddress addr);
 

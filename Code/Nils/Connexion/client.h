@@ -11,7 +11,7 @@ namespace Connexions {
     class Client;
 }
 
-class Client : QObject
+class Client : public QObject
 {
     Q_OBJECT
 public:
@@ -20,10 +20,10 @@ public:
 
 signals:
     void errorOccured(QAbstractSocket::SocketError socketError);
-    void messageRecive(QString);
+    void messageReciveFromServeur(QString);
 
 public slots:
-    void sendServerMessage(QString msg);
+    void sendMessageToServer(QString msg);
 
 private slots:
     void readFromSocket();
@@ -33,8 +33,6 @@ private:
     bool connexionOk;
     QDataStream in;
     QTcpSocket *tcpSocket;
-    quint16 blockSize;
-    QNetworkSession *networkSession;
 };
 
 #endif // CLIENT_H

@@ -6,3 +6,4 @@ Remplacer les for each par des while dans connexion.sendSquad
 vérifier pourquoi il ne faut pas appelker dragMoveEvent de la scene
 ACCES CONCURENT DEPUIS LES TIMER!!!!!
 verifier si le rayon du noeu ne peu etre supprimé
+Faire une hierarchiede class pour le client et server, il y a des redondence evitable

@@ -7,9 +7,6 @@
 #include "GameComponent/map.h"
 #include "GameComponent/gamer.h"
 
-#define SEP_CONX "#"
-#define SEP_STATUS ";"
-
 Client::Client(QString host, QObject *parent, int port) : QObject(parent),
     connexionOk(false), blockSize(0), networkSession(0)
 {
@@ -43,16 +40,14 @@ void Client::onErrorOccured(QAbstractSocket::SocketError socketError)
     emit errorOccured(socketError);
 }
 
-void Client::sendServerMessage(QString msg)
+void Client::sendMessageToServer(QString msg)
 {
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_4_0);
 
-    out << (quint16)0;
-    out << msg;
-    out.device()->seek(0);
     out << (quint16)(block.size() - sizeof(quint16));
+    out << msg;
 
     qDebug()<<"CLIENT: sendServerMessage / msg: "<<msg;
 
@@ -65,21 +60,16 @@ void Client::readFromSocket()
     QDataStream in(tcpSocket);
     in.setVersion(QDataStream::Qt_4_0);
 
-    if (blockSize == 0)
-    {
-        if (tcpSocket->bytesAvailable() < (int)sizeof(quint16))
-            return;
-        in >> blockSize;
-    }
-
-    if (tcpSocket->bytesAvailable() < blockSize)
+    quint16 blockSize = 0;
+    if (tcpSocket->bytesAvailable() < (int)sizeof(quint16))
         return;
+    in >> blockSize;
 
     QString serverMessage;
     in >> serverMessage;
 
     blockSize = 0;
-    emit messageRecive(serverMessage);
+    emit messageReciveFromServeur(serverMessage);
 }
 
 bool Client::isConnexionOk() const

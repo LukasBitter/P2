@@ -25,7 +25,8 @@ HEADERS += \
     GameInterface\Powers\powerteleportation.h \
     GameInterface\button.h \
     GameInterface/ennum.h \
-    GameInterface/progressbar.h
+    GameInterface/progressbar.h \
+    Connexion/parser.h
 
 SOURCES += \
     GameComponent\connexion.cpp \
@@ -47,7 +48,8 @@ SOURCES += \
     GameInterface\Powers\powerinvincibility.cpp \
     GameInterface\Powers\powerteleportation.cpp \
     GameInterface\button.cpp \
-    GameInterface/progressbar.cpp
+    GameInterface/progressbar.cpp \
+    Connexion/parser.cpp
 
 OTHER_FILES += \
     Notes.txt
