@@ -56,6 +56,8 @@ private:
     /*METHODE PRIVE*/
     void setUI();
 
+    void setStatusLabel(int status);
+    void userNameOk();
 };
 
 #endif // CLIENTAFFICHAGE_H

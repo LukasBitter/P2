@@ -19,6 +19,7 @@ public:
 
     /*SURCHARGE*/
     void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
 };
 
 #endif // GAMESCENE_H

@@ -23,6 +23,6 @@ void PowerTeleportation::powerAction(Node *n1, Node *n2)
         n1->setRessources(n1->getRessources() - ressources);
         Squad *s = new Squad(*n1->getOwner());
         s->setNbRessources(ressources);
-        n2->incoming(*s);
+        n2->incoming(s);
     }
 }

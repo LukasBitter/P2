@@ -21,12 +21,12 @@ ClientAffichage::ClientAffichage(int port, QWidget *parent, bool isHost) :
     setWindowTitle(tr("Basic RTS Game"));
     setUI();
 
-    if(isHost)
-        server = new Server();
-    else
-        server = 0;
+//    if(isHost)
+//        server = new Server();
+//    else
+//        server = 0;
 
-    client = new Client(this, isHost, port);
+//    client = new Client(this, isHost, port);
 
     connect(hostCombo, SIGNAL(editTextChanged(QString)),
             this, SLOT(enableGetConnectionButton()));
@@ -57,15 +57,6 @@ void ClientAffichage::updateScreen()
         lPlayersConnected.at(i)->setText(QString::number(ele->isConnected()));
         lPlayersReady.at(i)->setText(QString::number(ele->isReady()));
     }
-}
-
-void ClientAffichage::setStatusLabel(int status)
-{
-    QString label;
-    if (str == 2)
-        label = tr("Connected to server. Checking user name";
-
-    this->statusLabel->setText(label);
 }
 
 void ClientAffichage::userNameOk()
@@ -103,13 +94,7 @@ void ClientAffichage::setUI()
     statusLabel = new QLabel(tr("To play a Basic RTS, you must run"
                                 "Delete Game Server as well."), this);
 
-    for(int i= 0; i<client->getMaxPlayers() ;++i)
-    {
-        lPlayersNumbers.append(new QLabel(QString("#").append(QString::number(i+1)),this));
-        lPlayersNames.append(new QLabel("n/a",this));
-        lPlayersConnected.append(new QLabel("n/a",this));
-        lPlayersReady.append(new QLabel("",this));
-    }
+
 
     runButton->setEnabled(false);
     hostCombo->setEditable(true);
@@ -167,10 +152,3 @@ void ClientAffichage::setUI()
     portLabel->setBuddy(portLineEdit);
 }
 
-void ClientAffichage::enableGetConnectionButton()
-{
-    getConnectionButton->setEnabled((!networkSession || networkSession->isOpen()) &&
-                                 !hostCombo->currentText().isEmpty() &&
-                                 !portLineEdit->text().isEmpty());
-
-}

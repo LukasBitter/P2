@@ -8,19 +8,16 @@
 #include "GameComponent/gamer.h"
 
 Client::Client(QString host, QObject *parent, int port) : QObject(parent),
-    connexionOk(false), blockSize(0), networkSession(0)
+    connexionOk(false)
 {
     tcpSocket = new QTcpSocket(this);
 
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readFromSocket()));
+    connect(tcpSocket, SIGNAL(connected()), this, SLOT(readFromSocket()));
     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
             this, SLOT(onErrorOccured(QAbstractSocket::SocketError)));
 
     tcpSocket->connectToHost(host,port);
-    if(tcpSocket->state() == QAbstractSocket::ConnectedState)
-    {
-        connexionOk = true;
-    }
 }
 
 void Client::onErrorOccured(QAbstractSocket::SocketError socketError)
@@ -70,6 +67,11 @@ void Client::readFromSocket()
 
     blockSize = 0;
     emit messageReciveFromServeur(serverMessage);
+}
+
+void Client::connected()
+{
+    connexionOk = true;
 }
 
 bool Client::isConnexionOk() const

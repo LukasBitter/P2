@@ -1,13 +1,17 @@
 #include "GameComponent/map.h"
 #include "GameComponent/gamer.h"
 #include "GameComponent/node.h"
+#include "Connexion/server.h"
+#include "Connexion/client.h"
 #include <QtWidgets>
 #include <QApplication>
 #include <qdebug.h>
+#include "form.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
 
     //Créatoin des joueur
     Gamer *nils = new Gamer();
@@ -17,15 +21,15 @@ int main(int argc, char *argv[])
 
     Map m(nils);
 
-    /*Map m("6.5.2/7.5.3/8.4.2/9.2.3/@2.180.-150.50.100.0/3.0.-200.30.100.1/4.180.10.10.10.-1/5.-10.-20.50.110.-1/",
-          nils); //*/
+//    /*Map m("6.5.2/7.5.3/8.4.2/9.2.3/@2.180.-150.50.100.0/3.0.-200.30.100.1/4.180.10.10.10.-1/5.-10.-20.50.110.-1/",
+//          nils); //*/
 
 
     //Création de la map
-    Node *campsBaseNils = new Node(180,-150,50,100,nils);
-    Node *campsBaseLukas = new Node(-0,-200,30,100,lukas);
-    Node *aventageNils = new Node(180,10,10,10,0);
-    Node *lienLukasNils = new Node(-10,-20,50,110,0);
+    Node *campsBaseNils = new Node(180,0,50,100,nils);
+    Node *campsBaseLukas = new Node(0,0,30,100,lukas);
+    Node *aventageNils = new Node(180,100,10,10,0);
+    Node *lienLukasNils = new Node(90,-90,50,110,0);
 
     campsBaseNils->setRessourcesRate(1);
     campsBaseLukas->setRessourcesRate(1);
@@ -50,6 +54,12 @@ int main(int argc, char *argv[])
     QTimer timer;
     QObject::connect(&timer, SIGNAL(timeout()), &m, SLOT(advance()));
     timer.start(100);
+
+//    Form s(true);
+//    Form c(false);
+
+//    s.show();
+//    c.show();
 
     m.show();
     return a.exec();

@@ -10,83 +10,68 @@
 
 
 Server::Server(int port, int maxConnexion, QWidget *parent) :
-    QObject(parent), tcpServer(0), networkSession(0), blockSize(0)
+    QObject(parent), tcpServer(0)
 {
-    this->maxConnexion = maxConnexion;
     tcpServer = new QTcpServer(this);
 
     connect(tcpServer, SIGNAL(newConnection()), this, SLOT(onNewClient()));
 
     tcpServer->setMaxPendingConnections(maxConnexion);
-    tcpServer->listen();
+    tcpServer->listen(QHostAddress::Any, port);
     if(tcpServer->isListening())
     {
         connexionOk = true;
     }
 }
 
+bool Server::isConnexionOk() const
+{
+    return connexionOk;
+}
+
 void Server::onNewClient()
 {
-    activeSocket = tcpServer->nextPendingConnection();
+    QTcpSocket *activeSocket = tcpServer->nextPendingConnection();
 
-    connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readFromSocket()));
-    connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
+    connect(activeSocket, SIGNAL(readyRead()), this, SLOT(readFromSocket()));
+    connect(activeSocket, SIGNAL(error(QAbstractSocket::SocketError)),
             this, SLOT(onErrorOccured(QAbstractSocket::SocketError)));
 }
 
-void Client::readFromSocket()
+void Server::readFromSocket()
 {
     QTcpSocket *socket = qobject_cast<QTcpSocket*>(sender());
     QDataStream in(socket);
     in.setVersion(QDataStream::Qt_4_0);
 
-    if (blockSize == 0)
-    {
-        if (socket->bytesAvailable() < (int)sizeof(quint16))
-            return;
-        in >> blockSize;
-    }
-
-    if (socket->bytesAvailable() < blockSize)
+    quint16 blockSize = 0;
+    if (socket->bytesAvailable() < (int)sizeof(quint16))
         return;
+    in >> blockSize;
 
     QString clientMessage;
     in >> clientMessage;
 
     blockSize = 0;
-    emit messageReciveFromServeur(clientMessage);
+    emit messageReciveFromClient(socket, clientMessage);
 }
 
-void Server::sendAllUsersStatus()
+void Server::onErrorOccured(QAbstractSocket::SocketError socketError)
 {
-    foreach(Gamer *ele, Gamer::getLstGamer())
-    //if(lPlayersConnected.at(i)->text().compare("Connected") == 0)
-    {
-        activeSocket = ele->getSocket();
-        //activeSocket = clientConnections.at(i);
-
-        QString msg = "allUsersStatus";
-        msg.append(SEP_CONX);
-        msg.append(Gamer::getLstGamerUpdateString());
-
-        sendClientResponse(msg);
-    }
+    emit errorOccured(socketError);
 }
 
-void Server::sendClientResponse(QString msg)
+void Server::sendMessageToClient(QTcpSocket *socket, QString msg)
 {
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_4_0);
 
+    out << (quint16)(block.size() - sizeof(quint16));
+    out << msg;
+
     qDebug()<<"SERVER: buildClientResponse / msg: "<<msg;
 
-    out << (quint16)0;
-    out << msg;
-    out.device()->seek(0);
-    out << (quint16)(block.size() - sizeof(quint16));
-
-    QString w = QString::number(activeSocket->write(block));
-    qDebug() << "w: " << w;
-    activeSocket->flush();
+    socket->write(block);
+    socket->flush();
 }

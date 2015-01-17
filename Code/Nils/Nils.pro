@@ -26,7 +26,7 @@ HEADERS += \
     GameInterface\button.h \
     GameInterface/ennum.h \
     GameInterface/progressbar.h \
-    Connexion/parser.h
+    form.h
 
 SOURCES += \
     GameComponent\connexion.cpp \
@@ -49,7 +49,9 @@ SOURCES += \
     GameInterface\Powers\powerteleportation.cpp \
     GameInterface\button.cpp \
     GameInterface/progressbar.cpp \
-    Connexion/parser.cpp
+    form.cpp
 
 OTHER_FILES += \
     Notes.txt
+
+FORMS +=

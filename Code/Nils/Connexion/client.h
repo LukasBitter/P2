@@ -4,6 +4,7 @@
 #include <QObject>
 
 #include <QTcpSocket>
+#include <QTcpSocket>
 
 class QTcpSocket;
 
@@ -27,6 +28,7 @@ public slots:
 
 private slots:
     void readFromSocket();
+    void connected();
     void onErrorOccured(QAbstractSocket::SocketError socketError);
 
 private:

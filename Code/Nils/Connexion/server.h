@@ -3,10 +3,10 @@
 
 #include <QObject>
 
+#include <QTcpSocket>
+
 class QTcpServer;
 class QTcpSocket;
-class QDataStream;
-class QHostAddress;
 
 namespace Connexions {
 class Server;
@@ -21,32 +21,19 @@ public:
     bool isConnexionOk() const;
 
 signals:
-    void errorOccured(QAbstractSocket::SocketError socketError);
-    void messageRecive(QString);
+    void errorOccured(QTcpSocket::SocketError socketError);
+    void messageReciveFromClient(QTcpSocket *t, QString msg);
 
+public slots:
+    void sendMessageToClient(QTcpSocket *socket, QString msg);
+    void onErrorOccured(QTcpSocket::SocketError socketError);
 private slots:
     void readFromSocket();
-    void onErrorOccured(QAbstractSocket::SocketError socketError);
     void onNewClient();
 
 private:
     bool connexionOk;
-    QList<QTcpSocket *> lstClient;
     QTcpServer *tcpServer;
-    QTcpSocket *activeSocket;
-    QDataStream in;
-    QByteArray block;
-    quint16 blockSize;
-
-    /*METHODE PRIVE*/
-    void sendClientResponse(QString ConnectionMsg);
-    bool checkAvailableSocket();
-    QString parse(QString clientMessage);
-    void sendAllUsersStatus();
-    void endConversation();
-    void checkPlayersConnected();
-    bool isLinkLocalAddress(QHostAddress addr);
-    bool isLocalIp(QHostAddress addr);
 
 signals:
 };

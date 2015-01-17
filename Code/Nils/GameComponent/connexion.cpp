@@ -4,6 +4,7 @@
 #include "squad.h"
 #include <QPainter>
 #include <QtMath>
+#include <QGraphicsView>
 
 #include <QDebug>
 
@@ -15,11 +16,12 @@
 Connexion::Connexion(Node &n1, Node &n2)
     : QGraphicsObject(0), n1(n1), n2(n2)
 {
-    qreal dist = sqrt(pow(abs(n1.x()-n2.x()),2)+
-                      pow(abs(n1.y()-n2.y()),2));
+    qreal dist = sqrt(pow(n1.x()-n2.x(),2)+
+                      pow(n1.y()-n2.y(),2));
     pathLength = dist;
     setNextId();
-    lstConnexions.insert(getId(), this);
+    setX(n1.x());
+    setY(n1.y());
 }
 
 Connexion::~Connexion()
@@ -36,7 +38,7 @@ Connexion::~Connexion()
 
 QRectF Connexion::boundingRect() const
 {
-    return QRectF(n1.x(), n1.y(), n2.x()-n1.x(), n2.y()-n1.y());
+    return QRectF(0, 0, n2.x()-x(), n2.y()-y());
 }
 
 void Connexion::paint(QPainter *painter,
@@ -45,10 +47,9 @@ void Connexion::paint(QPainter *painter,
     Q_UNUSED(option);
     Q_UNUSED(widget);
     painter->save();
-    painter->translate(n1.x(), n1.y());
+//    painter->translate(x(), y());
     qreal angle = qRadiansToDegrees(qAtan2(n1.y()-n2.y(),n1.x()-n2.x()))+90;
     painter->rotate(angle);
-    //painter->setPen(QPen(Qt::black, 1));
     painter->drawLine(0, n1.getRadius(), 0, pathLength-n2.getRadius());
 
     foreach(Squad *s, lstSquad1To2)
@@ -77,7 +78,7 @@ void Connexion::advance(int step)
     if(step == 0) return;
 
     //Wait number of tic
-    if(counterAdvance < 2)
+    if(counterAdvance < 0)
     {
         ++counterAdvance;
         return;
