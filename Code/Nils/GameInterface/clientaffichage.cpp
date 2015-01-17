@@ -1,6 +1,6 @@
 #include "clientaffichage.h"
-#include "Connexion/client.h"
-#include "Connexion/server.h"
+#include "GameConnexion/client.h"
+#include "GameConnexion/server.h"
 #include "GameComponent/gamer.h"
 
 #include <QComboBox>
@@ -9,7 +9,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QGridLayout>
-#include "Connexion/client.h"
+#include "GameConnexion/client.h"
 
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/

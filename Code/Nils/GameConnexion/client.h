@@ -8,33 +8,40 @@
 
 class QTcpSocket;
 
-namespace Connexions {
+namespace GameConnexion {
     class Client;
 }
 
 class Client : public QObject
 {
     Q_OBJECT
+
 public:
-    explicit Client(QString host = "localhost", QObject *parent = 0, int port = 0);
+    /*CONSTRUCTEUR / DESTRUCTEUR*/
+    explicit Client(int port = 0, QString host = "localhost", QObject *parent = 0);
+
+    /*ASSESSEUR / MUTATEUR*/
     bool isConnexionOk() const;
 
+    /*SIGNALS/SLOTS*/
 signals:
     void errorOccured(QAbstractSocket::SocketError socketError);
     void messageReciveFromServeur(QString);
-
+    void connected();
 public slots:
     void sendMessageToServer(QString msg);
-
 private slots:
     void readFromSocket();
-    void connected();
+    void afrterConnexion();
     void onErrorOccured(QAbstractSocket::SocketError socketError);
 
 private:
-    bool connexionOk;
+    /*OUTIL*/
     QDataStream in;
     QTcpSocket *tcpSocket;
+
+    /*SORTIE*/
+    bool connexionOk;
 };
 
 #endif // CLIENT_H

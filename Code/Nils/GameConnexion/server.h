@@ -8,7 +8,7 @@
 class QTcpServer;
 class QTcpSocket;
 
-namespace Connexions {
+namespace GameConnexion {
 class Server;
 }
 
@@ -17,9 +17,13 @@ class Server : public QObject
     Q_OBJECT
 
 public:
+    /*CONSTRUCTEUR / DESTRUCTEUR*/
     explicit Server(int port, int maxConnexion, QWidget *parent = 0);
+
+    /*ASSESSEUR / MUTATEUR*/
     bool isConnexionOk() const;
 
+    /*SIGNALS/SLOTS*/
 signals:
     void errorOccured(QTcpSocket::SocketError socketError);
     void messageReciveFromClient(QTcpSocket *t, QString msg);
@@ -32,10 +36,11 @@ private slots:
     void onNewClient();
 
 private:
-    bool connexionOk;
+    /*OUTIL*/
     QTcpServer *tcpServer;
 
-signals:
+    /*SORTIE*/
+    bool connexionOk;
 };
 
 #endif // SERVER_H

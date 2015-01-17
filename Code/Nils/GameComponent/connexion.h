@@ -24,9 +24,6 @@ class Connexion : public QGraphicsObject, public IdentityToken
     Q_OBJECT
 
 public:
-    /*METHODE DE CLASSE*/
-    static Connexion * getConnexion(int idConnexion);
-
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     explicit Connexion(Node &n1, Node &n2);
     virtual ~Connexion();

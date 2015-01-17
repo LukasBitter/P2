@@ -3,22 +3,40 @@
 #include <QDebug>
 #include <QStringBuilder>
 
-#include "Connexion/client.h"
+#include "GameConnexion/client.h"
 #include "GameComponent/map.h"
 #include "GameComponent/gamer.h"
 
-Client::Client(QString host, QObject *parent, int port) : QObject(parent),
+
+/*----------------------------------------------------*/
+/*CONSTRUCTEUR / DESTRUCTEUR*/
+/*----------------------------------------------------*/
+
+Client::Client(int port, QString host, QObject *parent) : QObject(parent),
     connexionOk(false)
 {
     tcpSocket = new QTcpSocket(this);
 
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readFromSocket()));
-    connect(tcpSocket, SIGNAL(connected()), this, SLOT(readFromSocket()));
+    connect(tcpSocket, SIGNAL(connected()), this, SLOT(afrterConnexion()));
     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
             this, SLOT(onErrorOccured(QAbstractSocket::SocketError)));
 
     tcpSocket->connectToHost(host,port);
 }
+
+/*----------------------------------------------------*/
+/*ASSESSEUR / MUTATEUR*/
+/*----------------------------------------------------*/
+
+bool Client::isConnexionOk() const
+{
+    return connexionOk;
+}
+
+/*----------------------------------------------------*/
+/*SIGNALS/SLOTS*/
+/*----------------------------------------------------*/
 
 void Client::onErrorOccured(QAbstractSocket::SocketError socketError)
 {
@@ -69,12 +87,9 @@ void Client::readFromSocket()
     emit messageReciveFromServeur(serverMessage);
 }
 
-void Client::connected()
+void Client::afrterConnexion()
 {
     connexionOk = true;
+    emit connected();
 }
 
-bool Client::isConnexionOk() const
-{
-    return connexionOk;
-}

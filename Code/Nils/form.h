@@ -4,8 +4,8 @@
 #include <QWidget>
 #include <QLabel>
 #include <QPushButton>
-#include <Connexion/client.h>
-#include <Connexion/server.h>
+#include <GameConnexion/client.h>
+#include <GameConnexion/server.h>
 
 class QTcpSocket;
 

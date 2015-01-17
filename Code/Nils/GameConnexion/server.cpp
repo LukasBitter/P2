@@ -4,10 +4,14 @@
 
 #include <stdlib.h>
 #include <process.h>
-#include "Connexion/server.h"
+#include "GameConnexion/server.h"
 #include "GameComponent/map.h"
 #include "GameComponent/gamer.h"
 
+
+/*----------------------------------------------------*/
+/*CONSTRUCTEUR / DESTRUCTEUR*/
+/*----------------------------------------------------*/
 
 Server::Server(int port, int maxConnexion, QWidget *parent) :
     QObject(parent), tcpServer(0)
@@ -24,10 +28,18 @@ Server::Server(int port, int maxConnexion, QWidget *parent) :
     }
 }
 
+/*----------------------------------------------------*/
+/*ASSESSEUR / MUTATEUR*/
+/*----------------------------------------------------*/
+
 bool Server::isConnexionOk() const
 {
     return connexionOk;
 }
+
+/*----------------------------------------------------*/
+/*SIGNALS/SLOTS*/
+/*----------------------------------------------------*/
 
 void Server::onNewClient()
 {
@@ -63,15 +75,18 @@ void Server::onErrorOccured(QAbstractSocket::SocketError socketError)
 
 void Server::sendMessageToClient(QTcpSocket *socket, QString msg)
 {
-    QByteArray block;
-    QDataStream out(&block, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_4_0);
+    if(socket != 0)
+    {
+        QByteArray block;
+        QDataStream out(&block, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_4_0);
 
-    out << (quint16)(block.size() - sizeof(quint16));
-    out << msg;
+        out << (quint16)(block.size() - sizeof(quint16));
+        out << msg;
 
-    qDebug()<<"SERVER: buildClientResponse / msg: "<<msg;
+        qDebug()<<"SERVER: buildClientResponse / msg: "<<msg;
 
-    socket->write(block);
-    socket->flush();
+        socket->write(block);
+        socket->flush();
+    }
 }
