@@ -1,8 +1,8 @@
 #include "gameclient.h"
-#include "enumLib.h"
+#include "enumlibrary.h"
 #include "client.h"
 #include "GameComponent/map.h"
-#include "GameComponent/gamerlist.h"
+#include "gamerlist.h"
 
 
 /*----------------------------------------------------*/
@@ -22,7 +22,7 @@ GameClient::GameClient(QString host, QObject *parent) : QObject(parent),
 
 GameClient::~GameClient()
 {
-    delete map;
+    if(map != 0) delete map;
 }
 
 Map *GameClient::getMap() const
@@ -36,12 +36,14 @@ Map *GameClient::getMap() const
 
 void GameClient::launchGame(QString mapCreationStr, QString mapUpdateStr)
 {
-    client->sendMessageToServer(QString("%1#%2#%3").arg(C_LAUNCHGAME).
+    qDebug()<<"GameClient : enter 'launchGame'";
+    client->sendMessageToServer(QString("%1#%2#%3").arg(C_LAUNCH_GAME).
                                 arg(mapCreationStr).arg(mapUpdateStr));
 }
 
 void GameClient::onErrorOccured(QAbstractSocket::SocketError socketError)
 {
+    qWarning()<<"GameClient : enter 'onErrorOccured'"<<socketError;
     emit errorOccured(socketError);
 }
 
@@ -49,7 +51,7 @@ void GameClient::onMessageRecive(QString s)
 {
     QStringList msgStr = s.split("#");
     if(msgStr.size() < 3) return;
-    INTERNALCOMMANDE cmd = (INTERNALCOMMANDE)msgStr.first().toInt();
+    NETWORK_COMMANDE cmd = (NETWORK_COMMANDE)msgStr.first().toInt();
     msgStr.pop_front();
     QString msg1 = msgStr.first();
     msgStr.pop_front();
@@ -57,45 +59,55 @@ void GameClient::onMessageRecive(QString s)
 
     switch (cmd)
     {
-    case C_GAMERINFO:
+    case C_GAMER_INFO:
     {
+        qDebug()<<"GameClient : in 'onMessageRecive' recive C_GAMER_INFO";
         gamerId = msg1.toInt();
         break;
     }
     case C_REFUSE:
     {
+        qDebug()<<"GameClient : in 'onMessageRecive' recive C_REFUSE";
         emit errorOccured(QAbstractSocket::ConnectionRefusedError);
         break;
     }
-    case C_LAUNCHGAME:
+    case C_LAUNCH_GAME:
     {
+        qDebug()<<"GameClient : in 'onMessageRecive' recive C_LAUNCH_GAME";
         if(gamerId != -1)
         {
             map = new Map(msg1, GamerList::getGamer(gamerId));
             map->updateFromString(msg2);
             emit switchToGame();
         }
+        else
+        {
+            qCritical()<<"GameClient : unexpected case in 'onMessageRecive' recive C_LAUNCH_GAME";
+        }
         break;
     }
-    case C_LOBBYUPDATE:
+    case C_LOBBY_UPDATE:
     {
+        qDebug()<<"GameClient : in 'onMessageRecive' recive C_LOBBY_UPDATE";
         GamerList::updateLstGamerFromString(msg1);
         emit updateLobby();
         break;
     }
-    case C_MAPUPDATE:
+    case C_MAP_UPDATE:
     {
         if(map != 0)map->updateFromString(msg1);
         break;
     }
     default:
+        qCritical()<<"GameClient : unexpected case in 'onMessageRecive'";
         break;
     }
 }
 
 void GameClient::onClientConnected()
 {
-    client->sendMessageToServer(QString("%1##").arg(C_REQUESTSLOT));
+    qDebug()<<"GameClient : enter 'onClientConnected'";
+    client->sendMessageToServer(QString("%1##").arg(C_REQUEST_SLOT));
     emit connexionOk();
 }
 

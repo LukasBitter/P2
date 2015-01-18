@@ -5,8 +5,6 @@
 #include "gamerlist.h"
 #include <QPainter>
 #include <QtMath>
-#include <QGraphicsView>
-
 #include <QDebug>
 
 
@@ -47,8 +45,8 @@ void Connexion::paint(QPainter *painter,
 {
     Q_UNUSED(option);
     Q_UNUSED(widget);
+
     painter->save();
-//    painter->translate(x(), y());
     qreal angle = qRadiansToDegrees(qAtan2(n1.y()-n2.y(),n1.x()-n2.x()))+90;
     painter->rotate(angle);
     painter->drawLine(0, n1.getRadius(), 0, pathLength-n2.getRadius());
@@ -220,6 +218,10 @@ void Connexion::updateFromString(QString &s)
                 squad->setNbRessources(nbRessources);
                 squad->setProgress(progress);
             }
+            else
+            {
+                qCritical()<<"Connexion : unexpected case in 'updateFromString'";
+            }
         }
     }
 }
@@ -291,7 +293,7 @@ void Connexion::checkSquadArrive()
     foreach(Squad *s, lstSquad1To2)
     {
         int p = s->getProgress();
-        if(p == pathLength-n2.getRadius())
+        if(p >= pathLength-n2.getRadius())
         {
             n2.incoming(s);
             lstSquad1To2.pop_back();
@@ -300,7 +302,7 @@ void Connexion::checkSquadArrive()
     foreach(Squad *s, lstSquad2To1)
     {
         int p = s->getProgress();
-        if(p == n1.getRadius())
+        if(p <= n1.getRadius())
         {
             n1.incoming(s);
             lstSquad2To1.pop_back();

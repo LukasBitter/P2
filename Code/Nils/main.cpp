@@ -6,7 +6,6 @@
 #include <QtWidgets>
 #include <QApplication>
 #include <qdebug.h>
-#include "form.h"
 #include "GameMenu/gamemenumanager.h"
 
 int main(int argc, char *argv[])

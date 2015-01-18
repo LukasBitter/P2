@@ -24,7 +24,12 @@ Server::Server(int port, int maxConnexion, QObject *parent) :
     tcpServer->listen(QHostAddress::Any, port);
     if(tcpServer->isListening())
     {
+        qDebug()<<"Server : is listening port";
         connexionOk = true;
+    }
+    else
+    {
+        qCritical()<<"Server : is NOT listening port";
     }
 }
 
@@ -43,6 +48,7 @@ bool Server::isConnexionOk() const
 
 void Server::onNewClient()
 {
+    qDebug()<<"Server : new client has joint the server";
     QTcpSocket *activeSocket = tcpServer->nextPendingConnection();
 
     connect(activeSocket, SIGNAL(readyRead()), this, SLOT(readFromSocket()));
@@ -64,14 +70,13 @@ void Server::readFromSocket()
     QString clientMessage;
     in >> clientMessage;
 
-    qDebug()<<"SERVER: readFromSocket / msg: "<<clientMessage;
-
     blockSize = 0;
     emit messageReciveFromClient(socket, clientMessage);
 }
 
 void Server::onErrorOccured(QAbstractSocket::SocketError socketError)
 {
+    qWarning()<<"Server : enter 'onErrorOccured'"<<socketError;
     emit errorOccured(socketError);
 }
 
@@ -85,8 +90,6 @@ void Server::sendMessageToClient(QTcpSocket *socket, QString msg)
 
         out << (quint16)(block.size() - sizeof(quint16));
         out << msg;
-
-        qDebug()<<"SERVER: sendMessageToClient / msg: "<<msg;
 
         socket->write(block);
         socket->flush();

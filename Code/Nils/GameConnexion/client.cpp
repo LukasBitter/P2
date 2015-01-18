@@ -40,7 +40,7 @@ bool Client::isConnexionOk() const
 
 void Client::onErrorOccured(QAbstractSocket::SocketError socketError)
 {
-    qDebug()<<socketError;
+    qWarning()<<"Client : enter 'onErrorOccured'"<<socketError;
     emit errorOccured(socketError);
 }
 
@@ -52,8 +52,6 @@ void Client::sendMessageToServer(QString msg)
 
     out << (quint16)(block.size() - sizeof(quint16));
     out << msg;
-
-    qDebug()<<"CLIENT: sendMessageToServer / msg: "<<msg;
 
     tcpSocket->write(block);
     tcpSocket->flush();
@@ -74,13 +72,12 @@ void Client::readFromSocket()
 
     blockSize = 0;
 
-    qDebug()<<"CLIENT: readFromSocket / msg: "<<serverMessage;
     emit messageReciveFromServeur(serverMessage);
 }
 
 void Client::afterConnexion()
 {
-    qDebug()<<"CLIENT: connection ok";
+    qDebug()<<"Client : successfull connexion to server";
     connexionOk = true;
     emit connected();
 }

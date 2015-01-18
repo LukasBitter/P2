@@ -2,7 +2,7 @@
 #define POWERINTERFACE_H
 
 #include <QGraphicsWidget>
-#include "ennum.h"
+#include "enumlibrary.h"
 
 class Node;
 class Power;
@@ -38,7 +38,7 @@ public:
 
     /*SIGNALS/SLOTS*/
 signals:
-    void powerPressed(PowerName name)const;
+    void powerPressed(POWER_NAME name)const;
 public slots:
     void usePowerDestroy(Node *n);
     void usePowerInvincibility(Node *n);

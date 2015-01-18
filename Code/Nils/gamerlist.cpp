@@ -1,5 +1,6 @@
 #include "gamerlist.h"
-#include "gamer.h"
+#include "GameComponent/gamer.h"
+#include <QDebug>
 
 
 /*----------------------------------------------------*/
@@ -74,16 +75,22 @@ void GamerList::updateLstGamerFromString(QString &s)
             }
             g->updateFromString(data);
         }
+        else
+        {
+            qCritical()<<"GamerList : unexpected case in 'updateLstGamerFromString'";
+        }
     }
 }
 
 void GamerList::clearGamerList()
 {
+    qDebug()<<"GamerList : enter 'clearGamerList'";
     qDeleteAll(lstGamers);
     lstGamers.clear();
 }
 
 void GamerList::addGamer(Gamer *g)
 {
+    qDebug()<<"GamerList : enter 'addGamer'";
     lstGamers.insert(g->getId(), g);
 }

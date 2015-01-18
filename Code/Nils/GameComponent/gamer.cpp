@@ -1,8 +1,6 @@
 #include "gamer.h"
 #include "gamerlist.h"
-#include <QTcpSocket>
-
-#include <qdebug.h>
+#include <QDebug>
 
 
 /*----------------------------------------------------*/
@@ -102,5 +100,9 @@ void Gamer::updateFromString(QString &s)
         connected = (nodeStr.first() == "1" ? true : false);
         nodeStr.pop_front();
         ready = (nodeStr.first() == "1" ? true : false);
+    }
+    else
+    {
+        qCritical()<<"Gamer : unexpected case in 'updateFromString'";
     }
 }

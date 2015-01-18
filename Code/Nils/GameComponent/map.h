@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QGraphicsView>
 #include "connexion.h"
-#include "ennum.h"
+#include "enumlibrary.h"
 
 class GameScene;
 class Node;
@@ -53,13 +53,13 @@ public:
 public slots:
     void advance();
 private slots:
-    void powerPressed(PowerName n);
+    void powerPressed(POWER_NAME n);
 private slots:
     void selectionChange();
 
 private:
     /*INTERFACE*/
-    PowerInterface *p; ///< Interface utilisateur de gestion des pouvoirs
+    PowerInterface *ui; ///< Interface utilisateur de gestion des pouvoirs
 
     /*ENTREE*/
     const Gamer *owner; ///< Joueur actuellement au commande de la map
@@ -76,6 +76,7 @@ private:
     void sendSquad(int nodeIdFrom, int nodeIdTo);
     Node *getNode(int idNode);
     Connexion *getConnexion(int idConnexion);
+    void setUpUI();
 };
 
 #endif // MAP_H

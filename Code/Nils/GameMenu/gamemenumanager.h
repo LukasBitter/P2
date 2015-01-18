@@ -10,8 +10,9 @@ class QStackedLayout;
 class GameContext;
 
 namespace GameMenu {
-    class LobbyMenu;
+    class GameMenuManager;
 }
+
 class GameMenuManager : public QMainWindow
 {
     Q_OBJECT

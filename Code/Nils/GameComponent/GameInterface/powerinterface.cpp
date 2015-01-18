@@ -1,12 +1,13 @@
 #include "powerinterface.h"
 #include "GameComponent/node.h"
-#include "GameInterface/button.h"
-#include "GameInterface/Powers/power.h"
-#include "GameInterface/Powers/powerarmore.h"
-#include "GameInterface/Powers/powerdestroy.h"
-#include "GameInterface/Powers/powerinvincibility.h"
-#include "GameInterface/Powers/powerteleportation.h"
+#include "GameComponent/GameInterface/button.h"
+#include "GameComponent/GameInterface/Powers/power.h"
+#include "GameComponent/GameInterface/Powers/powerarmore.h"
+#include "GameComponent/GameInterface/Powers/powerdestroy.h"
+#include "GameComponent/GameInterface/Powers/powerinvincibility.h"
+#include "GameComponent/GameInterface/Powers/powerteleportation.h"
 #include <QPainter>
+
 
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
@@ -123,20 +124,20 @@ void PowerInterface::usePowerArmore(Node *n)
 
 void PowerInterface::btPowerDestroyPressed() const
 {
-    emit powerPressed(Destroy);
+    emit powerPressed(P_DESTROY);
 }
 
 void PowerInterface::btPowerInvincibilityPressed() const
 {
-    emit powerPressed(Invincibility);
+    emit powerPressed(P_INVINCIBILITY);
 }
 
 void PowerInterface::btPowerTeleportationPressed() const
 {
-    emit powerPressed(Teleportation);
+    emit powerPressed(P_TELEPORTATION);
 }
 
 void PowerInterface::btPowerArmorePressed() const
 {
-    emit powerPressed(Armore);
+    emit powerPressed(P_ARMORE);
 }

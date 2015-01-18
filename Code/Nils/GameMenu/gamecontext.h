@@ -7,6 +7,10 @@ class GameClient;
 class GameServer;
 class Map;
 
+namespace GameMenu {
+    class GameContext;
+}
+
 class GameContext : public QWidget
 {
     Q_OBJECT

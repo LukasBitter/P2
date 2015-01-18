@@ -6,7 +6,7 @@
 #include "GameConnexion/server.h"
 
 class QPushButton;
-class QTableView;
+class QTableWidget;
 class QCheckBox;
 class QComboBox;
 class QTextEdit;
@@ -23,8 +23,10 @@ class LobbyMenu : public QWidget
 {
     Q_OBJECT
 public:
+    /*CONSTRUCTEUR / DESTRUCTEUR*/
     LobbyMenu(QWidget *parent = 0);
 
+    /*SIGNALS/SLOTS*/
 signals:
     void returnToMenu();
     void play(GameContext *gc);
@@ -44,21 +46,27 @@ private slots:
     void onSuccessfulConnexion();
 
 private:
+    /*INTERFACE*/
     QComboBox *cbxMap;
     QCheckBox *cbbReady;
     QPushButton *btStart;
-    QTableView *tblStatus;
+    QTableWidget *tblStatus;
     QLineEdit *txtAdressIP;
     QPushButton *btConnect;
     QPushButton *btReturn;
 
-    void setUpUI();
-    void disableUI();
-
+    /*OUTIL*/
     bool host;
     int const maxGamer;
     GameServer *server;
     GameClient *client;
+
+    /*METHODE PRIVE*/
+    void setUpUI();
+    void disableUI();
+    void setClient(GameClient *c);
+    void setServer(GameServer* s);
+
 };
 
 #endif // LOBBYMENU_H

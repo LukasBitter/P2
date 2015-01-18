@@ -5,8 +5,6 @@
 #include "gamerlist.h"
 #include <QPainter>
 #include <QtWidgets>
-#include <QStringBuilder>
-
 #include <QDebug>
 
 
@@ -294,14 +292,15 @@ QString Node::getUpdateString()
 {
     int idGamer  = -1;
     if(owner != 0)idGamer = owner->getId();
-    return QString("%1,%2,%3,%4").arg(nbRessources).
-           arg(ressourcesRate).arg(idGamer).arg(armorLvl);
+    return QString("%1,%2,%3,%4,%5").arg(nbRessources).
+           arg(ressourcesRate).arg(idGamer).arg(armorLvl).
+            arg(invicible);
 }
 
 void Node::updateFromString(QString &s)
 {
     QStringList nodeStr = s.split(",");
-    if(nodeStr.size() == 3)
+    if(nodeStr.size() == 5)
     {
         nbRessources = nodeStr.first().toInt();
         nodeStr.pop_front();
@@ -310,6 +309,12 @@ void Node::updateFromString(QString &s)
         owner = GamerList::getGamer(nodeStr.first().toInt());
         nodeStr.pop_front();
         armorLvl = nodeStr.first().toInt();
+        nodeStr.pop_front();
+        invicible = nodeStr.first().toInt();
+    }
+    else
+    {
+        qCritical()<<"Node : unexpected case in 'updateFromString'";
     }
 }
 

@@ -7,14 +7,9 @@
 #include "GameInterface/powerinterface.h"
 #include <QKeyEvent>
 #include <QMouseEvent>
-
 #include <QDropEvent>
 #include <QMimeData>
-
 #include <QDebug>
-
-
-using namespace std;
 
 
 /*----------------------------------------------------*/
@@ -22,30 +17,10 @@ using namespace std;
 /*----------------------------------------------------*/
 
 Map::Map(const Gamer *g, QWidget *parent) :
-    QGraphicsView(parent), owner(g), percentToSend(100)
+    QGraphicsView(parent), owner(g), percentToSend(100), scene(0),
+    lastSelection(0),currentSelection(0), ui(0)
 {
-    scene = new GameScene(this);
-    setScene(scene);
-    scene->setSceneRect(-1000,-1000,2000,2000);
-
-    connect(scene,SIGNAL(selectionChanged()),this,SLOT(selectionChange()));
-
-    // Désactivation des scrollbars
-    setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
-    setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
-    setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate );
-    setRenderHint( QPainter::Antialiasing, true );
-    //setDragMode(QGraphicsView::RubberBandDrag);
-
-    p = new PowerInterface();
-    p->setX(-200);
-    p->setY(-200);
-    p->setMana(1000);
-    scene->addItem(p);
-    connect(p,SIGNAL(powerPressed(PowerName)),this,SLOT(powerPressed(PowerName)));
-
-    currentSelection = 0;
-    lastSelection = 0;
+    setUpUI();
 }
 
 Map::Map(QString create, const Gamer *g, QWidget *parent):
@@ -80,6 +55,10 @@ Map::Map(QString create, const Gamer *g, QWidget *parent):
                 n->setId(numberId);
                 addNode(*n);
             }
+            else
+            {
+                qCritical()<<"Map : unexpected case in 'Map' when create nodes";
+            }
         }
 
         foreach (QString s, allConnexionsStr)
@@ -102,6 +81,10 @@ Map::Map(QString create, const Gamer *g, QWidget *parent):
                 n2->addConnexion(c);
                 lstConnexion.insert(c->getId(), c);
                 scene->addItem(c);
+            }
+            else
+            {
+                qCritical()<<"Map : unexpected case in 'Map' when create connexions";
             }
         }
     }
@@ -169,11 +152,15 @@ void Map::addNode(Node &n)
 
 void Map::addConnexion(Node &n1, Node &n2)
 {
-    n1.connect(n2);
-    Connexion *c = n1.getConnexion(n2);
-    c->setZValue(1);
-    lstConnexion.insert(c->getId(),c);
-    scene->addItem(c);
+    if(lstNode.contains(n1.getId()) &&
+            lstNode.contains(n2.getId()))
+    {
+        n1.connect(n2);
+        Connexion *c = n1.getConnexion(n2);
+        c->setZValue(1);
+        lstConnexion.insert(c->getId(),c);
+        scene->addItem(c);
+    }
 }
 
 int Map::getTotalRessources(Gamer &g)
@@ -262,6 +249,10 @@ void Map::updateFromString(QString &s)
                 Connexion *c = getConnexion(numberId);
                 c->updateFromString(data);
             }
+            else
+            {
+                qCritical()<<"Map : unexpected case in 'updateFromString' when update connexions";
+            }
         }
 
         foreach (QString s, allNodesStr)
@@ -274,6 +265,10 @@ void Map::updateFromString(QString &s)
                 QString &data = nodeStr.first();
                 Node *n = getNode(numberId);
                 n->updateFromString(data);
+            }
+            else
+            {
+                qCritical()<<"Map : unexpected case in 'updateFromString' when update nodes";
             }
         }
     }
@@ -312,31 +307,36 @@ void Map::advance()
     scene->advance();
 }
 
-void Map::powerPressed(PowerName n)
+void Map::powerPressed(POWER_NAME n)
 {
+    qDebug()<<"Map : enter 'powerPressed'";
     switch (n) {
-    case Destroy:
+    case P_DESTROY:
         if(currentSelection != 0 && currentSelection->getOwner() != owner)
         {
-            p->usePowerDestroy(currentSelection);
+            qDebug()<<"Map : use of P_DESTROY";
+            ui->usePowerDestroy(currentSelection);
         }
         break;
-    case Invincibility:
+    case P_INVINCIBILITY:
+        qDebug()<<"Map : use of P_INVINCIBILITY";
         if(currentSelection != 0 && currentSelection->getOwner() == owner)
         {
-            p->usePowerInvincibility(currentSelection);
+            ui->usePowerInvincibility(currentSelection);
         }
         break;
-    case Armore:
+    case P_ARMORE:
+        qDebug()<<"Map : use of P_ARMORE";
         if(currentSelection != 0 && currentSelection->getOwner() == owner)
         {
-            p->usePowerArmore(currentSelection);
+            ui->usePowerArmore(currentSelection);
         }
         break;
-    case Teleportation:
+    case P_TELEPORTATION:
+        qDebug()<<"Map : use of P_TELEPORTATION";
         if(currentSelection != 0 && lastSelection != 0 && lastSelection->getOwner() == owner)
         {
-            p->usePowerTeleportation(lastSelection, currentSelection);
+            ui->usePowerTeleportation(lastSelection, currentSelection);
         }
         break;
     default:
@@ -386,6 +386,7 @@ Node *Map::getNode(int idNode)
     }
     else
     {
+        qWarning()<<"Map : 'getNode' return a null pointer";
         return 0;
     }
 }
@@ -398,6 +399,28 @@ Connexion *Map::getConnexion(int idConnexion)
     }
     else
     {
+        qWarning()<<"Map : 'getConnexion' return a null pointer";
         return 0;
     }
+}
+
+void Map::setUpUI()
+{
+    scene = new GameScene(this);
+    setScene(scene);
+    connect(scene,SIGNAL(selectionChanged()),this,SLOT(selectionChange()));
+
+    // Désactivation des scrollbars
+    setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
+    setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
+    setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate );
+    setRenderHint( QPainter::Antialiasing, true );
+    //setDragMode(QGraphicsView::RubberBandDrag);
+
+    ui = new PowerInterface();
+    ui->setX(-200);
+    ui->setY(-200);
+    ui->setMana(1000);
+    scene->addItem(ui);
+    connect(ui,SIGNAL(powerPressed(POWER_NAME)),this,SLOT(powerPressed(POWER_NAME)));
 }

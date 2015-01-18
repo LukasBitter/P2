@@ -1,9 +1,9 @@
 #include "gameserver.h"
-#include "enumLib.h"
+#include "enumlibrary.h"
 #include "server.h"
 #include "GameComponent/map.h"
 #include "GameComponent/gamer.h"
-#include "GameComponent/gamerlist.h"
+#include "gamerlist.h"
 #include <QTcpSocket>
 
 
@@ -12,7 +12,7 @@
 /*----------------------------------------------------*/
 
 GameServer::GameServer(int maxConnexion, QObject *parent) : QObject(parent),
-    lockConnexion(false), refreshLoopMS(100), port(8000)
+    lockConnexion(false), refreshLoopMS(100), port(8000), map(0)
 {
     server = new Server(port, maxConnexion, this);
 
@@ -22,7 +22,7 @@ GameServer::GameServer(int maxConnexion, QObject *parent) : QObject(parent),
 
 GameServer::~GameServer()
 {
-    if(map != 0 ) delete map;
+    if(map != 0) delete map;
 }
 
 /*----------------------------------------------------*/
@@ -31,6 +31,7 @@ GameServer::~GameServer()
 
 void GameServer::onErrorOccured(QAbstractSocket::SocketError socketError)
 {
+    qWarning()<<"GameServer : enter 'onErrorOccured'"<<socketError;
     emit errorOccured(socketError);
 }
 
@@ -38,7 +39,7 @@ void GameServer::onMessageRecive(QTcpSocket *t, QString s)
 {
     QStringList msgStr = s.split("#");
     if(msgStr.size() < 3) return;
-    INTERNALCOMMANDE cmd = (INTERNALCOMMANDE)msgStr.first().toInt();
+    NETWORK_COMMANDE cmd = (NETWORK_COMMANDE)msgStr.first().toInt();
     msgStr.pop_front();
     QString msg1 = msgStr.first();
     msgStr.pop_front();
@@ -46,31 +47,36 @@ void GameServer::onMessageRecive(QTcpSocket *t, QString s)
 
     switch (cmd)
     {
-    case C_REQUESTSLOT:
+    case C_REQUEST_SLOT:
     {
+        qDebug()<<"GameServer : in 'onMessageRecive' recive C_REQUEST_SLOT";
         if(!lockConnexion)
         {
+            qDebug()<<"GameServer : accept client";
             Gamer *g = new Gamer();
             g->setSocket(t);
-            server->sendMessageToClient(t,QString("%1#%2#").arg(C_GAMERINFO).
+            server->sendMessageToClient(t,QString("%1#%2#").arg(C_GAMER_INFO).
                                         arg(g->getId()));
         }
         else
         {
+            qDebug()<<"GameServer : refuse client";
             server->sendMessageToClient(t,QString("%1##").arg(C_REFUSE));
         }
         break;
     }
-    case C_LAUNCHGAME:
+    case C_LAUNCH_GAME:
     {
+        qDebug()<<"GameServer : in 'onMessageRecive' recive C_LAUNCH_GAME";
         map = new Map(msg1);
         map->updateFromString(msg2);
-        sendToAllGamer(QString("%1#%2#%3").arg(C_LAUNCHGAME).arg(msg1).arg(msg2));
+        sendToAllGamer(QString("%1#%2#%3").arg(C_LAUNCH_GAME).arg(msg1).arg(msg2));
         this->startTimer(refreshLoopMS);
         break;
     }
-    case C_SETREADY:
+    case C_SET_READY:
     {
+        qDebug()<<"GameServer : in 'onMessageRecive' recive C_SET_READY";
         Gamer *g = GamerList::getGamer(t);
         bool b = msg1.toInt();
         g->setReady(b);
@@ -78,6 +84,7 @@ void GameServer::onMessageRecive(QTcpSocket *t, QString s)
         break;
     }
     default:
+        qCritical()<<"GameServer : unexpected case in 'onMessageRecive'";
         break;
     }
 
@@ -97,8 +104,9 @@ void GameServer::sendToAllGamer(QString s)
 
 void GameServer::updateGamerList()
 {
+    qDebug()<<"GameServer : enter 'updateGamerList'";
     sendToAllGamer(QString("%1#%2%#").
-                   arg(C_LOBBYUPDATE).
+                   arg(C_LOBBY_UPDATE).
                    arg(GamerList::getLstGamerUpdateString()));
 }
 
@@ -107,6 +115,6 @@ void GameServer::timerEvent(QTimerEvent *event)
     Q_UNUSED(event);
     map->advance();
     sendToAllGamer(QString("%1#%2%#").
-                   arg(C_MAPUPDATE).
+                   arg(C_MAP_UPDATE).
                    arg(map->getUpdateString()));
 }

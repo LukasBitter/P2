@@ -30,23 +30,27 @@ GameMenuManager::~GameMenuManager()
 
 void GameMenuManager::returnToMenu()
 {
+    qDebug()<<"GameMenuManager : want switch to welcomemenu";
     layout->setCurrentWidget(welcomemenu);
 }
 
 void GameMenuManager::goToLobbyAsHost()
 {
+    qDebug()<<"GameMenuManager : want switch to lobbymenu (as host)";
     lobbymenu->enableServerUI();
     layout->setCurrentWidget(lobbymenu);
 }
 
 void GameMenuManager::goToLobbyAsClient()
 {
+    qDebug()<<"GameMenuManager : want switch to lobbymenu (as client)";
     lobbymenu->enableClientUI();
     layout->setCurrentWidget(lobbymenu);
 }
 
 void GameMenuManager::goToGame(GameContext *gc)
 {
+    qDebug()<<"GameMenuManager : want switch to game";
     layout->addWidget(gc);
     layout->setCurrentWidget(gc);
 }
