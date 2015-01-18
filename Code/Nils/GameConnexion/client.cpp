@@ -18,7 +18,7 @@ Client::Client(int port, QString host, QObject *parent) : QObject(parent),
     tcpSocket = new QTcpSocket(this);
 
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readFromSocket()));
-    connect(tcpSocket, SIGNAL(connected()), this, SLOT(afrterConnexion()));
+    connect(tcpSocket, SIGNAL(connected()), this, SLOT(afterConnexion()));
     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
             this, SLOT(onErrorOccured(QAbstractSocket::SocketError)));
 
@@ -40,18 +40,7 @@ bool Client::isConnexionOk() const
 
 void Client::onErrorOccured(QAbstractSocket::SocketError socketError)
 {
-    switch (socketError) {
-    case QAbstractSocket::RemoteHostClosedError:
-        break;
-    case QAbstractSocket::HostNotFoundError:
-        qDebug()<<"Erreur 1";
-        break;
-    case QAbstractSocket::ConnectionRefusedError:
-        qDebug()<<"Erreur 2";
-        break;
-    default:
-        qDebug()<<"Erreur default";
-    }
+    qDebug()<<socketError;
     emit errorOccured(socketError);
 }
 
@@ -64,7 +53,7 @@ void Client::sendMessageToServer(QString msg)
     out << (quint16)(block.size() - sizeof(quint16));
     out << msg;
 
-    qDebug()<<"CLIENT: sendServerMessage / msg: "<<msg;
+    qDebug()<<"CLIENT: sendMessageToServer / msg: "<<msg;
 
     tcpSocket->write(block);
     tcpSocket->flush();
@@ -84,11 +73,14 @@ void Client::readFromSocket()
     in >> serverMessage;
 
     blockSize = 0;
+
+    qDebug()<<"CLIENT: readFromSocket / msg: "<<serverMessage;
     emit messageReciveFromServeur(serverMessage);
 }
 
-void Client::afrterConnexion()
+void Client::afterConnexion()
 {
+    qDebug()<<"CLIENT: connection ok";
     connexionOk = true;
     emit connected();
 }

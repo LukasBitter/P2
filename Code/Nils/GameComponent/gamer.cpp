@@ -1,74 +1,9 @@
 #include "gamer.h"
+#include "gamerlist.h"
 #include <QTcpSocket>
 
 #include <qdebug.h>
 
-
-/*----------------------------------------------------*/
-/*METHODE DE CLASSE*/
-/*----------------------------------------------------*/
-
-QHash<int,Gamer *> lstGamers;
-
-const QHash<int, Gamer *> &Gamer::getLstGamer()
-{
-    return lstGamers;
-}
-
-Gamer *Gamer::getGamer(int idGamer)
-{
-    if(lstGamers.contains(idGamer))
-    {
-        return lstGamers.value(idGamer);
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-bool Gamer::isNameExist(QString s)
-{
-    foreach (Gamer *g, lstGamers)
-    {
-        if(g->getName()->compare(s)) return true;
-    }
-    return false;
-}
-
-QString Gamer::getLstGamerUpdateString()
-{
-    QString s;
-    foreach (Gamer *g, lstGamers)
-    {
-        s.append(QString("%1.%2/").arg(g->getId()).arg(g->getUpdateString()));
-    }
-    return s;
-}
-
-void Gamer::updateLstGamerFromString(QString &s)
-{
-    QStringList allGamers = s.split("/");
-
-    foreach (QString s, allGamers)
-    {
-        QStringList gamerStr = s.split(".");
-        if(gamerStr.size() == 2)
-        {
-            int numberId = gamerStr.first().toInt();
-            gamerStr.pop_front();
-            QString &data = gamerStr.first();
-
-            Gamer *g = Gamer::getGamer(numberId);
-            if(g == 0)
-            {
-                g = new Gamer();
-                g->setId(numberId);
-            }
-            g->updateFromString(data);
-        }
-    }
-}
 
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
@@ -78,8 +13,7 @@ Gamer::Gamer(QObject *parent)
     : QObject(parent), connected(0), ready(0)
 {
     setNextId();
-    lstGamers.insert(getId(), this);
-    //name = new QString("");
+    GamerList::addGamer(this);
 }
 
 Gamer::~Gamer()
@@ -113,11 +47,6 @@ QTcpSocket *Gamer::getSocket() const
     return socket;
 }
 
-bool Gamer::isConnected() const
-{
-    return isConnected();
-}
-
 bool Gamer::isReady() const
 {
     return isReady();
@@ -126,11 +55,6 @@ bool Gamer::isReady() const
 QString *Gamer::getName() const
 {
     return name;
-}
-
-void Gamer::setConnected(bool b)
-{
-    connected =b;
 }
 
 void Gamer::setReady(bool b)

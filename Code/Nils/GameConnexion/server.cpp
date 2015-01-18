@@ -13,7 +13,7 @@
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-Server::Server(int port, int maxConnexion, QWidget *parent) :
+Server::Server(int port, int maxConnexion, QObject *parent) :
     QObject(parent), tcpServer(0)
 {
     tcpServer = new QTcpServer(this);
@@ -64,6 +64,8 @@ void Server::readFromSocket()
     QString clientMessage;
     in >> clientMessage;
 
+    qDebug()<<"SERVER: readFromSocket / msg: "<<clientMessage;
+
     blockSize = 0;
     emit messageReciveFromClient(socket, clientMessage);
 }
@@ -84,7 +86,7 @@ void Server::sendMessageToClient(QTcpSocket *socket, QString msg)
         out << (quint16)(block.size() - sizeof(quint16));
         out << msg;
 
-        qDebug()<<"SERVER: buildClientResponse / msg: "<<msg;
+        qDebug()<<"SERVER: sendMessageToClient / msg: "<<msg;
 
         socket->write(block);
         socket->flush();

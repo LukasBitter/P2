@@ -2,6 +2,7 @@
 #include "squad.h"
 #include "connexion.h"
 #include "gamer.h"
+#include "gamerlist.h"
 #include <QPainter>
 #include <QtWidgets>
 #include <QStringBuilder>
@@ -306,7 +307,7 @@ void Node::updateFromString(QString &s)
         nodeStr.pop_front();
         ressourcesRate = nodeStr.first().toInt();
         nodeStr.pop_front();
-        owner = Gamer::getGamer(nodeStr.first().toInt());
+        owner = GamerList::getGamer(nodeStr.first().toInt());
         nodeStr.pop_front();
         armorLvl = nodeStr.first().toInt();
     }

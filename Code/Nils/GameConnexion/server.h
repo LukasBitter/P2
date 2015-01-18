@@ -2,8 +2,7 @@
 #define SERVER_H
 
 #include <QObject>
-
-#include <QTcpSocket>
+#include <QAbstractSocket>
 
 class QTcpServer;
 class QTcpSocket;
@@ -18,20 +17,20 @@ class Server : public QObject
 
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    explicit Server(int port, int maxConnexion, QWidget *parent = 0);
+    explicit Server(int port, int maxConnexion, QObject *parent = 0);
 
     /*ASSESSEUR / MUTATEUR*/
     bool isConnexionOk() const;
 
     /*SIGNALS/SLOTS*/
 signals:
-    void errorOccured(QTcpSocket::SocketError socketError);
+    void errorOccured(QAbstractSocket::SocketError socketError);
     void messageReciveFromClient(QTcpSocket *t, QString msg);
 
 public slots:
     void sendMessageToClient(QTcpSocket *socket, QString msg);
-    void onErrorOccured(QTcpSocket::SocketError socketError);
 private slots:
+    void onErrorOccured(QAbstractSocket::SocketError socketError);
     void readFromSocket();
     void onNewClient();
 

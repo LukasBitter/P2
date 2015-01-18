@@ -1,85 +1,34 @@
 #include "gamecontext.h"
-#include "GameConnexion/client.h"
-#include "GameConnexion/server.h"
+#include "GameConnexion/gameclient.h"
+#include "GameConnexion/gameserver.h"
 #include "GameConnexion/parser.h"
 #include "GameComponent/map.h"
+#include "GameComponent/gamerlist.h"
+#include <QGridLayout>
 
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-GameContext::GameContext(bool host): QObject(0), maxGamer(4),
-    port(8000), numGamer(-1), client(0), server(0), game(0)
+GameContext::GameContext(GameClient *c, GameServer *s, QWidget *parent):
+    QWidget(parent), c(0),s(0)
 {
-    parser = new Parser();
-
-    if(host)
+    if(c != 0)
     {
-        server = new Server(port,maxGamer);
-        client = new Client(port);
+         QGridLayout *l = new QGridLayout(this);
+         l->addWidget(c->getMap(),0,0);
+         this->setLayout(l);
+         this->c = c;
+    }
+    if(s != 0)
+    {
+        this->s = s;
     }
 }
 
 
 GameContext::~GameContext()
 {
-    delete game;
-    delete parser;
-    delete client;
-    delete server;
+    delete c;
+    delete s;
 }
-
-/*----------------------------------------------------*/
-/*COMMUNICATION AVEC AFFICHAGE*/
-/*----------------------------------------------------*/
-
-void GameContext::connectToServer(QString ip)
-{
-    client = new Client(port, ip);
-    connect(client,SIGNAL(connected()),this,SLOT(onClientConnect()));
-    connect(client,SIGNAL(errorOccured(QAbstractSocket::SocketError)),this,SLOT(onErrorOccured(QAbstractSocket::SocketError)));
-}
-
-void GameContext::onErrorOccured(QAbstractSocket::SocketError socketError)
-{
-    emit errorOccured(socketError);
-}
-
-void GameContext::onClientConnect()
-{
-    if(server !=0)
-    {
-        if(server->isConnexionOk())
-            emit connexionOk();;
-    }
-    else
-    {
-        emit connexionOk();
-    }
-}
-
-/*----------------------------------------------------*/
-/*COMMUNICATION AVEC LE PARSER*/
-/*----------------------------------------------------*/
-
-void GameContext::onReciveGameInfo(int gamerId)
-{
-
-}
-
-void GameContext::onParserUpdate()
-{
-
-}
-
-void GameContext::onTransitToGame()
-{
-
-}
-
-void GameContext::onMapCreated()
-{
-
-}
-
-

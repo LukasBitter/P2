@@ -15,45 +15,40 @@ public:
     Parser();
 
 /*----------------------------------------------------*/
-/*PARSING*/
+/*DECODE*/
 /*----------------------------------------------------*/
 
-//public slots:
-//    void parse(QString s);
+public slots:
+    void decode(QString s);
 
-//signals:
-//    void launchGame();
-//    void canRunGame(bool b);
-//    void updateData();
+signals:
+    void launchGame();
+    void mapNameChange(QString mapName);
+    void setGamerId(int id);
+    void gamerLstUpdate();
+    void mapCreation(QString s);
+    void mapUpdate(QString s);
 
-//private:
-//    void sousMethodeDeParsing1();
-//    void sousMethodeDeParsing2();
-//    void sousMethodeDeParsing3();
-//    void sousMethodeDeParsing4();
+private:
 
-///*----------------------------------------------------*/
-///*UNPARSING*/
-///*----------------------------------------------------*/
+/*----------------------------------------------------*/
+/*ENCODE*/
+/*----------------------------------------------------*/
 
-//public :
-//    enum ACTION
-//    {
-//        LAUNCHGAME,
-//        CANRUNGAME,
-//        GAMEPLAY
-//    };
+public :
+    enum ACTION
+    {
+        LAUNCHGAME,
+        SETREADY,
+        SETMAPNAME,
+    };
 
-//    QString unparse(ACTION a);
-//    QString unparse(ACTION a, bool b);
-//    QString unparse(ACTION a, int i);
-//    QString unparse(ACTION a, QString s);
+    QString encode(ACTION a);
+    QString encode(ACTION a, bool b);
+    QString encode(ACTION a, int i);
+    QString encode(ACTION a, QString s);
 
-//private:
-//    void sousMethodeDeUNParsing1();
-//    void sousMethodeDeUNParsing2();
-//    void sousMethodeDeUNParsing3();
-//    void sousMethodeDeUNParsing4();
+private:
 };
 
 #endif // PARSER_H

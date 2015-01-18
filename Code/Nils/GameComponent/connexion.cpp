@@ -2,6 +2,7 @@
 #include "node.h"
 #include "gamer.h"
 #include "squad.h"
+#include "gamerlist.h"
 #include <QPainter>
 #include <QtMath>
 #include <QGraphicsView>
@@ -204,17 +205,21 @@ void Connexion::updateFromString(QString &s)
             squadStr.pop_front();
             int direction = squadStr.first().toInt();
 
-            Squad *squad = new Squad(*Gamer::getGamer(ownerId));
-            if(direction==0)
+            Gamer *g = GamerList::getGamer(ownerId);
+            if(g != 0)
             {
-                sendSquad(squad, n1);
+                Squad *squad = new Squad(*g);
+                if(direction==0)
+                {
+                    sendSquad(squad, n1);
+                }
+                else
+                {
+                    sendSquad(squad, n2);
+                }
+                squad->setNbRessources(nbRessources);
+                squad->setProgress(progress);
             }
-            else
-            {
-                sendSquad(squad, n2);
-            }
-            squad->setNbRessources(nbRessources);
-            squad->setProgress(progress);
         }
     }
 }

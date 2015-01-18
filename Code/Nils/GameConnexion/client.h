@@ -32,7 +32,7 @@ public slots:
     void sendMessageToServer(QString msg);
 private slots:
     void readFromSocket();
-    void afrterConnexion();
+    void afterConnexion();
     void onErrorOccured(QAbstractSocket::SocketError socketError);
 
 private:

@@ -1,6 +1,7 @@
 #include "gamemenumanager.h"
 #include "lobbymenu.h"
 #include "welcomemenu.h"
+#include "gamecontext.h"
 #include <QStackedLayout>
 
 /*----------------------------------------------------*/
@@ -16,6 +17,7 @@ GameMenuManager::GameMenuManager(QWidget *parent) : QMainWindow(parent)
     connect(welcomemenu,SIGNAL(btJointGamePressed()),this,SLOT(goToLobbyAsClient()));
     connect(welcomemenu,SIGNAL(btQuitPressed()),this,SLOT(close()));
     connect(lobbymenu,SIGNAL(returnToMenu()),this,SLOT(returnToMenu()));
+    connect(lobbymenu,SIGNAL(play(GameContext*)),this,SLOT(goToGame(GameContext*)));
 }
 
 GameMenuManager::~GameMenuManager()
@@ -41,6 +43,12 @@ void GameMenuManager::goToLobbyAsClient()
 {
     lobbymenu->enableClientUI();
     layout->setCurrentWidget(lobbymenu);
+}
+
+void GameMenuManager::goToGame(GameContext *gc)
+{
+    layout->addWidget(gc);
+    layout->setCurrentWidget(gc);
 }
 
 /*----------------------------------------------------*/

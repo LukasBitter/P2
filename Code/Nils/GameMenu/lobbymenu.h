@@ -11,6 +11,9 @@ class QCheckBox;
 class QComboBox;
 class QTextEdit;
 class QLineEdit;
+class GameClient;
+class GameServer;
+class GameContext;
 
 namespace GameMenu {
     class LobbyMenu;
@@ -24,7 +27,7 @@ public:
 
 signals:
     void returnToMenu();
-    void launchGame();
+    void play(GameContext *gc);
     void mapSelectionUpdate();
 
 public slots:
@@ -32,11 +35,13 @@ public slots:
     void enableServerUI();
 
 private slots:
-    void connectToServer();
-    void updateStatusTable();
     void updateUI();
-    void play();
+    void launchGame();
+    void showError(QAbstractSocket::SocketError err);
     void onBtReturnPressed();
+    void onBtConnectPressed();
+    void onBtStartPressed();
+    void onSuccessfulConnexion();
 
 private:
     QComboBox *cbxMap;
@@ -49,6 +54,11 @@ private:
 
     void setUpUI();
     void disableUI();
+
+    bool host;
+    int const maxGamer;
+    GameServer *server;
+    GameClient *client;
 };
 
 #endif // LOBBYMENU_H

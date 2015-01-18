@@ -15,18 +15,15 @@ int main(int argc, char *argv[])
 
 
     //Créatoin des joueur
-    Gamer *nils = new Gamer();
-    Gamer *lukas = new Gamer();
-    nils->setColor(Qt::red);
-    lukas->setColor(Qt::green);
+//    Gamer *nils = new Gamer();
+//    Gamer *lukas = new Gamer();
+//    nils->setColor(Qt::red);
+//    lukas->setColor(Qt::green);
 
-    Map m(nils);
-
-////    /*Map m("6.5.2/7.5.3/8.4.2/9.2.3/@2.180.-150.50.100.0/3.0.-200.30.100.1/4.180.10.10.10.-1/5.-10.-20.50.110.-1/",
-////          nils); //*/
+//    Map m(nils);
 
 
-//    //Création de la map
+    //Création de la map
 //    Node *campsBaseNils = new Node(180,0,50,100,nils);
 //    Node *campsBaseLukas = new Node(0,0,30,100,lukas);
 //    Node *aventageNils = new Node(180,100,10,10,0);

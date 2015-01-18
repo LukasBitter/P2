@@ -2,6 +2,7 @@
 #include "node.h"
 #include "connexion.h"
 #include "gamer.h"
+#include "gamerlist.h"
 #include "gamescene.h"
 #include "GameInterface/powerinterface.h"
 #include <QKeyEvent>
@@ -75,7 +76,7 @@ Map::Map(QString create, const Gamer *g, QWidget *parent):
                 int ownerId = nodeStr.first().toInt();
 
                 Node *n = new Node(posX, posY, radius,ressourcesMax,
-                                   Gamer::getGamer(ownerId));
+                                   GamerList::getGamer(ownerId));
                 n->setId(numberId);
                 addNode(*n);
             }

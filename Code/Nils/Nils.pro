@@ -14,8 +14,6 @@ HEADERS += \
     GameComponent/identitytoken.h \
     GameComponent/gamescene.h \
     GameInterface/powerinterface.h \
-    GameInterface/clientaffichage.h \
-    GameInterface/gamemenu.h \
     GameConnexion/client.h \
     GameConnexion/server.h \
     GameInterface/Powers/power.h \
@@ -29,8 +27,11 @@ HEADERS += \
     GameMenu/gamemenumanager.h \
     GameMenu/lobbymenu.h \
     GameMenu/welcomemenu.h \
-    GameConnexion/parser.h \
-    gamecontext.h
+    gamecontext.h \
+    GameConnexion/gameserver.h \
+    enumLib.h \
+    GameComponent/gamerlist.h \
+    GameConnexion/gameclient.h
 
 SOURCES += \
     GameComponent/connexion.cpp \
@@ -42,8 +43,6 @@ SOURCES += \
     GameComponent/identitytoken.cpp \
     GameComponent/gamescene.cpp \
     GameInterface/powerinterface.cpp \
-    GameInterface/clientaffichage.cpp \
-    GameInterface/gamemenu.cpp \
     GameConnexion/client.cpp \
     GameConnexion/server.cpp \
     GameInterface/Powers/power.cpp \
@@ -56,8 +55,10 @@ SOURCES += \
     GameMenu/gamemenumanager.cpp \
     GameMenu/lobbymenu.cpp \
     GameMenu/welcomemenu.cpp \
-    GameConnexion/parser.cpp \
-    gamecontext.cpp
+    gamecontext.cpp \
+    GameConnexion/gameserver.cpp \
+    GameComponent/gamerlist.cpp \
+    GameConnexion/gameclient.cpp
 
 OTHER_FILES += \
     Notes.txt

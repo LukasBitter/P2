@@ -7,6 +7,7 @@ class WelcomeMenu;
 class LobbyMenu;
 class QWidget;
 class QStackedLayout;
+class GameContext;
 
 namespace GameMenu {
     class LobbyMenu;
@@ -27,6 +28,7 @@ public slots:
 private slots:
     void goToLobbyAsHost();
     void goToLobbyAsClient();
+    void goToGame(GameContext *gc);
 
 private:
     /*INTERFACE*/

@@ -7,3 +7,7 @@ vérifier pourquoi il ne faut pas appelker dragMoveEvent de la scene
 ACCES CONCURENT DEPUIS LES TIMER!!!!!
 verifier si le rayon du noeu ne peu etre supprimé
 Faire une hierarchiede class pour le client et server, il y a des redondence evitable
+Convertir la Gamerlist en attribut des objet
+Possibiliter d arreter l'ecoute du serveur durant la connexion tout en gardant la communication -> close()
+SingleTon sur le game context, et securiset le vidage de la liste de gammer
+JOURNALISATION
