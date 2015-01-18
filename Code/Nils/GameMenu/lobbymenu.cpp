@@ -206,6 +206,8 @@ void LobbyMenu::disableUI()
     cbbReady->setEnabled(false);
     btConnect->setEnabled(false);
     txtAdressIP->setEnabled(false);
+    GamerList::clearGamerList();
+    updateUI();
 
     setClient(0);
     setServer(0);
