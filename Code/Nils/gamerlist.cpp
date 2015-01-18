@@ -1,13 +1,21 @@
 #include "gamerlist.h"
 #include "GameComponent/gamer.h"
+#include <QColor>
 #include <QDebug>
 
+
+QHash<int,Gamer *> lstGamers;
+
+QColor t[]= {Qt::red, Qt::blue, Qt::yellow, Qt::green};
+
+QColor getNextColor()
+{
+    return t[lstGamers.size()%4];
+}
 
 /*----------------------------------------------------*/
 /*METHODE DE CLASSE*/
 /*----------------------------------------------------*/
-
-QHash<int,Gamer *> lstGamers;
 
 const QHash<int, Gamer *> &GamerList::getLstGamer()
 {
@@ -22,6 +30,7 @@ Gamer *GamerList::getGamer(int idGamer)
     }
     else
     {
+        qWarning()<<"GamerList : 'getGamer' return a null pointer";
         return 0;
     }
 }
@@ -32,6 +41,7 @@ Gamer *GamerList::getGamer(QTcpSocket *socket)
     {
         if(g->getSocket() == socket) return g;
     }
+    qWarning()<<"GamerList : 'getGamer' return a null pointer";
     return 0;
 }
 
@@ -46,6 +56,7 @@ bool GamerList::isNameExist(QString s)
 
 QString GamerList::getLstGamerUpdateString()
 {
+    qDebug()<<"GamerList : enter 'getLstGamerUpdateString'";
     QString s;
     foreach (Gamer *g, lstGamers)
     {
@@ -56,6 +67,7 @@ QString GamerList::getLstGamerUpdateString()
 
 void GamerList::updateLstGamerFromString(QString &s)
 {
+    qDebug()<<"GamerList : enter 'updateLstGamerFromString'";
     QStringList allGamers = s.split("/");
 
     foreach (QString s, allGamers)
@@ -92,5 +104,6 @@ void GamerList::clearGamerList()
 void GamerList::addGamer(Gamer *g)
 {
     qDebug()<<"GamerList : enter 'addGamer'";
+    g->setColor(getNextColor());
     lstGamers.insert(g->getId(), g);
 }

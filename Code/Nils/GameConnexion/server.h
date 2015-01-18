@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QAbstractSocket>
+#include <QHash>
 
 class QTcpServer;
 class QTcpSocket;
@@ -37,6 +38,7 @@ private slots:
 private:
     /*OUTIL*/
     QTcpServer *tcpServer;
+    QHash<QTcpSocket*, quint16> blockSizeArray;
 
     /*SORTIE*/
     bool connexionOk;

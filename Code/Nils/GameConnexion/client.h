@@ -38,7 +38,8 @@ private slots:
 private:
     /*OUTIL*/
     QDataStream in;
-    QTcpSocket *tcpSocket;
+    QTcpSocket *socket;
+    quint16 blockSize;
 
     /*SORTIE*/
     bool connexionOk;

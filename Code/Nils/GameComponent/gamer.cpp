@@ -10,6 +10,8 @@
 Gamer::Gamer(QObject *parent)
     : QObject(parent), connected(0), ready(0)
 {
+    color = Qt::white;
+    setName(0);
     setNextId();
     GamerList::addGamer(this);
 }

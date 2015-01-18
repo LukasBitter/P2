@@ -66,12 +66,12 @@ void LobbyMenu::updateUI()
     int cpt = 0;
     foreach (Gamer *g, GamerList::getLstGamer())
     {
-        QString &s1 = *new QString("%1");
+        QString &s1 = *new QString("teststststst%1");
         s1.arg(cpt);
-        QString &s2 = *new QString("%1");
-        s2.arg(*g->getName());
+
+
         tblStatus->setItem(cpt, 0, new QTableWidgetItem(s1));
-        tblStatus->setItem(cpt, 1, new QTableWidgetItem(s2));
+        tblStatus->setItem(cpt, 1, new QTableWidgetItem(*g->getName()));
         ++cpt;
     }
 }

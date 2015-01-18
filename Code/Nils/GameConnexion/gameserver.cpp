@@ -57,6 +57,11 @@ void GameServer::onMessageRecive(QTcpSocket *t, QString s)
             g->setSocket(t);
             server->sendMessageToClient(t,QString("%1#%2#").arg(C_GAMER_INFO).
                                         arg(g->getId()));
+            server->sendMessageToClient(t,QString("%1#%2%#").
+                                        arg(C_LOBBY_UPDATE).
+                                        arg(GamerList::getLstGamerUpdateString()));
+
+
         }
         else
         {
@@ -68,6 +73,7 @@ void GameServer::onMessageRecive(QTcpSocket *t, QString s)
     case C_LAUNCH_GAME:
     {
         qDebug()<<"GameServer : in 'onMessageRecive' recive C_LAUNCH_GAME";
+        lockConnexion = true;
         map = new Map(msg1);
         map->updateFromString(msg2);
         sendToAllGamer(QString("%1#%2#%3").arg(C_LAUNCH_GAME).arg(msg1).arg(msg2));
