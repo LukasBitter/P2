@@ -40,6 +40,7 @@ private:
     QDataStream in;
     QTcpSocket *socket;
     quint16 blockSize;
+    int const timeOut;
 
     /*SORTIE*/
     bool connexionOk;

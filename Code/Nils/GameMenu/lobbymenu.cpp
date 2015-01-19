@@ -52,9 +52,9 @@ void LobbyMenu::enableServerUI()
     cbxMap->setEnabled(true);
     btStart->setEnabled(true);
     cbbReady->setEnabled(true);
-    btConnect->setEnabled(true);
 
     setServer(new GameServer(maxGamer, this));
+    setClient(new GameClient("127.0.0.1", this));
     host = true;
 }
 
@@ -68,7 +68,6 @@ void LobbyMenu::updateUI()
     {
         QString &s1 = *new QString("teststststst%1");
         s1.arg(cpt);
-
 
         tblStatus->setItem(cpt, 0, new QTableWidgetItem(s1));
         tblStatus->setItem(cpt, 1, new QTableWidgetItem(*g->getName()));
@@ -92,19 +91,26 @@ void LobbyMenu::launchGame()
     }
     else
     {
-        qCritical()<<"LobbyMenu : unexpected case in 'launchGame'";
+        qCritical()<<"LobbyMenu : unexpected case in 'launchGame' no server and no client";
     }
 
     if(gc != 0)
     {
+        //Perte volontaire des pinteur
+//        client = 0;
+//        server = 0;
         emit play(gc);
+    }
+    else
+    {
+        qCritical()<<"LobbyMenu : unexpected case in 'launchGame' gamecontext no created";
     }
 }
 
 void LobbyMenu::showError(QAbstractSocket::SocketError err)
 {
     qWarning()<<"LobbyMenu : enter 'showError'"<<err;
-    if(host)
+    if(!host)
     {
         btConnect->setEnabled(true);
         txtAdressIP->setEnabled(true);
@@ -127,21 +133,14 @@ void LobbyMenu::onBtConnectPressed()
     btConnect->setEnabled(false);
     txtAdressIP->setEnabled(false);
 
-    if(host)
+    if(!host)
     {
-        qDebug()<<"LobbyMenu : create client as host";
-        setClient(new GameClient("127.0.0.1", this));
+        setClient(new GameClient(txtAdressIP->text(), this));
     }
     else
     {
-        qDebug()<<"LobbyMenu : create client as client";
-        setClient(new GameClient(txtAdressIP->text(), this));
+        qCritical()<<"LobbyMenu : unexpected case in 'onBtReturnPressed'";
     }
-    connect(client,SIGNAL(switchToGame()),this,SLOT(launchGame()));
-    connect(client,SIGNAL(errorOccured(QAbstractSocket::SocketError)),
-            this,SLOT(showError(QAbstractSocket::SocketError)));
-    connect(client,SIGNAL(connexionOk()),this,SLOT(onSuccessfulConnexion()));
-    connect(client,SIGNAL(updateLobby()),this,SLOT(updateUI()));
 }
 
 void LobbyMenu::onBtStartPressed()
@@ -222,6 +221,14 @@ void LobbyMenu::setClient(GameClient *c)
         delete client;
     }
     client = c;
+    if(client != 0)
+    {
+        connect(client,SIGNAL(switchToGame()),this,SLOT(launchGame()));
+        connect(client,SIGNAL(errorOccured(QAbstractSocket::SocketError)),
+                this,SLOT(showError(QAbstractSocket::SocketError)));
+        connect(client,SIGNAL(connexionOk()),this,SLOT(onSuccessfulConnexion()));
+        connect(client,SIGNAL(updateLobby()),this,SLOT(updateUI()));
+    }
 }
 
 void LobbyMenu::setServer(GameServer *s)

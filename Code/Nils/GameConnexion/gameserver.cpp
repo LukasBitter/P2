@@ -57,11 +57,7 @@ void GameServer::onMessageRecive(QTcpSocket *t, QString s)
             g->setSocket(t);
             server->sendMessageToClient(t,QString("%1#%2#").arg(C_GAMER_INFO).
                                         arg(g->getId()));
-            server->sendMessageToClient(t,QString("%1#%2%#").
-                                        arg(C_LOBBY_UPDATE).
-                                        arg(GamerList::getLstGamerUpdateString()));
-
-
+            updateGamerList();
         }
         else
         {

@@ -13,7 +13,7 @@
 /*----------------------------------------------------*/
 
 Client::Client(int port, QString host, QObject *parent) : QObject(parent),
-    connexionOk(false), blockSize(0)
+    connexionOk(false), blockSize(0), timeOut(5)
 {
     socket = new QTcpSocket(this);
 
@@ -23,6 +23,10 @@ Client::Client(int port, QString host, QObject *parent) : QObject(parent),
             this, SLOT(onErrorOccured(QAbstractSocket::SocketError)));
 
     socket->connectToHost(host,port);
+    if(!socket->waitForConnected(timeOut))
+    {
+        onErrorOccured(socket->error());
+    }
 }
 
 /*----------------------------------------------------*/
