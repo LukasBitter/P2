@@ -1,0 +1,3 @@
+cd C:\Users\lukas.bitter\Google Drive\He-Arc\P2\basic-RTS_v_0.2
+
+C:\Qt\QtIFW-1.5.0\bin\binarycreator.exe -c config\config.xml -p packages Basic-RTS_Installer.exe
