@@ -47,7 +47,7 @@ QTcpSocket *Gamer::getSocket() const
 
 bool Gamer::isReady() const
 {
-    return isReady();
+    return ready;
 }
 
 QString Gamer::getName() const

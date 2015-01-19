@@ -20,13 +20,11 @@ public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     explicit Server(int port, int maxConnexion, QObject *parent = 0);
 
-    /*ASSESSEUR / MUTATEUR*/
-    bool isConnexionOk() const;
-
     /*SIGNALS/SLOTS*/
 signals:
     void errorOccured(QAbstractSocket::SocketError socketError);
     void messageReciveFromClient(QTcpSocket *t, QString msg);
+    void serverIsListening();
 
 public slots:
     void sendMessageToClient(QTcpSocket *socket, QString msg);
@@ -39,9 +37,6 @@ private:
     /*OUTIL*/
     QTcpServer *tcpServer;
     QHash<QTcpSocket*, quint16> blockSizeArray;
-
-    /*SORTIE*/
-    bool connexionOk;
 };
 
 #endif // SERVER_H

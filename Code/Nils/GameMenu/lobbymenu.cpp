@@ -3,8 +3,7 @@
 #include "GameConnexion/gameserver.h"
 #include "gamecontext.h"
 #include "gamerlist.h"
-#include "GameComponent/gamer.h"
-
+#include "gamer.h"
 #include <QPushButton>
 #include <QTableWidget>
 #include <QCheckBox>
@@ -15,6 +14,9 @@
 #include <QMessageBox>
 #include <QStringList>
 #include <QStandardItem>
+#include <QInputDialog>
+#include <QLabel>
+#include <QDir>
 
 
 /*----------------------------------------------------*/
@@ -26,10 +28,7 @@ LobbyMenu::LobbyMenu(QWidget *parent) :  QWidget(parent),
 {
     setUpUI();
     disableUI();
-
-    connect(btReturn,SIGNAL(clicked()),this,SLOT(onBtReturnPressed()));
-    connect(btConnect,SIGNAL(clicked()),this,SLOT(onBtConnectPressed()));
-    connect(btStart,SIGNAL(clicked()),this,SLOT(onBtStartPressed()));
+    loadMapsFromFile();
 }
 
 /*----------------------------------------------------*/
@@ -39,7 +38,7 @@ LobbyMenu::LobbyMenu(QWidget *parent) :  QWidget(parent),
 void LobbyMenu::enableClientUI()
 {
     disableUI();
-    cbbReady->setEnabled(true);
+    cbtReady->setEnabled(true);
     btConnect->setEnabled(true);
     txtAdressIP->setEnabled(true);
 
@@ -49,12 +48,12 @@ void LobbyMenu::enableClientUI()
 void LobbyMenu::enableServerUI()
 {
     disableUI();
-    cbxMap->setEnabled(true);
+    cbbMap->setEnabled(true);
     btStart->setEnabled(true);
-    cbbReady->setEnabled(true);
-    btConnect->setEnabled(true);
+    cbtReady->setEnabled(true);
 
     setServer(new GameServer(maxGamer, this));
+    setClient(new GameClient("127.0.0.1", this));
     host = true;
 }
 
@@ -68,12 +67,30 @@ void LobbyMenu::updateUI()
     int cpt = 0;
     foreach (Gamer *g, client->getListGamer())
     {
-        QString &s1 = *new QString("teststststst%1");
-        s1.arg(cpt);
+        QTableWidgetItem *l1 = new QTableWidgetItem(QString("%1").arg(g->getName()));
+        QTableWidgetItem *l2 = new QTableWidgetItem();
+        l2->setBackground(g->getColor());
+        QTableWidgetItem *l3 = new QTableWidgetItem("Not ready");
+        if(g->isReady())l3->setText("Ready !");
 
-        tblStatus->setItem(cpt, 0, new QTableWidgetItem(s1));
-        tblStatus->setItem(cpt, 1, new QTableWidgetItem(g->getName()));
+        tblStatus->setItem(cpt, 0, l1);
+        tblStatus->setItem(cpt, 1, l2);
+        tblStatus->setItem(cpt, 2, l3);
         ++cpt;
+    }
+
+    const Gamer *cg = client->getCurrentGamer();
+    if(cg != 0)
+    {
+        cbtReady->setChecked(cg->isReady());
+        if(cg->getName().isEmpty())
+        {
+            onBtChangeNamePressed();
+        }
+        else
+        {
+            txtName->setText(QString("Votre pseudo : %1").arg(cg->getName()));
+        }
     }
 }
 
@@ -141,8 +158,7 @@ void LobbyMenu::onBtConnectPressed()
     }
     else
     {
-        setClient(new GameClient("127.0.0.1", this));
-        //qCritical()<<"LobbyMenu : unexpected case in 'onBtReturnPressed'";
+        qCritical()<<"LobbyMenu : unexpected case in 'onBtReturnPressed'";
     }
 }
 
@@ -152,8 +168,8 @@ void LobbyMenu::onBtStartPressed()
     if(client != 0)
     {
         client->launchGame(
-                "10.3.4/8.6.4/9.5.3/7.6.3/@6.90.-90.50.110.-1/4.0.0.30.100.2/5.180.100.10.10.-1/3.180.0.50.100.1/",
-                "10.150_30_2_1,/8./9./7./@6.50,1,-1,0/4.20,1,2,0/5.0,1,-1,0/3.50,1,1,0/");
+                "10.3.4/8.6.4/9.5.3/7.6.3/@6.300.300.50.110.-1/4.500.500.30.100.2/5.400.200.10.10.-1/3.300.100.50.100.1/",
+                "10.150_30_2_1,/8./9./7./@6.50,1,-1,0,0/4.20,1,2,0,0/5.0,1,-1,0,0/3.50,1,1,0,0/");
     }
     else
     {
@@ -161,12 +177,27 @@ void LobbyMenu::onBtStartPressed()
     }
 }
 
+void LobbyMenu::onBtChangeNamePressed()
+{
+    bool ok;
+    QString text = QInputDialog::getText(this, tr("Entrez votre pseudo")
+                                         ,tr("Pseudo :"), QLineEdit::Normal,
+                                         "", &ok);
+    if(ok)
+    {
+        client->setName(text);
+    }
+}
+
+void LobbyMenu::onBtReadyPressed()
+{
+    client->setReady(cbtReady->isChecked());
+}
+
 void LobbyMenu::onSuccessfulConnexion()
 {
     qDebug()<<"LobbyMenu : successfull connexion to server";
-    QMessageBox msgBox;
-    msgBox.setText("Connextion au serveur avec succes");
-    msgBox.exec();
+    txtConnected->setText("Connecté");
 }
 
 /*----------------------------------------------------*/
@@ -175,37 +206,49 @@ void LobbyMenu::onSuccessfulConnexion()
 
 void LobbyMenu::setUpUI()
 {
-    this->btStart = new QPushButton("Start game", this);
-    this->cbbReady = new QCheckBox("Ready", this);
-    this->cbxMap = new QComboBox(this);
+    this->btStart = new QPushButton("Lancer le jeu", this);
+    this->cbtReady = new QCheckBox("Pret", this);
+    this->cbbMap = new QComboBox(this);
     this->tblStatus = new QTableWidget(this);
-    this->txtAdressIP = new QLineEdit("Enter host IP",this);
+    this->txtAdressIP = new QLineEdit("Entrez l'adresse IP",this);
     this->btConnect = new QPushButton("Connection",this);
-    this->btReturn = new QPushButton("Return",this);
+    this->btReturn = new QPushButton("Retour",this);
+    this->btChangeName = new QPushButton("Changer le pseudo",this);
+    this->txtName = new QLabel("Votre pseudo : ",this);
+    this->txtConnected = new QLabel("Non connecté",this);
+
+    connect(btReturn,SIGNAL(clicked()),this,SLOT(onBtReturnPressed()));
+    connect(btConnect,SIGNAL(clicked()),this,SLOT(onBtConnectPressed()));
+    connect(btStart,SIGNAL(clicked()),this,SLOT(onBtStartPressed()));
+    connect(cbtReady,SIGNAL(clicked()),this,SLOT(onBtReadyPressed()));
+    connect(btChangeName,SIGNAL(clicked()),this,SLOT(onBtChangeNamePressed()));
 
     tblStatus->setRowCount(maxGamer);
-    tblStatus->setColumnCount(4);
+    tblStatus->setColumnCount(3);
     QStringList &s = *new QStringList();
-    s<<"Num joueur"<<"Nom joueur"<<"Couleur"<<"Pret";
+    s<<"Nom joueur"<<"Couleur"<<"Pret";
     tblStatus->setHorizontalHeaderLabels(s);
 
     QGridLayout *l = new QGridLayout(this);
-    l->addWidget(txtAdressIP, 0,0,1,2);
-    l->addWidget(btConnect, 0,2);
-    l->addWidget(tblStatus, 1,0,1,3);
-    l->addWidget(cbxMap, 2,0,1,3);
-    l->addWidget(btReturn, 3,0);
-    l->addWidget(cbbReady, 3,1);
-    l->addWidget(btStart, 3,2);
+    l->addWidget(txtName, 0,0,1,2);
+    l->addWidget(btChangeName, 0,2);
+    l->addWidget(txtAdressIP, 1,0,1,2);
+    l->addWidget(btConnect, 1,2);
+    l->addWidget(tblStatus, 2,0,1,3);
+    l->addWidget(cbbMap, 3,0,1,3);
+    l->addWidget(btReturn, 4,0);
+    l->addWidget(cbtReady, 4,1);
+    l->addWidget(btStart, 4,2);
+    l->addWidget(txtConnected, 6,1);
 
     this->setLayout(l);
 }
 
 void LobbyMenu::disableUI()
 {
-    cbxMap->setEnabled(false);
+    cbbMap->setEnabled(false);
     btStart->setEnabled(false);
-    cbbReady->setEnabled(false);
+    cbtReady->setEnabled(false);
     btConnect->setEnabled(false);
     txtAdressIP->setEnabled(false);
     updateUI();
@@ -242,4 +285,17 @@ void LobbyMenu::setServer(GameServer *s)
         delete server;
     }
     server = s;
+}
+
+void LobbyMenu::loadMapsFromFile()
+{
+    qDebug()<<"LobbyMenu : enter 'loadMapsFromFile'";
+    QDir dir("./maps");
+    qDebug()<<dir.mkpath("./maps");
+    qDebug()<<dir.exists();
+    qDebug()<<dir.isRelative();
+    QStringList filters;
+    filters << "*.rtsmap";
+    QStringList lstMap = dir.entryList(filters,QDir::Readable,QDir::Name);
+    cbbMap->addItems(lstMap);
 }

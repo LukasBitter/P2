@@ -32,6 +32,7 @@ GameContext::GameContext(GameClient *c, GameServer *s, QWidget *parent):
 
 GameContext::~GameContext()
 {
+    qDebug()<<"GameContext : destroy";
     if(c != 0) delete c;
-    if(s != 0)delete s;
+    if(s != 0) delete s;
 }

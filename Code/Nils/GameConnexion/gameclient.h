@@ -26,6 +26,7 @@ public:
     /*ASSESSEUR / MUTATEUR*/
     Map *getMap()const;
     const QHash<int, Gamer *> &getListGamer();
+    const Gamer *getCurrentGamer()const;
 
     /*SIGNALS/SLOTS*/
 signals:
@@ -35,6 +36,8 @@ signals:
     void switchToGame();
 public slots:
     void launchGame(QString mapCreationStr, QString mapUpdateStr);
+    void setName(QString &name);
+    void setReady(bool r);
 
 private slots:
     void onErrorOccured(QAbstractSocket::SocketError socketError);

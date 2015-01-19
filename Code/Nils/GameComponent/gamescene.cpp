@@ -51,7 +51,7 @@ GameScene::GameScene(QString create, GamerList &gl, const Gamer *g, QObject *par
             }
             else
             {
-                qCritical()<<"Map : unexpected case in 'Map' when create nodes";
+                qCritical()<<"GameScene : unexpected case in 'GameScene' when create nodes";
             }
         }
 
@@ -78,7 +78,7 @@ GameScene::GameScene(QString create, GamerList &gl, const Gamer *g, QObject *par
             }
             else
             {
-                qCritical()<<"Map : unexpected case in 'Map' when create connexions";
+                qCritical()<<"GameScene : unexpected case in 'GameScene' when create connexions";
             }
         }
     }
@@ -176,7 +176,7 @@ Node *GameScene::getNode(int idNode)
     }
     else
     {
-        qWarning()<<"Map : 'getNode' return a null pointer";
+        qWarning()<<"GameScene : 'getNode' return a null pointer";
         return 0;
     }
 }
@@ -189,7 +189,7 @@ Connexion *GameScene::getConnexion(int idConnexion)
     }
     else
     {
-        qWarning()<<"Map : 'getConnexion' return a null pointer";
+        qWarning()<<"GameScene : 'getConnexion' return a null pointer";
         return 0;
     }
 }

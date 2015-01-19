@@ -2,7 +2,7 @@
 #include "enumlibrary.h"
 #include "server.h"
 #include "GameComponent/map.h"
-#include "GameComponent/gamer.h"
+#include "gamer.h"
 #include "gamerlist.h"
 #include <QTcpSocket>
 
@@ -19,10 +19,13 @@ GameServer::GameServer(int maxConnexion, QObject *parent) : QObject(parent),
 
     connect(server, SIGNAL(messageReciveFromClient(QTcpSocket*,QString)),
             this, SLOT(onMessageRecive(QTcpSocket*,QString)));
+    connect(server, SIGNAL(serverIsListening()),
+            this, SLOT(onServerIsListening()));
 }
 
 GameServer::~GameServer()
 {
+    qDebug()<<"GameServer : destroy";
     if(map != 0) delete map;
     if(&lstGamer != 0) delete &lstGamer;
 }
@@ -88,6 +91,15 @@ void GameServer::onMessageRecive(QTcpSocket *t, QString s)
         updateGamerList();
         break;
     }
+    case C_SET_NAME:
+    {
+        qDebug()<<"GameServer : in 'onMessageRecive' recive C_SET_NAME";
+        Gamer *g = lstGamer.getGamer(t);
+        g->setName(msg1);
+        g->setReady(false); //Afin de nw pas lancer le jeu sans que son nom lui plaise
+        updateGamerList();
+        break;
+    }
     case C_GAMER_ACTION:
     {
         qDebug()<<"GameServer : in 'onMessageRecive' recive C_GAMER_ACTION";
@@ -99,6 +111,11 @@ void GameServer::onMessageRecive(QTcpSocket *t, QString s)
         break;
     }
 
+}
+
+void GameServer::onServerIsListening()
+{
+    emit serverIsListening();
 }
 
 /*----------------------------------------------------*/

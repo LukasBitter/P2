@@ -6,7 +6,7 @@
 #include <process.h>
 #include "GameConnexion/server.h"
 #include "GameComponent/map.h"
-#include "GameComponent/gamer.h"
+#include "gamer.h"
 
 
 /*----------------------------------------------------*/
@@ -25,22 +25,11 @@ Server::Server(int port, int maxConnexion, QObject *parent) :
     if(tcpServer->isListening())
     {
         qDebug()<<"Server : is listening port";
-        connexionOk = true;
     }
     else
     {
-        onErrorOccured(tcpServer->serverError());
         qCritical()<<"Server : is NOT listening port";
     }
-}
-
-/*----------------------------------------------------*/
-/*ASSESSEUR / MUTATEUR*/
-/*----------------------------------------------------*/
-
-bool Server::isConnexionOk() const
-{
-    return connexionOk;
 }
 
 /*----------------------------------------------------*/
@@ -71,11 +60,12 @@ void Server::readFromSocket()
         if (blockSize == 0)
         {
             if (socket->bytesAvailable() < (int)sizeof(quint16))
-                return;
+                break;
             in >> blockSize;
         }
+
         if (socket->bytesAvailable() < blockSize)
-            return;
+            break;
 
         QString clientMessage;
         in >> clientMessage;
@@ -83,6 +73,7 @@ void Server::readFromSocket()
         blockSize = 0;
         emit messageReciveFromClient(socket, clientMessage);
     }
+    blockSizeArray.insert(socket,blockSize);
 }
 
 void Server::onErrorOccured(QAbstractSocket::SocketError socketError)

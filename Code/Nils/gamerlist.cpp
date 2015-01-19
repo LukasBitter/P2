@@ -1,5 +1,5 @@
 #include "gamerlist.h"
-#include "GameComponent/gamer.h"
+#include "gamer.h"
 #include <QColor>
 #include <QDebug>
 

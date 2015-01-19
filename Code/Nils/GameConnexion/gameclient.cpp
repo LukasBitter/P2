@@ -22,6 +22,7 @@ GameClient::GameClient(QString host, QObject *parent) : QObject(parent),
 
 GameClient::~GameClient()
 {
+    qDebug()<<"GameClient : destroy";
     if(map != 0) delete map;
     if(&lstGamer != 0) delete &lstGamer;
 }
@@ -40,6 +41,11 @@ const QHash<int, Gamer *> &GameClient::getListGamer()
     return lstGamer.getLstGamer();
 }
 
+const Gamer *GameClient::getCurrentGamer() const
+{
+    return lstGamer.getGamer(gamerId);
+}
+
 /*----------------------------------------------------*/
 /*SIGNALS/SLOTS*/
 /*----------------------------------------------------*/
@@ -49,6 +55,20 @@ void GameClient::launchGame(QString mapCreationStr, QString mapUpdateStr)
     qDebug()<<"GameClient : enter 'launchGame'";
     client->sendMessageToServer(QString("%1#%2#%3").arg(C_LAUNCH_GAME).
                                 arg(mapCreationStr).arg(mapUpdateStr));
+}
+
+void GameClient::setName(QString &name)
+{
+    qDebug()<<"GameClient : enter 'setName'";
+    client->sendMessageToServer(QString("%1#%2#").arg(C_SET_NAME).
+                                arg(name));
+}
+
+void GameClient::setReady(bool r)
+{
+    qDebug()<<"GameClient : enter 'setName'";
+    client->sendMessageToServer(QString("%1#%2#").arg(C_SET_READY).
+                                arg(r));
 }
 
 void GameClient::onErrorOccured(QAbstractSocket::SocketError socketError)

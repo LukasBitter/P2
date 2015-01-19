@@ -7,7 +7,6 @@ TEMPLATE = app
 
 HEADERS += \
     GameComponent/connexion.h \
-    GameComponent/gamer.h \
     GameComponent/node.h \
     GameComponent/map.h \
     GameComponent/squad.h \
@@ -30,11 +29,11 @@ HEADERS += \
     GameMenu/welcomemenu.h \
     GameMenu/gamecontext.h \
     gamerlist.h \
+    gamer.h \
     enumlibrary.h
 
 SOURCES += \
     GameComponent/connexion.cpp \
-    GameComponent/gamer.cpp \
     GameComponent/node.cpp \
     GameComponent/map.cpp \
     GameComponent/squad.cpp \
@@ -57,6 +56,7 @@ SOURCES += \
     GameMenu/welcomemenu.cpp \
     GameMenu/gamecontext.cpp \
     gamerlist.cpp \
+    gamer.cpp \
     main.cpp
 
 OTHER_FILES += \

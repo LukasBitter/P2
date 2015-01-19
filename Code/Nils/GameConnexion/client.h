@@ -20,9 +20,6 @@ public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     explicit Client(int port = 0, QString host = "localhost", QObject *parent = 0);
 
-    /*ASSESSEUR / MUTATEUR*/
-    bool isConnexionOk() const;
-
     /*SIGNALS/SLOTS*/
 signals:
     void errorOccured(QAbstractSocket::SocketError socketError);
@@ -40,9 +37,6 @@ private:
     QDataStream in;
     QTcpSocket *socket;
     quint16 blockSize;
-
-    /*SORTIE*/
-    bool connexionOk;
 };
 
 #endif // CLIENT_H

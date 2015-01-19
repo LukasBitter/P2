@@ -14,6 +14,7 @@ class QLineEdit;
 class GameClient;
 class GameServer;
 class GameContext;
+class QLabel;
 
 namespace GameMenu {
     class LobbyMenu;
@@ -43,15 +44,20 @@ private slots:
     void onBtReturnPressed();
     void onBtConnectPressed();
     void onBtStartPressed();
+    void onBtChangeNamePressed();
+    void onBtReadyPressed();
     void onSuccessfulConnexion();
 
 private:
     /*INTERFACE*/
-    QComboBox *cbxMap;
-    QCheckBox *cbbReady;
+    QComboBox *cbbMap;
+    QCheckBox *cbtReady;
     QPushButton *btStart;
     QTableWidget *tblStatus;
     QLineEdit *txtAdressIP;
+    QLabel *txtName;
+    QLabel *txtConnected;
+    QPushButton *btChangeName;
     QPushButton *btConnect;
     QPushButton *btReturn;
 
@@ -66,6 +72,7 @@ private:
     void disableUI();
     void setClient(GameClient *c);
     void setServer(GameServer* s);
+    void loadMapsFromFile();
 
 };
 

@@ -5,7 +5,7 @@
 
 #include "GameConnexion/client.h"
 #include "GameComponent/map.h"
-#include "GameComponent/gamer.h"
+#include "gamer.h"
 
 
 /*----------------------------------------------------*/
@@ -13,7 +13,7 @@
 /*----------------------------------------------------*/
 
 Client::Client(int port, QString host, QObject *parent) : QObject(parent),
-    connexionOk(false), blockSize(0)
+    blockSize(0)
 {
     socket = new QTcpSocket(this);
 
@@ -23,15 +23,6 @@ Client::Client(int port, QString host, QObject *parent) : QObject(parent),
             this, SLOT(onErrorOccured(QAbstractSocket::SocketError)));
 
     socket->connectToHost(host,port);
-}
-
-/*----------------------------------------------------*/
-/*ASSESSEUR / MUTATEUR*/
-/*----------------------------------------------------*/
-
-bool Client::isConnexionOk() const
-{
-    return connexionOk;
 }
 
 /*----------------------------------------------------*/
@@ -86,7 +77,6 @@ void Client::readFromSocket()
 void Client::afterConnexion()
 {
     qDebug()<<"Client : successfull connexion to server";
-    connexionOk = true;
     emit connected();
 }
 

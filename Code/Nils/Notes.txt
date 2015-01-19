@@ -10,3 +10,4 @@ Faire une hierarchiede class pour le client et server, il y a des redondence evi
 Convertir la Gamerlist en attribut des objet
 Possibiliter d arreter l'ecoute du serveur durant la connexion tout en gardant la communication -> close()
 SingleTon sur le game context, et securiset le vidage de la liste de gammer
+Break dans la boucle de reception du serveur

@@ -202,5 +202,5 @@ void Map::setUpUI()
     ui->setY(0);
     ui->setMana(1000);
     scene->addItem(ui);
-    connect(ui,SIGNAL(powerPressed(POWER_NAME)),this,SLOT(powerPressed(POWER_NAME)));
+    //connect(ui,SIGNAL(powerPressed(POWER_NAME)),this,SLOT(powerPressed(POWER_NAME)));
 }
