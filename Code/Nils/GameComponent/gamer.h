@@ -22,7 +22,6 @@ class Gamer : public QObject, public IdentityToken
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     explicit Gamer(QObject *parent=0);
-    virtual ~Gamer();
 
     /*ASSESSEUR / MUTATEUR*/
     void setColor(QColor c);
@@ -30,9 +29,9 @@ public:
     void setSocket(QTcpSocket *s);
     QTcpSocket *getSocket() const;
     bool isReady()const;
-    QString *getName()const;
+    QString getName()const;
     void setReady(bool b);
-    void setName(QString *s);
+    void setName(QString s);
 
     /*MISE A JOUR*/
     QString getUpdateString();
@@ -41,8 +40,7 @@ public:
 private:
     /*OUTIL*/
     QColor color; ///< Couleur du joueur
-    QString *name; ///< Nom du joueur
-    bool connected; ///< Indique si le joueur est connecté au serveur
+    QString name; ///< Nom du joueur
     bool ready; ///< Indique si le joueur est pret
     QTcpSocket * socket; ///< Socket de connexion au serveur
 };

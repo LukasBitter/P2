@@ -10,6 +10,7 @@ class QPainter;
 class Gamer;
 class QObject;
 class Squad;
+class GamerList;
 
 namespace GameComponent {
 class Connexion;
@@ -25,7 +26,7 @@ class Connexion : public QGraphicsObject, public IdentityToken
 
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    explicit Connexion(Node &n1, Node &n2);
+    explicit Connexion(Node &n1, Node &n2, GamerList &gl);
     virtual ~Connexion();
 
     /*SURCHARGE*/
@@ -49,18 +50,20 @@ private:
     /*ENTREE*/
     Node &n1; ///< Point d'ancrage de la connexion
     Node &n2; ///< Point d'ancrage de la connexion
+    GamerList &lstGamer; ///< Liste des joueurs
     int pathLength; ///< Durée en nombre de "tic" de la traversée d'un noeud a l'autre
 
     /*OUTIL*/
     QQueue<Squad *> lstSquad1To2; ///< File de transfère du noeud 1 au noeud 2
     QQueue<Squad *> lstSquad2To1; ///< File de transfère du noeud 2 au noeud 1
-    int counterAdvance;
+    int counterAdvance; ///< Diviseur de tic
 
     /*METHODE PRIVE*/
     void advanceSquad();
     void resolveSquadFigth();
     void checkSquadArrive();
     QList<QPair<Squad *, Squad *> > checkSquadColision();
+    Squad *getFirstSquad(const Gamer &g, Node &from);
 };
 
 #endif // CONNEXION_H

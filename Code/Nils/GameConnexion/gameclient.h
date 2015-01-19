@@ -7,6 +7,8 @@
 class Client;
 class QTcpSocket;
 class Map;
+class GamerList;
+class Gamer;
 
 namespace GameConnexion {
     class GameClient;
@@ -21,7 +23,9 @@ public:
     GameClient(QString host = "localhost", QObject *parent = 0);
     ~GameClient();
 
+    /*ASSESSEUR / MUTATEUR*/
     Map *getMap()const;
+    const QHash<int, Gamer *> &getListGamer();
 
     /*SIGNALS/SLOTS*/
 signals:
@@ -36,6 +40,7 @@ private slots:
     void onErrorOccured(QAbstractSocket::SocketError socketError);
     void onMessageRecive(QString msg);
     void onClientConnected();
+    void sendClientAction(QString actionString);
 
 private:
     /*OUTIL*/
@@ -43,6 +48,7 @@ private:
     Map *map;
     int const port;
     int gamerId;
+    GamerList &lstGamer;
 
     /*METHODE PRIVE*/
 };

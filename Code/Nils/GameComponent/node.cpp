@@ -12,9 +12,10 @@
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-Node::Node(int x, int y, int radius, int ressourcesMax, Gamer *g)
+Node::Node(int x, int y, int radius, int ressourcesMax, GamerList &gl, Gamer *g)
     : QGraphicsObject(0), radius(radius), owner(g), invicible(false),
-      ressourcesMax(ressourcesMax), nbRessources(0), counterAdvance(0), armorLvl(0)
+      ressourcesMax(ressourcesMax), nbRessources(0), counterAdvance(0),
+      armorLvl(0), lstGamer(gl)
 {
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setAcceptHoverEvents(true);
@@ -111,12 +112,6 @@ void Node::advance(int step)
 
 }
 
-void Node::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-    QGraphicsObject::mousePressEvent(event);
-    setCursor(Qt::ArrowCursor);
-}
-
 void Node::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     if (QLineF(event->screenPos(), event->buttonDownScreenPos(Qt::LeftButton))
@@ -131,13 +126,6 @@ void Node::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     mime->setText(QString("%1").arg(getId()));
 
     drag->exec();
-    setCursor(Qt::ClosedHandCursor);
-}
-
-void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-    QGraphicsObject::mouseReleaseEvent(event);
-    setCursor(Qt::ArrowCursor);
 }
 
 /*----------------------------------------------------*/
@@ -212,7 +200,7 @@ void Node::connect(Node &n)
 {
     if(!mapConnexion.contains(&n) && &n != this)
     {
-        Connexion *c = new Connexion(*this,n);
+        Connexion *c = new Connexion(*this,n, lstGamer);
         mapConnexion.insert(&n, c);
         n.addConnexion(c);
     }
@@ -306,7 +294,7 @@ void Node::updateFromString(QString &s)
         nodeStr.pop_front();
         ressourcesRate = nodeStr.first().toInt();
         nodeStr.pop_front();
-        owner = GamerList::getGamer(nodeStr.first().toInt());
+        owner = lstGamer.getGamer(nodeStr.first().toInt());
         nodeStr.pop_front();
         armorLvl = nodeStr.first().toInt();
         nodeStr.pop_front();
@@ -316,6 +304,7 @@ void Node::updateFromString(QString &s)
     {
         qCritical()<<"Node : unexpected case in 'updateFromString'";
     }
+    update();
 }
 
 /*----------------------------------------------------*/

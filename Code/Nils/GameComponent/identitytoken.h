@@ -17,7 +17,7 @@ public:
 
     /*ASSESSEUR / MUTATEUR*/
     ///@warning Utiliser UNIQUEMENT en cas de mise
-    ///a jour, préférer setNextId sinon
+    /// à jour, préférer setNextId sinon
     void setId(int i);
     int getId() const;
     ///@brief Prend comme ID l'ID libre suivant

@@ -4,17 +4,26 @@
 #include <QDebug>
 
 
-QHash<int,Gamer *> lstGamers;
+/*----------------------------------------------------*/
+/*CONSTRUCTEUR / DESTRUCTEUR*/
+/*----------------------------------------------------*/
 
-QColor t[]= {Qt::red, Qt::blue, Qt::yellow, Qt::green};
-
-QColor getNextColor()
+GamerList::GamerList()
 {
-    return t[lstGamers.size()%4];
+    lstColor.append(Qt::red);
+    lstColor.append(Qt::green);
+    lstColor.append(Qt::yellow);
+    lstColor.append(Qt::blue);
+}
+
+GamerList::~GamerList()
+{
+    qDeleteAll(lstGamers);
+    lstGamers.clear();
 }
 
 /*----------------------------------------------------*/
-/*METHODE DE CLASSE*/
+/*ASSESSEUR / MUTATEUR*/
 /*----------------------------------------------------*/
 
 const QHash<int, Gamer *> &GamerList::getLstGamer()
@@ -30,7 +39,6 @@ Gamer *GamerList::getGamer(int idGamer)
     }
     else
     {
-        qWarning()<<"GamerList : 'getGamer' return a null pointer";
         return 0;
     }
 }
@@ -49,10 +57,21 @@ bool GamerList::isNameExist(QString s)
 {
     foreach (Gamer *g, lstGamers)
     {
-        if(g->getName()->compare(s)) return true;
+        if(g->getName().compare(s)) return true;
     }
     return false;
 }
+
+void GamerList::addGamer(Gamer *g)
+{
+    qDebug()<<"GamerList : enter 'addGamer'";
+    g->setColor(getNextColor());
+    lstGamers.insert(g->getId(), g);
+}
+
+/*----------------------------------------------------*/
+/*MISE A JOUR*/
+/*----------------------------------------------------*/
 
 QString GamerList::getLstGamerUpdateString()
 {
@@ -79,11 +98,12 @@ void GamerList::updateLstGamerFromString(QString &s)
             gamerStr.pop_front();
             QString &data = gamerStr.first();
 
-            Gamer *g = GamerList::getGamer(numberId);
+            Gamer *g = getGamer(numberId);
             if(g == 0)
             {
                 g = new Gamer();
                 g->setId(numberId);
+                addGamer(g);
             }
             g->updateFromString(data);
         }
@@ -94,16 +114,11 @@ void GamerList::updateLstGamerFromString(QString &s)
     }
 }
 
-void GamerList::clearGamerList()
-{
-    qDebug()<<"GamerList : enter 'clearGamerList'";
-    qDeleteAll(lstGamers);
-    lstGamers.clear();
-}
+/*----------------------------------------------------*/
+/*METHODE PRIVE*/
+/*----------------------------------------------------*/
 
-void GamerList::addGamer(Gamer *g)
+QColor GamerList::getNextColor()
 {
-    qDebug()<<"GamerList : enter 'addGamer'";
-    g->setColor(getNextColor());
-    lstGamers.insert(g->getId(), g);
+    return lstColor.at(lstGamers.size()%4);
 }

@@ -52,9 +52,9 @@ void LobbyMenu::enableServerUI()
     cbxMap->setEnabled(true);
     btStart->setEnabled(true);
     cbbReady->setEnabled(true);
+    btConnect->setEnabled(true);
 
     setServer(new GameServer(maxGamer, this));
-    setClient(new GameClient("127.0.0.1", this));
     host = true;
 }
 
@@ -62,15 +62,17 @@ void LobbyMenu::updateUI()
 {
     qDebug()<<"LobbyMenu : enter 'updateUI'";
 
+    if(client == 0)return;
+
     tblStatus->clearContents(); //Detruit également les pointeurs
     int cpt = 0;
-    foreach (Gamer *g, GamerList::getLstGamer())
+    foreach (Gamer *g, client->getListGamer())
     {
         QString &s1 = *new QString("teststststst%1");
         s1.arg(cpt);
 
         tblStatus->setItem(cpt, 0, new QTableWidgetItem(s1));
-        tblStatus->setItem(cpt, 1, new QTableWidgetItem(*g->getName()));
+        tblStatus->setItem(cpt, 1, new QTableWidgetItem(g->getName()));
         ++cpt;
     }
 }
@@ -97,8 +99,8 @@ void LobbyMenu::launchGame()
     if(gc != 0)
     {
         //Perte volontaire des pinteur
-//        client = 0;
-//        server = 0;
+        client = 0;
+        server = 0;
         emit play(gc);
     }
     else
@@ -139,7 +141,8 @@ void LobbyMenu::onBtConnectPressed()
     }
     else
     {
-        qCritical()<<"LobbyMenu : unexpected case in 'onBtReturnPressed'";
+        setClient(new GameClient("127.0.0.1", this));
+        //qCritical()<<"LobbyMenu : unexpected case in 'onBtReturnPressed'";
     }
 }
 
@@ -205,7 +208,6 @@ void LobbyMenu::disableUI()
     cbbReady->setEnabled(false);
     btConnect->setEnabled(false);
     txtAdressIP->setEnabled(false);
-    GamerList::clearGamerList();
     updateUI();
 
     setClient(0);

@@ -7,6 +7,7 @@
 class Server;
 class QTcpSocket;
 class Map;
+class GamerList;
 
 namespace GameConnexion {
     class GameServer;
@@ -35,6 +36,7 @@ private:
     bool lockConnexion;
     int const refreshLoopMS;
     int const port;
+    GamerList &lstGamer;
 
     /*METHODE PRIVE*/
     void sendToAllGamer(QString s);

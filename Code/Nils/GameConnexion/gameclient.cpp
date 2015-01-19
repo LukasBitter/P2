@@ -10,7 +10,7 @@
 /*----------------------------------------------------*/
 
 GameClient::GameClient(QString host, QObject *parent) : QObject(parent),
-    port(8000), gamerId(-1), map(0), client(0)
+    port(8000), gamerId(-1), map(0), client(0), lstGamer(*new GamerList())
 {
     client = new Client(port, host, this);
 
@@ -23,11 +23,21 @@ GameClient::GameClient(QString host, QObject *parent) : QObject(parent),
 GameClient::~GameClient()
 {
     if(map != 0) delete map;
+    if(&lstGamer != 0) delete &lstGamer;
 }
+
+/*----------------------------------------------------*/
+/*ASSESSEUR / MUTATEUR*/
+/*----------------------------------------------------*/
 
 Map *GameClient::getMap() const
 {
     return map;
+}
+
+const QHash<int, Gamer *> &GameClient::getListGamer()
+{
+    return lstGamer.getLstGamer();
 }
 
 /*----------------------------------------------------*/
@@ -76,8 +86,10 @@ void GameClient::onMessageRecive(QString s)
         qDebug()<<"GameClient : in 'onMessageRecive' recive C_LAUNCH_GAME";
         if(gamerId != -1)
         {
-            map = new Map(msg1, GamerList::getGamer(gamerId));
+            map = new Map(msg1, lstGamer, lstGamer.getGamer(gamerId));
             map->updateFromString(msg2);
+            connect(map, SIGNAL(gamerAction(QString)),
+                    this, SLOT(sendClientAction(QString)));
             emit switchToGame();
         }
         else
@@ -89,7 +101,7 @@ void GameClient::onMessageRecive(QString s)
     case C_LOBBY_UPDATE:
     {
         qDebug()<<"GameClient : in 'onMessageRecive' recive C_LOBBY_UPDATE";
-        GamerList::updateLstGamerFromString(msg1);
+        lstGamer.updateLstGamerFromString(msg1);
         emit updateLobby();
         break;
     }
@@ -109,6 +121,13 @@ void GameClient::onClientConnected()
     qDebug()<<"GameClient : enter 'onClientConnected'";
     client->sendMessageToServer(QString("%1##").arg(C_REQUEST_SLOT));
     emit connexionOk();
+}
+
+void GameClient::sendClientAction(QString actionString)
+{
+    qDebug()<<"GameClient : enter 'sendClientAction'";
+    client->sendMessageToServer(QString("%1#%2#").arg(C_GAMER_ACTION).
+                                arg(actionString));
 }
 
 /*----------------------------------------------------*/

@@ -29,6 +29,7 @@ Server::Server(int port, int maxConnexion, QObject *parent) :
     }
     else
     {
+        onErrorOccured(tcpServer->serverError());
         qCritical()<<"Server : is NOT listening port";
     }
 }

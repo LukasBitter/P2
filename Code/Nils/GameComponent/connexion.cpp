@@ -12,19 +12,31 @@
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-Connexion::Connexion(Node &n1, Node &n2)
-    : QGraphicsObject(0), n1(n1), n2(n2)
+/**
+ * @brief Connexion::Connexion Création d'une nouvelle connexion
+ * @param n1 Noeud d'ancrage de la connexion
+ * @param n2 Noeud d'ancrage de la connexion
+ *
+ * Les connexions sont à double sens et des ressources
+ * peuvent transiter du noeud 1 au noeud 2 et inversement.
+ *
+ * A la création un identifiant unique est défini.
+ */
+Connexion::Connexion(Node &n1, Node &n2, GamerList &gl)
+    : QGraphicsObject(0), n1(n1), n2(n2), lstGamer(gl)
 {
-    qreal dist = sqrt(pow(n1.x()-n2.x(),2)+
-                      pow(n1.y()-n2.y(),2));
-    pathLength = dist;
     setNextId();
     setX(n1.x());
     setY(n1.y());
+
+    //Calcule de la distance de la connexion
+    pathLength = (int)sqrt(pow(n1.x()-n2.x(),2)+
+                      pow(n1.y()-n2.y(),2));;
 }
 
 Connexion::~Connexion()
 {
+    //Efface toutes les squad présente dans la connexion
     qDeleteAll(lstSquad1To2);
     lstSquad1To2.clear();
     qDeleteAll(lstSquad2To1);
@@ -47,6 +59,7 @@ void Connexion::paint(QPainter *painter,
     Q_UNUSED(widget);
 
     painter->save();
+    //Angle entre les 2 noeud de la connexion
     qreal angle = qRadiansToDegrees(qAtan2(n1.y()-n2.y(),n1.x()-n2.x()))+90;
     painter->rotate(angle);
     painter->drawLine(0, n1.getRadius(), 0, pathLength-n2.getRadius());
@@ -76,7 +89,7 @@ void Connexion::advance(int step)
 {
     if(step == 0) return;
 
-    //Wait number of tic
+    //Diviseur de tic
     if(counterAdvance < 0)
     {
         ++counterAdvance;
@@ -108,54 +121,53 @@ bool Connexion::isConnextedTo(Node &n) const
     return &n == &n1 || &n == &n2;
 }
 
+/**
+ * @brief Connexion::sendSquad Envoi des ressources à traver la connexion
+ * @param s Squad complettement parametrée
+ * @param from Noeud duquel la squad part
+ *
+ * En passant une squad a cette fonction, on transfère
+ * également la responsabilité de la detruire à celle-ci.
+ *
+ * Si des squads sont ajouter et entre en collision avec une squad
+ * alliée déjà présente au debut, elles fusionnent
+ */
 void Connexion::sendSquad(Squad *s, Node &from)
 {
     if(s == 0)return;
 
     if(&from == &n1)
     {
-        Squad *sMin = 0;
-        if(!lstSquad1To2.empty())
-        {
-            sMin = lstSquad1To2.first();
+        //Récupère la squad la plus proche du début
+        Squad *sMin = getFirstSquad(s->getOwner(), n1);
 
-            if(sMin->getProgress() == n1.getRadius() && &sMin->getOwner() == &s->getOwner())
-            {
-                sMin->setNbRessources(sMin->getNbRessources()+s->getNbRessources());
-                delete s;
-            }
-            else
-            {
-                s->setProgress(n1.getRadius());
-                lstSquad1To2.push_front(s);
-            }
+        if(sMin != 0 && sMin->getProgress() == n1.getRadius())
+        {
+            //Fusion des squads
+            sMin->setNbRessources(sMin->getNbRessources()+s->getNbRessources());
+            delete s;
         }
         else
         {
+            //Ajout direct
             s->setProgress(n1.getRadius());
             lstSquad1To2.push_front(s);
         }
     }
     else if(&from == &n2)
     {
-        Squad *sMin = 0;
-        if(!lstSquad2To1.empty())
-        {
-            sMin = lstSquad2To1.first();
+        //Récupère la squad la plus proche du début
+        Squad *sMin = getFirstSquad(s->getOwner(), n2);
 
-            if(sMin->getProgress() == pathLength-n2.getRadius() && &sMin->getOwner() == &s->getOwner())
-            {
-                sMin->setNbRessources(sMin->getNbRessources()+s->getNbRessources());
-                delete s;
-            }
-            else
-            {
-                s->setProgress(pathLength-n2.getRadius());
-                lstSquad2To1.push_front(s);
-            }
+        if(sMin != 0 && sMin->getProgress() == pathLength-n2.getRadius())
+        {
+            //Fusion des squads
+            sMin->setNbRessources(sMin->getNbRessources()+s->getNbRessources());
+            delete s;
         }
         else
         {
+            //Ajout direct
             s->setProgress(pathLength-n2.getRadius());
             lstSquad2To1.push_front(s);
         }
@@ -166,6 +178,13 @@ void Connexion::sendSquad(Squad *s, Node &from)
 /*MISE A JOUR*/
 /*----------------------------------------------------*/
 
+/**
+ * @brief Connexion::getUpdateString
+ * @return Chaine de mise a jour
+ *
+ * Retourne l'état de la connexion sous format texte.
+ * Permet de mettre a jour une autre connexion via cette chaine.
+ */
 QString Connexion::getUpdateString()
 {
     QString s;
@@ -182,13 +201,21 @@ QString Connexion::getUpdateString()
     return s;
 }
 
+/**
+ * @brief Connexion::updateFromString
+ * @param s Chaine de mise a jour
+ *
+ * Permet de mettre a jour la connexion via une chaine de mise a jour.
+ */
 void Connexion::updateFromString(QString &s)
 {
+    //Efface toutes les squad présente dans la connexion
     qDeleteAll(lstSquad1To2);
     lstSquad1To2.clear();
     qDeleteAll(lstSquad2To1);
     lstSquad2To1.clear();
 
+    //Recreation des squad depuis le texte de mise à jour
     QStringList allSquadsStr = s.split(",");
     foreach (QString sub1, allSquadsStr)
     {
@@ -203,7 +230,7 @@ void Connexion::updateFromString(QString &s)
             squadStr.pop_front();
             int direction = squadStr.first().toInt();
 
-            Gamer *g = GamerList::getGamer(ownerId);
+            Gamer *g = lstGamer.getGamer(ownerId);
             if(g != 0)
             {
                 Squad *squad = new Squad(*g);
@@ -223,6 +250,7 @@ void Connexion::updateFromString(QString &s)
                 qCritical()<<"Connexion : unexpected case in 'updateFromString'";
             }
         }
+        //Pas de critical ici, car VIRGULE!
     }
 }
 
@@ -230,6 +258,9 @@ void Connexion::updateFromString(QString &s)
 /*METHODE PRIVE*/
 /*----------------------------------------------------*/
 
+/**
+ * @brief Connexion::advanceSquad Avance toutes les squads d'un pas
+ */
 void Connexion::advanceSquad()
 {
     foreach(Squad *s, lstSquad1To2)
@@ -252,8 +283,14 @@ void Connexion::advanceSquad()
     }
 }
 
+/**
+ * @brief Connexion::resolveSquadFigth Resous les combat entre squad
+ *
+ * Les combat se produisent quand des squads ennemis sont en colision
+ */
 void Connexion::resolveSquadFigth()
 {
+    //Récupère la liste des squad en colision
     QList<QPair<Squad *, Squad *> > lstColision = checkSquadColision();
 
     QPair<Squad *, Squad *> p;
@@ -266,6 +303,7 @@ void Connexion::resolveSquadFigth()
 
         if(r1 > r2)
         {
+            //S1 gagnant
             s1->setNbRessources(r1-r2);
             delete s2;
             lstSquad2To1.pop_back();
@@ -273,12 +311,14 @@ void Connexion::resolveSquadFigth()
         }
         else if(r1 < r2)
         {
+            //S2 gagnant
             s2->setNbRessources(r2-r1);
             delete s1;
             lstSquad1To2.pop_back();
         }
         else
         {
+            //Egalité du combat
             delete s2;
             delete s1;
             lstSquad2To1.pop_back();
@@ -287,7 +327,12 @@ void Connexion::resolveSquadFigth()
     }
 }
 
-
+/**
+ * @brief Connexion::checkSquadArrive Arrivée des squads
+ *
+ * Distribue les squad au noeud voulu quand elle
+ * arrive à destination
+ */
 void Connexion::checkSquadArrive()
 {
     foreach(Squad *s, lstSquad1To2)
@@ -310,6 +355,13 @@ void Connexion::checkSquadArrive()
     }
 }
 
+/**
+ * @brief Connexion::checkSquadColision Recherche de squads en collision
+ * @return Liste des squads en collision
+ *
+ * Recherche de collision entre squads allant dans le sens contraire.
+ * Les collisions dans la même file ne sont pas détecté
+ */
 QList<QPair<Squad *, Squad *> > Connexion::checkSquadColision()
 {
     QList<QPair<Squad *, Squad *> > lstColision;
@@ -325,4 +377,36 @@ QList<QPair<Squad *, Squad *> > Connexion::checkSquadColision()
         }
     }
     return lstColision;
+}
+
+/**
+ * @brief Connexion::getSquadToMerge
+ * @param g Propriétaire de la squad
+ * @param from Provenance de la squad
+ * @return Première ou deuxième squad appartenant a 'g' en provenance de 'from'
+ */
+Squad *Connexion::getFirstSquad(const Gamer &g, Node &from)
+{
+    Squad *sMin1;
+    Squad *sMin2;
+    if(&from == &n1)
+    {
+        sMin1 = lstSquad1To2.value(0, 0);
+        sMin2 = lstSquad1To2.value(1, 0);
+    }
+    else if(&from == &n2)
+    {
+        sMin1 = lstSquad2To1.value(0, 0);
+        sMin2 = lstSquad2To1.value(1, 0);
+    }
+
+    if(sMin1 != 0 && &sMin1->getOwner() == &g)
+    {
+        return sMin1;
+    }
+    else if(sMin2 != 0 && &sMin2->getOwner() == &g)
+    {
+        return sMin2;
+    }
+    return 0;
 }

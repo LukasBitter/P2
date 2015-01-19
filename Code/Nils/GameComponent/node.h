@@ -9,6 +9,7 @@ class Gamer;
 class Connexion;
 class Squad;
 class QPainter;
+class GamerList;
 
 namespace GameComponent {
 class Node;
@@ -24,13 +25,13 @@ class Node : public QGraphicsObject, public IdentityToken
      * Besoin d acceder à la méthode addConnexion lors de
      * la création de map à partir d'une chaine de création
      */
-    friend class Map;
+    friend class GameScene;
     Q_OBJECT
 
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     explicit Node(int x, int y, int radius, int ressourcesMax,
-                  Gamer *g=0);
+                  GamerList &gl, Gamer *g=0);
     virtual ~Node();
 
     /*SURCHARGE*/
@@ -39,9 +40,7 @@ public:
                const QStyleOptionGraphicsItem *option,
                QWidget *widget);
     void advance(int step);
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
     /*ASSESSEUR / MUTATEUR*/
     int getRessources() const;
@@ -73,6 +72,7 @@ private:
     const int ressourcesMax; ///< Capacité maximale du noeud
     const Gamer *owner; ///< Propriétaire acctuel du noeud
     bool invicible; ///< Indique si le noeud est invincible
+    GamerList &lstGamer; ///< Liste des joueurs
 
     /*TOOL*/
     int radius; ///< Rayon du noeud

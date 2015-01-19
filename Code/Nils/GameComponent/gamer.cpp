@@ -7,18 +7,16 @@
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
+/**
+ * @brief Gamer::Gamer création d'un nouveau gamer
+ * @param parent QObject parent
+ *
+ * A la création un identifiant unique est défini.
+ */
 Gamer::Gamer(QObject *parent)
-    : QObject(parent), connected(0), ready(0)
+    : QObject(parent), ready(false), name(""), color(Qt::white)
 {
-    color = Qt::white;
-    setName(0);
     setNextId();
-    GamerList::addGamer(this);
-}
-
-Gamer::~Gamer()
-{
-    if(name != 0) delete name;
 }
 
 /*----------------------------------------------------*/
@@ -52,7 +50,7 @@ bool Gamer::isReady() const
     return isReady();
 }
 
-QString *Gamer::getName() const
+QString Gamer::getName() const
 {
     return name;
 }
@@ -62,16 +60,9 @@ void Gamer::setReady(bool b)
     ready = b;
 }
 
-void Gamer::setName(QString *s)
+void Gamer::setName(QString s)
 {
-    if(s == 0)
-    {
-        name = new QString("");
-    }
-    else
-    {
-        name = s;
-    }
+    name = s;
 }
 
 /*----------------------------------------------------*/
@@ -80,15 +71,14 @@ void Gamer::setName(QString *s)
 
 QString Gamer::getUpdateString()
 {
-    return QString("%1,%2,%3,%4,%5,%6").arg(color.red()).
-           arg(color.green()).arg(color.blue()).arg(*name).
-           arg(connected).arg(ready);
+    return QString("%1,%2,%3,%4,%5").arg(color.red()).
+           arg(color.green()).arg(color.blue()).arg(name).arg(ready);
 }
 
 void Gamer::updateFromString(QString &s)
 {
     QStringList nodeStr = s.split(",");
-    if(nodeStr.size() == 6)
+    if(nodeStr.size() == 5)
     {
         color.setRed(nodeStr.first().toInt());
         nodeStr.pop_front();
@@ -96,10 +86,7 @@ void Gamer::updateFromString(QString &s)
         nodeStr.pop_front();
         color.setBlue(nodeStr.first().toInt());
         nodeStr.pop_front();
-        delete name;
-        name = new QString(nodeStr.first());
-        nodeStr.pop_front();
-        connected = (nodeStr.first() == "1" ? true : false);
+        name = nodeStr.first();
         nodeStr.pop_front();
         ready = (nodeStr.first() == "1" ? true : false);
     }

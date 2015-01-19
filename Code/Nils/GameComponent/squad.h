@@ -13,8 +13,8 @@ class Squad;
  * @class Squad
  * @brief Représente les ressources envoyées à travers la connexion
  *
- * N'est pas un objet QGraphicsItem utilisé dans la scène, mais une structure
- * logique utilisé par la classe Connexion
+ * Ce n'est pas un objet QGraphicsItem utilisé dans la scène,
+ * mais une structure logique utilisé par la classe Connexion.
  */
 class Squad : public IdentityToken
 {

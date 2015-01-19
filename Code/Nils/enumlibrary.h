@@ -10,7 +10,7 @@ enum NETWORK_COMMANDE
     C_SET_READY,
     C_LOBBY_UPDATE,
     C_MAP_UPDATE,
-
+    C_GAMER_ACTION,
 };
 
 enum POWER_NAME
@@ -18,7 +18,13 @@ enum POWER_NAME
     P_DESTROY,
     P_INVINCIBILITY,
     P_TELEPORTATION,
-    P_ARMORE
+    P_ARMORE,
+};
+
+enum GAMER_ACTION
+{
+    GA_SEND,
+    GA_USEPOWER,
 };
 
 #endif // ENUMLIB_H

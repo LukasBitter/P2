@@ -12,7 +12,8 @@
 /*----------------------------------------------------*/
 
 GameServer::GameServer(int maxConnexion, QObject *parent) : QObject(parent),
-    lockConnexion(false), refreshLoopMS(100), port(8000), map(0)
+    lockConnexion(false), refreshLoopMS(100), port(8000), map(0),
+    lstGamer(*new GamerList())
 {
     server = new Server(port, maxConnexion, this);
 
@@ -23,6 +24,7 @@ GameServer::GameServer(int maxConnexion, QObject *parent) : QObject(parent),
 GameServer::~GameServer()
 {
     if(map != 0) delete map;
+    if(&lstGamer != 0) delete &lstGamer;
 }
 
 /*----------------------------------------------------*/
@@ -55,6 +57,7 @@ void GameServer::onMessageRecive(QTcpSocket *t, QString s)
             qDebug()<<"GameServer : accept client";
             Gamer *g = new Gamer();
             g->setSocket(t);
+            lstGamer.addGamer(g);
             server->sendMessageToClient(t,QString("%1#%2#").arg(C_GAMER_INFO).
                                         arg(g->getId()));
             updateGamerList();
@@ -70,7 +73,7 @@ void GameServer::onMessageRecive(QTcpSocket *t, QString s)
     {
         qDebug()<<"GameServer : in 'onMessageRecive' recive C_LAUNCH_GAME";
         lockConnexion = true;
-        map = new Map(msg1);
+        map = new Map(msg1, lstGamer);
         map->updateFromString(msg2);
         sendToAllGamer(QString("%1#%2#%3").arg(C_LAUNCH_GAME).arg(msg1).arg(msg2));
         this->startTimer(refreshLoopMS);
@@ -79,10 +82,16 @@ void GameServer::onMessageRecive(QTcpSocket *t, QString s)
     case C_SET_READY:
     {
         qDebug()<<"GameServer : in 'onMessageRecive' recive C_SET_READY";
-        Gamer *g = GamerList::getGamer(t);
+        Gamer *g = lstGamer.getGamer(t);
         bool b = msg1.toInt();
         g->setReady(b);
         updateGamerList();
+        break;
+    }
+    case C_GAMER_ACTION:
+    {
+        qDebug()<<"GameServer : in 'onMessageRecive' recive C_GAMER_ACTION";
+        map->applyGamerAction(msg1);
         break;
     }
     default:
@@ -98,7 +107,7 @@ void GameServer::onMessageRecive(QTcpSocket *t, QString s)
 
 void GameServer::sendToAllGamer(QString s)
 {
-    foreach(Gamer *g, GamerList::getLstGamer())
+    foreach(Gamer *g, lstGamer.getLstGamer())
     {
         server->sendMessageToClient(g->getSocket(),s);
     }
@@ -109,7 +118,7 @@ void GameServer::updateGamerList()
     qDebug()<<"GameServer : enter 'updateGamerList'";
     sendToAllGamer(QString("%1#%2%#").
                    arg(C_LOBBY_UPDATE).
-                   arg(GamerList::getLstGamerUpdateString()));
+                   arg(lstGamer.getLstGamerUpdateString()));
 }
 
 void GameServer::timerEvent(QTimerEvent *event)
