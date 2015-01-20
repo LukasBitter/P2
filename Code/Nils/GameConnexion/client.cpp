@@ -14,14 +14,12 @@
 Client::Client(int port, QString host, QObject *parent) : QObject(parent),
     blockSize(0)
 {
-    socket = new QTcpSocket(this);
-
-    connect(socket, SIGNAL(readyRead()), this, SLOT(readFromSocket()));
-    connect(socket, SIGNAL(connected()), this, SLOT(afterConnexion()));
-    connect(socket, SIGNAL(error(QAbstractSocket::SocketError)),
+    connect(&socket, SIGNAL(readyRead()), this, SLOT(readFromSocket()));
+    connect(&socket, SIGNAL(connected()), this, SLOT(afterConnexion()));
+    connect(&socket, SIGNAL(error(QAbstractSocket::SocketError)),
             this, SLOT(onErrorOccured(QAbstractSocket::SocketError)));
 
-    socket->connectToHost(host,port);
+    socket.connectToHost(host,port);
 }
 
 /*----------------------------------------------------*/
@@ -34,7 +32,7 @@ void Client::onErrorOccured(QAbstractSocket::SocketError socketError)
     emit errorOccured(socketError);
 }
 
-void Client::sendMessageToServer(QString msg)
+void Client::sendMessageToServer(QString &msg)
 {
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
@@ -45,24 +43,24 @@ void Client::sendMessageToServer(QString msg)
     out.device()->seek(0);
     out << (quint16)(block.size() - sizeof(quint16));
 
-    socket->write(block);
-    socket->flush();
+    socket.write(block);
+    socket.flush();
 }
 
 void Client::readFromSocket()
 {
-    QDataStream in(socket);
+    QDataStream in(&socket);
     in.setVersion(QDataStream::Qt_4_0);
 
-    while(socket->bytesAvailable() > 0)
+    while(socket.bytesAvailable() > 0)
     {
         if (blockSize == 0)
         {
-            if (socket->bytesAvailable() < (int)sizeof(quint16))
+            if (socket.bytesAvailable() < (int)sizeof(quint16))
                 return;
             in >> blockSize;
         }
-        if (socket->bytesAvailable() < blockSize)
+        if (socket.bytesAvailable() < blockSize)
             return;
 
         QString serverMessage;

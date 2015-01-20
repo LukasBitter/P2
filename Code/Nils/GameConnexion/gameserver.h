@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QAbstractSocket>
 #include <QStringList>
+#include "enumlibrary.h"
+#include "gamerlist.h"
 
 class Server;
 class QTcpSocket;
@@ -29,7 +31,7 @@ signals:
     void serverIsListening();
 private slots:
     void onErrorOccured(QAbstractSocket::SocketError socketError);
-    void onMessageRecive(QTcpSocket *t, QString msg);
+    void onMessageRecive(QTcpSocket *t, QString &msg);
     void onServerIsListening();
 
 private:
@@ -39,7 +41,7 @@ private:
     bool lockConnexion;
     int const refreshLoopMS;
     int const port;
-    GamerList &lstGamer;
+    GamerList lstGamer;
     QStringList lstMapName;
 
     /*METHODE PRIVE*/
@@ -47,7 +49,7 @@ private:
     void updateGamerList();
     void timerEvent(QTimerEvent *event);
     void loadMapsFromFile();
-    QString checkReadyToLaunchGame();
+    NETWORK_INFORMATION checkReadyToLaunchGame();
 
     /*RECEPTION*/
     void receive_C_REQUEST_SLOT(QTcpSocket *t, QString msg);

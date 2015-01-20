@@ -1,9 +1,7 @@
 #include "gameserver.h"
-#include "enumlibrary.h"
 #include "server.h"
 #include "GameComponent/gameview.h"
 #include "gamer.h"
-#include "gamerlist.h"
 #include <QTcpSocket>
 #include <QDir>
 #include "mapfile.h"
@@ -18,8 +16,7 @@
 /*----------------------------------------------------*/
 
 GameServer::GameServer(int maxConnexion, QObject *parent) : QObject(parent),
-    lockConnexion(false), refreshLoopMS(100), port(8000), map(0),
-    lstGamer(*new GamerList())
+    lockConnexion(false), refreshLoopMS(100), port(8000), map(0)
 {
     server = new Server(port, maxConnexion, this);
 
@@ -35,7 +32,6 @@ GameServer::~GameServer()
 {
     qDebug()<<"GameServer : destroy";
     if(map != 0) delete map;
-    if(&lstGamer != 0) delete &lstGamer;
 }
 
 /*----------------------------------------------------*/
@@ -48,10 +44,10 @@ void GameServer::onErrorOccured(QAbstractSocket::SocketError socketError)
     emit errorOccured(socketError);
 }
 
-void GameServer::onMessageRecive(QTcpSocket *t, QString s)
+void GameServer::onMessageRecive(QTcpSocket *t, QString &s)
 {
     QStringList msgStr = s.split("#");
-    if(msgStr.size() < 2) return;
+    if(msgStr.size() != 2 || t == 0) return;
     NETWORK_COMMANDE cmd = (NETWORK_COMMANDE)msgStr.first().toInt();
     msgStr.pop_front();
     QString msg = msgStr.first();
@@ -102,7 +98,7 @@ void GameServer::sendToAllGamer(QString s)
 {
     foreach(Gamer *g, lstGamer.getLstGamer())
     {
-        server->sendMessageToClient(g->getSocket(),s);
+        server->sendMessageToClient(*g->getSocket(),s);
     }
 }
 
@@ -137,18 +133,23 @@ void GameServer::loadMapsFromFile()
     lstMapName = d.entryList(filter);
 }
 
-QString GameServer::checkReadyToLaunchGame()
+NETWORK_INFORMATION GameServer::checkReadyToLaunchGame()
 {
-    foreach (Gamer *g1, lstGamer.getLstGamer())
+    QList<Gamer *> lst = lstGamer.getLstGamer().values();
+    if(lst.size() > 1)
     {
-        foreach (Gamer *g2, lstGamer.getLstGamer())
+        for(int i = 0; i < lst.size()-1; ++i)
         {
-            if(g1->color == g2->color)
-
+            for(int j = i+1; j < lst.size(); ++j)
+            {
+                if(lst.at(i)->getColor() == lst.at(j)->getColor())
+                    return I_SAME_COLOR;
+                if(lst.at(i)->getSlotNumber() == lst.at(j)->getSlotNumber())
+                    return I_SAME_SLOT;
+            }
         }
     }
-
-    return "";
+    return I_OK;
 }
 
 /*----------------------------------------------------*/
@@ -157,41 +158,44 @@ QString GameServer::checkReadyToLaunchGame()
 
 void GameServer::receive_C_REQUEST_SLOT(QTcpSocket *t, QString msg)
 {
+    QString message;
     if(!lockConnexion)
     {
         qDebug()<<"GameServer : accept client";
         Gamer *g = new Gamer();
         g->setSocket(t);
         lstGamer.addGamer(g);
-        server->sendMessageToClient(t,QString("%1#%2").arg(C_GAMER_INFO).
-                                    arg(g->getId()));
+        message = QString("%1#%2").arg(C_GAMER_INFO).arg(g->getId());
+        server->sendMessageToClient(*t,message);
         foreach (QString s, lstMapName)
         {
-            server->sendMessageToClient(t,QString("%1#%2").arg(C_ADD_MAP).
-                                        arg(s));
+            message = QString("%1#%2").arg(C_ADD_MAP).arg(s);
+            server->sendMessageToClient(*t,message);
         }
         updateGamerList();
     }
     else
     {
         qDebug()<<"GameServer : refuse client";
-        server->sendMessageToClient(t,QString("%1#").arg(C_REFUSE));
+        message = QString("%1#").arg(C_INFORMATION).arg(I_GAME_STARTED);
+        server->sendMessageToClient(*t,message);
     }
 }
 
 void GameServer::receive_C_LAUNCH_GAME(QTcpSocket *t, QString msg)
 {
-    QString invalid = checkReadyToLaunchGame();
-    if(!invalid.isEmpty())
+    NETWORK_INFORMATION invalid = checkReadyToLaunchGame();
+    if(invalid != I_OK)
     {
-        server->sendMessageToClient(t,QString("%1#%2").arg(C_NOT_READY).arg(invalid));
+        QString message = QString("%1#%2").arg(C_INFORMATION).
+                arg(invalid);
+        server->sendMessageToClient(*t,message);
         return;
     }
 
     lockConnexion = true;
 
     MapFile m;
-    qDebug()<<QString("%1/%2").arg(MAP_FILE).arg(msg);
     m.loadFromFile(QString("%1/%2").arg(MAP_FILE).arg(msg));
     if(!m.isValide())
     {

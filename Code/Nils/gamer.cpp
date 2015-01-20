@@ -23,11 +23,9 @@ Gamer::Gamer(QObject *parent)
 /*ASSESSEUR / MUTATEUR*/
 /*----------------------------------------------------*/
 
-void Gamer::setColor(QColor c)
+void Gamer::setColor(QColor &c)
 {
-    color.setRed(c.red());
-    color.setGreen(c.green());
-    color.setBlue(c.blue());
+    color = c;
 }
 
 QColor Gamer::getColor() const
@@ -60,7 +58,7 @@ void Gamer::setReady(bool b)
     ready = b;
 }
 
-void Gamer::setName(QString s)
+void Gamer::setName(QString &s)
 {
     name = s;
 }
@@ -89,7 +87,7 @@ QString Gamer::getUpdateString()
 void Gamer::updateFromString(QString &s)
 {
     QStringList nodeStr = s.split(",");
-    if(nodeStr.size() == 5)
+    if(nodeStr.size() == 6)
     {
         color.setRed(nodeStr.first().toInt());
         nodeStr.pop_front();

@@ -17,9 +17,9 @@ public:
 
     /*ASSESSEUR / MUTATEUR*/
     const QHash<int,Gamer *> & getLstGamer();
-    Gamer * getGamer(int idGamer);
-    Gamer * getGamer(QTcpSocket *socket);
-    bool isNameExist(QString s);
+    Gamer * getGamer(int idGamer) const;
+    Gamer * getGamer(QTcpSocket *socket)const;
+    bool isNameExist(QString &s);
     void addGamer(Gamer* g);
 
     /*MISE A JOUR*/

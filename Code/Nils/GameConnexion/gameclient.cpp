@@ -1,8 +1,6 @@
 #include "gameclient.h"
-#include "enumlibrary.h"
 #include "client.h"
 #include "GameComponent/gameview.h"
-#include "gamerlist.h"
 #include "gamer.h"
 
 
@@ -11,7 +9,7 @@
 /*----------------------------------------------------*/
 
 GameClient::GameClient(QString host, QObject *parent) : QObject(parent),
-    port(8000), gamerId(-1), map(0), client(0), lstGamer(*new GamerList())
+    port(8000), gamerId(-1), map(0), client(0)
 {
     client = new Client(port, host, this);
 
@@ -25,7 +23,6 @@ GameClient::~GameClient()
 {
     qDebug()<<"GameClient : destroy";
     if(map != 0) delete map;
-    if(&lstGamer != 0) delete &lstGamer;
 }
 
 /*----------------------------------------------------*/
@@ -51,11 +48,11 @@ const Gamer *GameClient::getCurrentGamer() const
 /*SIGNALS/SLOTS*/
 /*----------------------------------------------------*/
 
-void GameClient::launchGame(QString mapName)
+void GameClient::launchGame(QString &mapName)
 {
     qDebug()<<"GameClient : enter 'launchGame'";
-    client->sendMessageToServer(QString("%1#%2#%3").arg(C_LAUNCH_GAME).
-                                arg(mapName));
+    QString message = QString("%1#%2").arg(C_LAUNCH_GAME).arg(mapName);
+    client->sendMessageToServer(message);
 }
 
 void GameClient::setName(QString &name)
@@ -74,7 +71,7 @@ void GameClient::setReady(bool r)
     updateCurrentGamer();
 }
 
-void GameClient::setColor(QColor c)
+void GameClient::setColor(QColor &c)
 {
     qDebug()<<"GameClient : enter 'setColor'";
     Gamer *g = lstGamer.getGamer(gamerId);
@@ -96,10 +93,10 @@ void GameClient::onErrorOccured(QAbstractSocket::SocketError socketError)
     emit errorOccured(socketError);
 }
 
-void GameClient::onMessageRecive(QString s)
+void GameClient::onMessageRecive(QString &s)
 {
     QStringList msgStr = s.split("#");
-    if(msgStr.size() < 2) return;
+    if(msgStr.size() != 2) return;
     NETWORK_COMMANDE cmd = (NETWORK_COMMANDE)msgStr.first().toInt();
     msgStr.pop_front();
     QString msg = msgStr.first();
@@ -112,10 +109,10 @@ void GameClient::onMessageRecive(QString s)
         receive_C_GAMER_INFO(msg);
         break;
     }
-    case C_REFUSE:
+    case C_INFORMATION:
     {
-        qDebug()<<"GameClient : in 'onMessageRecive' recive C_REFUSE";
-        receive_C_REFUSE(msg);
+        qDebug()<<"GameClient : in 'onMessageRecive' recive C_INFORMATION";
+        receive_C_INFORMATION(msg);
         break;
     }
     case C_LAUNCH_GAME:
@@ -150,15 +147,16 @@ void GameClient::onMessageRecive(QString s)
 void GameClient::onClientConnected()
 {
     qDebug()<<"GameClient : enter 'onClientConnected'";
-    client->sendMessageToServer(QString("%1##").arg(C_REQUEST_SLOT));
+    QString message = QString("%1#").arg(C_REQUEST_SLOT);
+    client->sendMessageToServer(message);
     emit connexionOk();
 }
 
-void GameClient::sendClientAction(QString actionString)
+void GameClient::sendClientAction(QString &actionString)
 {
     qDebug()<<"GameClient : enter 'sendClientAction'";
-    client->sendMessageToServer(QString("%1#%2#").arg(C_GAMER_ACTION).
-                                arg(actionString));
+    QString message = QString("%1#%2").arg(C_GAMER_ACTION).arg(actionString);
+    client->sendMessageToServer(message);
 }
 
 /*----------------------------------------------------*/
@@ -169,25 +167,27 @@ void GameClient::updateCurrentGamer()
 {
     qDebug()<<"GameClient : enter 'updateCurrentGamer'";
     Gamer *g = lstGamer.getGamer(gamerId);
-    client->sendMessageToServer(QString("%1#%2#").arg(C_UPDATE_CURRENT_GAMER).
-                                arg(g->getUpdateString()));
+    QString message = QString("%1#%2").arg(C_UPDATE_CURRENT_GAMER).
+            arg(g->getUpdateString());
+    client->sendMessageToServer(message);
 }
 
 /*----------------------------------------------------*/
 /*RECEPTION*/
 /*----------------------------------------------------*/
 
-void GameClient::receive_C_GAMER_INFO(QString msg)
+void GameClient::receive_C_GAMER_INFO(QString &msg)
 {
     gamerId = msg.toInt();
 }
 
-void GameClient::receive_C_REFUSE(QString msg)
+void GameClient::receive_C_INFORMATION(QString &msg)
 {
-    emit errorOccured(QAbstractSocket::ConnectionRefusedError);
+    NETWORK_INFORMATION info = (NETWORK_INFORMATION)msg.toInt();
+    emit errorOccured(info);
 }
 
-void GameClient::receive_C_LAUNCH_GAME(QString msg)
+void GameClient::receive_C_LAUNCH_GAME(QString &msg)
 {
     if(gamerId != -1)
     {
@@ -202,18 +202,18 @@ void GameClient::receive_C_LAUNCH_GAME(QString msg)
     }
 }
 
-void GameClient::receive_C_LOBBY_UPDATE(QString msg)
+void GameClient::receive_C_LOBBY_UPDATE(QString &msg)
 {
     lstGamer.updateLstGamerFromString(msg);
     emit updateLobby();
 }
 
-void GameClient::receive_C_MAP_UPDATE(QString msg)
+void GameClient::receive_C_MAP_UPDATE(QString &msg)
 {
     if(map != 0)map->updateFromString(msg);
 }
 
-void GameClient::receive_C_ADD_MAP(QString msg)
+void GameClient::receive_C_ADD_MAP(QString &msg)
 {
     emit addMapName(msg);
 }

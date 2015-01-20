@@ -37,8 +37,8 @@ public:
     void advance(int step);
 
     /*ASSESSEUR / MUTATEUR*/
-    Node & getNode1() const;
-    Node & getNode2() const;
+    Node &getNode1() const;
+    Node &getNode2() const;
     bool isConnextedTo(Node &n) const;
     void sendSquad(Squad *s, Node &from);
 

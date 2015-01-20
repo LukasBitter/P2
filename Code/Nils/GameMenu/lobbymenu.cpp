@@ -133,6 +133,23 @@ void LobbyMenu::showError(QAbstractSocket::SocketError err)
     msgBox.exec();
 }
 
+void LobbyMenu::showMessage(NETWORK_INFORMATION err)
+{
+    QMessageBox msgBox;
+    switch (err)
+    {
+    case I_SAME_COLOR:
+        msgBox.setText("Les joueurs ont la même couleur");
+        break;
+    case I_SAME_SLOT:
+        msgBox.setText("Les joueurs ont le même spawn");
+        break;
+    default:
+        break;
+    }
+    msgBox.exec();
+}
+
 void LobbyMenu::onBtReturnPressed()
 {
     qDebug()<<"LobbyMenu : want switch to menu";
@@ -160,7 +177,8 @@ void LobbyMenu::onBtStartPressed()
     qDebug()<<"LobbyMenu : enter 'onBtStartPressed'";
     if(client != 0)
     {
-        client->launchGame(cbbMap->currentText());
+        QString map = cbbMap->currentText();
+        client->launchGame(map);
     }
     else
     {
@@ -192,7 +210,7 @@ void LobbyMenu::onSuccessfulConnexion()
     txtConnected->setText("Connecté");
 }
 
-void LobbyMenu::onAddMap(QString s)
+void LobbyMenu::onAddMap(QString &s)
 {
     cbbMap->addItem(s);
 }
@@ -272,6 +290,7 @@ void LobbyMenu::setClient(GameClient *c)
         connect(client,SIGNAL(connexionOk()),this,SLOT(onSuccessfulConnexion()));
         connect(client,SIGNAL(updateLobby()),this,SLOT(updateUI()));
         connect(client,SIGNAL(addMapName(QString)),this,SLOT(onAddMap(QString)));
+        connect(client,SIGNAL(errorOccured(NETWORK_INFORMATION)),this,SLOT(showMessage(NETWORK_INFORMATION)));
     }
 }
 

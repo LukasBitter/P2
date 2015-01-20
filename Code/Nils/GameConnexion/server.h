@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QAbstractSocket>
 #include <QHash>
+#include <QtNetwork>
 
 class QTcpServer;
 class QTcpSocket;
@@ -23,11 +24,11 @@ public:
     /*SIGNALS/SLOTS*/
 signals:
     void errorOccured(QAbstractSocket::SocketError socketError);
-    void messageReciveFromClient(QTcpSocket *t, QString msg);
+    void messageReciveFromClient(QTcpSocket &t, QString msg);
     void serverIsListening();
 
 public slots:
-    void sendMessageToClient(QTcpSocket *socket, QString msg);
+    void sendMessageToClient(QTcpSocket &socket, QString &msg);
 private slots:
     void onErrorOccured(QAbstractSocket::SocketError socketError);
     void readFromSocket();
@@ -35,7 +36,7 @@ private slots:
 
 private:
     /*OUTIL*/
-    QTcpServer *tcpServer;
+    QTcpServer tcpServer;
     QHash<QTcpSocket*, quint16> blockSizeArray;
 };
 

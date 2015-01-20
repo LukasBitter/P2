@@ -3,6 +3,9 @@
 
 #include <QObject>
 #include <QAbstractSocket>
+#include "enumlibrary.h"
+#include "gamerlist.h"
+#include <QColor>
 
 class Client;
 class QTcpSocket;
@@ -31,22 +34,23 @@ public:
     /*SIGNALS/SLOTS*/
 signals:
     void errorOccured(QAbstractSocket::SocketError socketError);
+    void errorOccured(NETWORK_INFORMATION socketError);
     void updateLobby();
     void addMapName(QString s);
     void connexionOk();
     void switchToGame();
 public slots:
-    void launchGame(QString mapName);
+    void launchGame(QString &mapName);
     void setName(QString &name);
     void setReady(bool r);
-    void setColor(QColor c);
+    void setColor(QColor &c);
     void setSlot(int s);
 
 private slots:
     void onErrorOccured(QAbstractSocket::SocketError socketError);
-    void onMessageRecive(QString msg);
+    void onMessageRecive(QString &msg);
     void onClientConnected();
-    void sendClientAction(QString actionString);
+    void sendClientAction(QString &actionString);
 
 private:
     /*OUTIL*/
@@ -54,18 +58,18 @@ private:
     GameView *map;
     int const port;
     int gamerId;
-    GamerList &lstGamer;
+    GamerList lstGamer;
 
     /*METHODE PRIVE*/
     void updateCurrentGamer();
 
     /*RECEPTION*/
-    void receive_C_GAMER_INFO(QString msg);
-    void receive_C_REFUSE(QString msg);
-    void receive_C_LAUNCH_GAME(QString msg);
-    void receive_C_LOBBY_UPDATE(QString msg);
-    void receive_C_MAP_UPDATE(QString msg);
-    void receive_C_ADD_MAP(QString msg);
+    void receive_C_GAMER_INFO(QString &msg);
+    void receive_C_INFORMATION(QString &msg);
+    void receive_C_LAUNCH_GAME(QString &msg);
+    void receive_C_LOBBY_UPDATE(QString &msg);
+    void receive_C_MAP_UPDATE(QString &msg);
+    void receive_C_ADD_MAP(QString &msg);
 };
 
 #endif // GAMECLIENT_H

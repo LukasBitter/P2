@@ -31,7 +31,7 @@ const QHash<int, Gamer *> &GamerList::getLstGamer()
     return lstGamers;
 }
 
-Gamer *GamerList::getGamer(int idGamer)
+Gamer *GamerList::getGamer(int idGamer)const
 {
     if(lstGamers.contains(idGamer))
     {
@@ -43,7 +43,7 @@ Gamer *GamerList::getGamer(int idGamer)
     }
 }
 
-Gamer *GamerList::getGamer(QTcpSocket *socket)
+Gamer *GamerList::getGamer(QTcpSocket *socket) const
 {
     foreach (Gamer *g, lstGamers)
     {
@@ -53,7 +53,7 @@ Gamer *GamerList::getGamer(QTcpSocket *socket)
     return 0;
 }
 
-bool GamerList::isNameExist(QString s)
+bool GamerList::isNameExist(QString &s)
 {
     foreach (Gamer *g, lstGamers)
     {
@@ -65,7 +65,8 @@ bool GamerList::isNameExist(QString s)
 void GamerList::addGamer(Gamer *g)
 {
     qDebug()<<"GamerList : enter 'addGamer'";
-    g->setColor(getNextColor());
+    QColor color = getNextColor();
+    g->setColor(color);
     lstGamers.insert(g->getId(), g);
 }
 

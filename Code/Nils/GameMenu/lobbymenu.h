@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "GameConnexion/client.h"
 #include "GameConnexion/server.h"
+#include "enumlibrary.h"
 
 class QPushButton;
 class QTableWidget;
@@ -41,13 +42,14 @@ private slots:
     void updateUI();
     void launchGame();
     void showError(QAbstractSocket::SocketError err);
+    void showMessage(NETWORK_INFORMATION err);
     void onBtReturnPressed();
     void onBtConnectPressed();
     void onBtStartPressed();
     void onBtChangeNamePressed();
     void onBtReadyPressed();
     void onSuccessfulConnexion();
-    void onAddMap(QString s);
+    void onAddMap(QString &s);
 
 private:
     /*INTERFACE*/

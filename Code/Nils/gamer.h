@@ -24,14 +24,14 @@ public:
     explicit Gamer(QObject *parent=0);
 
     /*ASSESSEUR / MUTATEUR*/
-    void setColor(QColor c);
+    void setColor(QColor &c);
     QColor getColor() const;
     void setSocket(QTcpSocket *s);
     QTcpSocket *getSocket() const;
     bool isReady()const;
     QString getName()const;
     void setReady(bool b);
-    void setName(QString s);
+    void setName(QString &s);
     void setSlotNumber(int no);
     int getSlotNumber();
 
