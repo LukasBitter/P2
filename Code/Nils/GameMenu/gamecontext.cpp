@@ -1,7 +1,7 @@
 #include "gamecontext.h"
 #include "GameConnexion/gameclient.h"
 #include "GameConnexion/gameserver.h"
-#include "GameComponent/map.h"
+#include "GameComponent/gameview.h"
 #include <QGridLayout>
 
 /*----------------------------------------------------*/

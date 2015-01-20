@@ -1,7 +1,7 @@
 #include "gameserver.h"
 #include "enumlibrary.h"
 #include "server.h"
-#include "GameComponent/map.h"
+#include "GameComponent/gameview.h"
 #include "gamer.h"
 #include "gamerlist.h"
 #include <QTcpSocket>
@@ -76,7 +76,7 @@ void GameServer::onMessageRecive(QTcpSocket *t, QString s)
     {
         qDebug()<<"GameServer : in 'onMessageRecive' recive C_LAUNCH_GAME";
         lockConnexion = true;
-        map = new Map(msg1, lstGamer);
+        map = new GameView(msg1, lstGamer);
         map->updateFromString(msg2);
         sendToAllGamer(QString("%1#%2#%3").arg(C_LAUNCH_GAME).arg(msg1).arg(msg2));
         this->startTimer(refreshLoopMS);

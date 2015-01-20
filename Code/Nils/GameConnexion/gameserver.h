@@ -6,7 +6,7 @@
 
 class Server;
 class QTcpSocket;
-class Map;
+class GameView;
 class GamerList;
 
 namespace GameConnexion {
@@ -34,7 +34,7 @@ private slots:
 private:
     /*OUTIL*/
     Server *server;
-    Map *map;
+    GameView *map;
     bool lockConnexion;
     int const refreshLoopMS;
     int const port;

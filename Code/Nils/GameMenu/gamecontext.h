@@ -5,7 +5,7 @@
 
 class GameClient;
 class GameServer;
-class Map;
+class GameView;
 
 namespace GameMenu {
     class GameContext;

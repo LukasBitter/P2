@@ -19,6 +19,9 @@
 #include <QDir>
 
 
+#define MAP_FILE "./maps"
+#define MAP_EXTENSION "*.rtsmap"
+
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
@@ -289,13 +292,15 @@ void LobbyMenu::setServer(GameServer *s)
 
 void LobbyMenu::loadMapsFromFile()
 {
-    qDebug()<<"LobbyMenu : enter 'loadMapsFromFile'";
-    QDir dir("./maps");
-    qDebug()<<dir.mkpath("./maps");
-    qDebug()<<dir.exists();
-    qDebug()<<dir.isRelative();
-    QStringList filters;
-    filters << "*.rtsmap";
-    QStringList lstMap = dir.entryList(filters,QDir::Readable,QDir::Name);
+    QDir d(MAP_FILE);
+    if(!d.exists())
+    {
+        d.mkpath(".");
+        return;
+    }
+
+    QStringList filter;
+    filter << MAP_EXTENSION;
+    QStringList lstMap = d.entryList(filter);
     cbbMap->addItems(lstMap);
 }

@@ -1,7 +1,7 @@
 #include "gameclient.h"
 #include "enumlibrary.h"
 #include "client.h"
-#include "GameComponent/map.h"
+#include "GameComponent/gameview.h"
 #include "gamerlist.h"
 
 
@@ -31,7 +31,7 @@ GameClient::~GameClient()
 /*ASSESSEUR / MUTATEUR*/
 /*----------------------------------------------------*/
 
-Map *GameClient::getMap() const
+GameView *GameClient::getMap() const
 {
     return map;
 }
@@ -106,7 +106,7 @@ void GameClient::onMessageRecive(QString s)
         qDebug()<<"GameClient : in 'onMessageRecive' recive C_LAUNCH_GAME";
         if(gamerId != -1)
         {
-            map = new Map(msg1, lstGamer, lstGamer.getGamer(gamerId));
+            map = new GameView(msg1, lstGamer, lstGamer.getGamer(gamerId));
             map->updateFromString(msg2);
             connect(map, SIGNAL(gamerAction(QString)),
                     this, SLOT(sendClientAction(QString)));

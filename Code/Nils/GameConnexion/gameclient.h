@@ -6,7 +6,7 @@
 
 class Client;
 class QTcpSocket;
-class Map;
+class GameView;
 class GamerList;
 class Gamer;
 
@@ -24,7 +24,7 @@ public:
     ~GameClient();
 
     /*ASSESSEUR / MUTATEUR*/
-    Map *getMap()const;
+    GameView *getMap()const;
     const QHash<int, Gamer *> &getListGamer();
     const Gamer *getCurrentGamer()const;
 
@@ -48,7 +48,7 @@ private slots:
 private:
     /*OUTIL*/
     Client *client;
-    Map *map;
+    GameView *map;
     int const port;
     int gamerId;
     GamerList &lstGamer;

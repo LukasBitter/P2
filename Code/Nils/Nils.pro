@@ -8,7 +8,6 @@ TEMPLATE = app
 HEADERS += \
     GameComponent/connexion.h \
     GameComponent/node.h \
-    GameComponent/map.h \
     GameComponent/squad.h \
     GameComponent/identitytoken.h \
     GameComponent/gamescene.h \
@@ -30,12 +29,13 @@ HEADERS += \
     GameMenu/gamecontext.h \
     gamerlist.h \
     gamer.h \
-    enumlibrary.h
+    enumlibrary.h \
+    GameComponent/gameview.h \
+    mapfile.h
 
 SOURCES += \
     GameComponent/connexion.cpp \
     GameComponent/node.cpp \
-    GameComponent/map.cpp \
     GameComponent/squad.cpp \
     GameComponent/identitytoken.cpp \
     GameComponent/gamescene.cpp \
@@ -57,9 +57,13 @@ SOURCES += \
     GameMenu/gamecontext.cpp \
     gamerlist.cpp \
     gamer.cpp \
-    main.cpp
+    main.cpp \
+    GameComponent/gameview.cpp \
+    mapfile.cpp
 
 OTHER_FILES += \
     Notes.txt
 
 FORMS +=
+
+RESOURCES +=
