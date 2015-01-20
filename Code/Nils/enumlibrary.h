@@ -8,12 +8,11 @@ enum NETWORK_COMMANDE
     C_LAUNCH_GAME,
     C_REFUSE,
     C_NOT_READY,
-    C_SET_READY,
     C_LOBBY_UPDATE,
     C_MAP_UPDATE,
     C_GAMER_ACTION,
-    C_SET_NAME,
     C_ADD_MAP,
+    C_UPDATE_CURRENT_GAMER,
 };
 
 enum POWER_NAME
@@ -28,6 +27,12 @@ enum GAMER_ACTION
 {
     GA_SEND,
     GA_USEPOWER,
+};
+
+
+enum NETWORK_INFORMATION
+{
+    I_SAME_COLOR,
 };
 
 #endif // ENUMLIB_H

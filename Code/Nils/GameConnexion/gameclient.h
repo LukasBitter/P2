@@ -39,6 +39,8 @@ public slots:
     void launchGame(QString mapName);
     void setName(QString &name);
     void setReady(bool r);
+    void setColor(QColor c);
+    void setSlot(int s);
 
 private slots:
     void onErrorOccured(QAbstractSocket::SocketError socketError);
@@ -55,6 +57,7 @@ private:
     GamerList &lstGamer;
 
     /*METHODE PRIVE*/
+    void updateCurrentGamer();
 
     /*RECEPTION*/
     void receive_C_GAMER_INFO(QString msg);

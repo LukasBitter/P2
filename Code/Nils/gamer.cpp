@@ -65,14 +65,25 @@ void Gamer::setName(QString s)
     name = s;
 }
 
+void Gamer::setSlotNumber(int no)
+{
+    slotNumber = no;
+}
+
+int Gamer::getSlotNumber()
+{
+    return slotNumber;
+}
+
 /*----------------------------------------------------*/
 /*MISE A JOUR*/
 /*----------------------------------------------------*/
 
 QString Gamer::getUpdateString()
 {
-    return QString("%1,%2,%3,%4,%5").arg(color.red()).
-           arg(color.green()).arg(color.blue()).arg(name).arg(ready);
+    return QString("%1,%2,%3,%4,%5,%6").arg(color.red()).
+           arg(color.green()).arg(color.blue()).arg(name).
+            arg(ready).arg(slotNumber);
 }
 
 void Gamer::updateFromString(QString &s)
@@ -89,6 +100,8 @@ void Gamer::updateFromString(QString &s)
         name = nodeStr.first();
         nodeStr.pop_front();
         ready = (nodeStr.first() == "1" ? true : false);
+        nodeStr.pop_front();
+        slotNumber = nodeStr.first().toInt();
     }
     else
     {

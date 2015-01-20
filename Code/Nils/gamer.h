@@ -32,6 +32,8 @@ public:
     QString getName()const;
     void setReady(bool b);
     void setName(QString s);
+    void setSlotNumber(int no);
+    int getSlotNumber();
 
     /*MISE A JOUR*/
     QString getUpdateString();
@@ -43,6 +45,7 @@ private:
     QString name; ///< Nom du joueur
     bool ready; ///< Indique si le joueur est pret
     QTcpSocket * socket; ///< Socket de connexion au serveur
+    int slotNumber;
 };
 
 #endif // GAMER_H

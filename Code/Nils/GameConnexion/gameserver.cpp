@@ -70,16 +70,10 @@ void GameServer::onMessageRecive(QTcpSocket *t, QString s)
         receive_C_LAUNCH_GAME(t, msg);
         break;
     }
-    case C_SET_READY:
+    case C_UPDATE_CURRENT_GAMER:
     {
-        qDebug()<<"GameServer : in 'onMessageRecive' recive C_SET_READY";
-        receive_C_SET_READY(t, msg);
-        break;
-    }
-    case C_SET_NAME:
-    {
-        qDebug()<<"GameServer : in 'onMessageRecive' recive C_SET_NAME";
-        receive_C_SET_NAME(t, msg);
+        qDebug()<<"GameServer : in 'onMessageRecive' recive C_UPDATE_CURRENT_GAMER";
+        receive_C_UPDATE_CURRENT_GAMER(t, msg);
         break;
     }
     case C_GAMER_ACTION:
@@ -145,6 +139,15 @@ void GameServer::loadMapsFromFile()
 
 QString GameServer::checkReadyToLaunchGame()
 {
+    foreach (Gamer *g1, lstGamer.getLstGamer())
+    {
+        foreach (Gamer *g2, lstGamer.getLstGamer())
+        {
+            if(g1->color == g2->color)
+
+        }
+    }
+
     return "";
 }
 
@@ -200,22 +203,12 @@ void GameServer::receive_C_LAUNCH_GAME(QTcpSocket *t, QString msg)
     map->updateFromString(m.getUpdateString());
     sendToAllGamer(QString("%1#%2").arg(C_LAUNCH_GAME).arg(m.getCreationString()));
     sendToAllGamer(QString("%1#%2").arg(C_MAP_UPDATE).arg(m.getUpdateString()));
-    this->startTimer(refreshLoopMS);
 }
 
-void GameServer::receive_C_SET_READY(QTcpSocket *t, QString msg)
+void GameServer::receive_C_UPDATE_CURRENT_GAMER(QTcpSocket *t, QString msg)
 {
     Gamer *g = lstGamer.getGamer(t);
-    bool b = msg.toInt();
-    g->setReady(b);
-    updateGamerList();
-}
-
-void GameServer::receive_C_SET_NAME(QTcpSocket *t, QString msg)
-{
-    Gamer *g = lstGamer.getGamer(t);
-    g->setName(msg);
-    g->setReady(false); //Afin de nw pas lancer le jeu sans que son nom lui plaise
+    g->updateFromString(msg);
     updateGamerList();
 }
 

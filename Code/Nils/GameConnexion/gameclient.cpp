@@ -3,6 +3,7 @@
 #include "client.h"
 #include "GameComponent/gameview.h"
 #include "gamerlist.h"
+#include "gamer.h"
 
 
 /*----------------------------------------------------*/
@@ -60,15 +61,33 @@ void GameClient::launchGame(QString mapName)
 void GameClient::setName(QString &name)
 {
     qDebug()<<"GameClient : enter 'setName'";
-    client->sendMessageToServer(QString("%1#%2#").arg(C_SET_NAME).
-                                arg(name));
+    Gamer *g = lstGamer.getGamer(gamerId);
+    g->setName(name);
+    updateCurrentGamer();
 }
 
 void GameClient::setReady(bool r)
 {
-    qDebug()<<"GameClient : enter 'setName'";
-    client->sendMessageToServer(QString("%1#%2#").arg(C_SET_READY).
-                                arg(r));
+    qDebug()<<"GameClient : enter 'setReady'";
+    Gamer *g = lstGamer.getGamer(gamerId);
+    g->setReady(r);
+    updateCurrentGamer();
+}
+
+void GameClient::setColor(QColor c)
+{
+    qDebug()<<"GameClient : enter 'setColor'";
+    Gamer *g = lstGamer.getGamer(gamerId);
+    g->setColor(c);
+    updateCurrentGamer();
+}
+
+void GameClient::setSlot(int s)
+{
+    qDebug()<<"GameClient : enter 'setSlot'";
+    Gamer *g = lstGamer.getGamer(gamerId);
+    g->setSlotNumber(s);
+    updateCurrentGamer();
 }
 
 void GameClient::onErrorOccured(QAbstractSocket::SocketError socketError)
@@ -146,6 +165,13 @@ void GameClient::sendClientAction(QString actionString)
 /*METHODE PRIVE*/
 /*----------------------------------------------------*/
 
+void GameClient::updateCurrentGamer()
+{
+    qDebug()<<"GameClient : enter 'updateCurrentGamer'";
+    Gamer *g = lstGamer.getGamer(gamerId);
+    client->sendMessageToServer(QString("%1#%2#").arg(C_UPDATE_CURRENT_GAMER).
+                                arg(g->getUpdateString()));
+}
 
 /*----------------------------------------------------*/
 /*RECEPTION*/

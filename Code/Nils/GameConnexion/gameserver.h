@@ -52,7 +52,7 @@ private:
     /*RECEPTION*/
     void receive_C_REQUEST_SLOT(QTcpSocket *t, QString msg);
     void receive_C_LAUNCH_GAME(QTcpSocket *t, QString msg);
-    void receive_C_SET_READY(QTcpSocket *t, QString msg);
+    void receive_C_UPDATE_CURRENT_GAMER(QTcpSocket *t, QString msg);
     void receive_C_SET_NAME(QTcpSocket *t, QString msg);
     void receive_C_GAMER_ACTION(QTcpSocket *t, QString msg);
 };
