@@ -32,10 +32,11 @@ public:
 signals:
     void errorOccured(QAbstractSocket::SocketError socketError);
     void updateLobby();
+    void addMapName(QString s);
     void connexionOk();
     void switchToGame();
 public slots:
-    void launchGame(QString mapCreationStr, QString mapUpdateStr);
+    void launchGame(QString mapName);
     void setName(QString &name);
     void setReady(bool r);
 
@@ -54,6 +55,14 @@ private:
     GamerList &lstGamer;
 
     /*METHODE PRIVE*/
+
+    /*RECEPTION*/
+    void receive_C_GAMER_INFO(QString msg);
+    void receive_C_REFUSE(QString msg);
+    void receive_C_LAUNCH_GAME(QString msg);
+    void receive_C_LOBBY_UPDATE(QString msg);
+    void receive_C_MAP_UPDATE(QString msg);
+    void receive_C_ADD_MAP(QString msg);
 };
 
 #endif // GAMECLIENT_H

@@ -37,7 +37,7 @@ public:
 
     /*MISE A JOUR*/
     QString getUpdateString();
-    void updateFromString(QString &s);
+    void updateFromString(QString s);
     QString getCreationString();
 
     /*SIGNALS/SLOTS*/

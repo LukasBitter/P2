@@ -1,7 +1,14 @@
 #include "mapfile.h"
+#include "gamer.h"
+#include "GameComponent/node.h"
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
+
+
+/*----------------------------------------------------*/
+/*CONSTRUCTEUR / DESTRUCTEUR*/
+/*----------------------------------------------------*/
 
 MapFile::MapFile()
 {
@@ -13,12 +20,16 @@ MapFile::~MapFile()
 
 }
 
-bool MapFile::isValide()
+/*----------------------------------------------------*/
+/*ASSESSEUR / MUTATEUR*/
+/*----------------------------------------------------*/
+
+bool MapFile::isValide() const
 {
     return valide;
 }
 
-QString MapFile::getCreationString()
+QString MapFile::getCreationString() const
 {
     if(valide)
     {
@@ -27,7 +38,7 @@ QString MapFile::getCreationString()
     return "";
 }
 
-QString MapFile::getUpdateString()
+QString MapFile::getUpdateString() const
 {
     if(valide)
     {
@@ -36,7 +47,7 @@ QString MapFile::getUpdateString()
     return "";
 }
 
-int MapFile::getNumberOfSlot()
+int MapFile::getNumberOfSlot() const
 {
     if(valide)
     {
@@ -50,25 +61,45 @@ void MapFile::addSlot(QString s)
     gamerSlots.append(s);
 }
 
-QString MapFile::getSlot(int slotNumber, Gamer *g)
+QString MapFile::getSlot(int slotNumber, Gamer *g) const
 {
-    if(valide)
+    int gamerId = 0;
+    if(g != 0)
     {
-        return gamerSlots.value(slotNumber);
+        gamerId = g->getId();
+    }
+
+    if(valide && slotNumber < gamerSlots.size()  && slotNumber >= 0)
+    {
+        return QString(gamerSlots.value(slotNumber)).arg(gamerId);
     }
     return "";
 }
+
+int MapFile::getVersion() const
+{
+    return version;
+}
+
+void MapFile::setVersion(int v)
+{
+    version = v;
+}
+
+/*----------------------------------------------------*/
+/*LECTURE-ECRITURE*/
+/*----------------------------------------------------*/
 
 void MapFile::loadFromFile(QString file)
 {
     initialisation();
     bool versionOk = false;
     bool nbGamerOk = false;
+    int nbGamer = 0;
     QStringList lstFile = loadFileLine(file);
 
     if(lstFile.size() >= 6)
     {
-        int nbGamer = 0;
         version = lstFile.value(0).toInt(&versionOk);
         creation = lstFile.value(1);
         update = lstFile.value(2);
@@ -76,10 +107,11 @@ void MapFile::loadFromFile(QString file)
 
         for(int i = 0; i < nbGamer; ++i)
         {
-            gamerSlots<<lstFile.value(i+4);
+            QString tmp = lstFile.value(i+4);
+            if(!tmp.isEmpty())gamerSlots<<tmp;
         }
 
-        if(versionOk && nbGamerOk)
+        if(versionOk && nbGamerOk && gamerSlots.size() == nbGamer)
         {
             valide = true;
         }
@@ -88,8 +120,20 @@ void MapFile::loadFromFile(QString file)
 
 void MapFile::saveToFile(QString file)
 {
+    QStringList line;
 
+    line.append(QString("%1").arg(version));
+    line.append(creation);
+    line.append(update);
+    line.append(QString("%1").arg(gamerSlots.size()));
+    line.append(gamerSlots);
+
+    saveFileLine(file, line);
 }
+
+/*----------------------------------------------------*/
+/*METHODE PRIVE*/
+/*----------------------------------------------------*/
 
 QStringList MapFile::loadFileLine(QString file)
 {
@@ -119,6 +163,33 @@ QStringList MapFile::loadFileLine(QString file)
     }
 
     return lstFile;
+}
+
+void MapFile::saveFileLine(QString file, QStringList line)
+{
+    qDebug()<<"MapFile : enter 'saveFileLine'";
+    QFile f(file);
+
+    if(!f.exists())
+    {
+        qWarning()<<"MapFile : the file dosen't exist";
+    }
+    else
+    {
+        if (f.open(QIODevice::WriteOnly | QIODevice::Text))
+        {
+            QTextStream out(&f);
+            foreach(QString s , line)
+            {
+                out<<s<<"\n";
+            }
+            f.close();
+        }
+        else
+        {
+            qWarning()<<"MapFile : the file can't be write";
+        }
+    }
 }
 
 void MapFile::initialisation()

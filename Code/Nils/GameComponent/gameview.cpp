@@ -88,7 +88,7 @@ QString GameView::getUpdateString()
     return scene->getUpdateString();
 }
 
-void GameView::updateFromString(QString &s)
+void GameView::updateFromString(QString s)
 {
     scene->updateFromString(s);
 }

@@ -4,7 +4,6 @@
 #include <QStringBuilder>
 
 #include "GameConnexion/client.h"
-#include "GameComponent/map.h"
 #include "gamer.h"
 
 

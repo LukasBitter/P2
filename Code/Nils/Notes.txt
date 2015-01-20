@@ -11,3 +11,8 @@ Convertir la Gamerlist en attribut des objet
 Possibiliter d arreter l'ecoute du serveur durant la connexion tout en gardant la communication -> close()
 SingleTon sur le game context, et securiset le vidage de la liste de gammer
 Break dans la boucle de reception du serveur
+Defin pournles valeur fixe
+Mettre des reference partout ou c'est possible poour le passage de méthode
+Laiser ou ne pas laisser les methode appeler dans le case quand il n'y a qu'ûne seul oppération
+arg des string concatenable dans la meme fonction
+s

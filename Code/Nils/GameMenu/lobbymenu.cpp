@@ -19,9 +19,6 @@
 #include <QDir>
 
 
-#define MAP_FILE "./maps"
-#define MAP_EXTENSION "*.rtsmap"
-
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
@@ -31,7 +28,6 @@ LobbyMenu::LobbyMenu(QWidget *parent) :  QWidget(parent),
 {
     setUpUI();
     disableUI();
-    loadMapsFromFile();
 }
 
 /*----------------------------------------------------*/
@@ -82,18 +78,12 @@ void LobbyMenu::updateUI()
         ++cpt;
     }
 
-    const Gamer *cg = client->getCurrentGamer();
-    if(cg != 0)
+    const Gamer *currentGamer = client->getCurrentGamer();
+    if(currentGamer != 0)
     {
-        cbtReady->setChecked(cg->isReady());
-        if(cg->getName().isEmpty())
-        {
-            onBtChangeNamePressed();
-        }
-        else
-        {
-            txtName->setText(QString("Votre pseudo : %1").arg(cg->getName()));
-        }
+        cbtReady->setChecked(currentGamer->isReady());
+        txtName->setText(QString("Votre pseudo : %1").arg(currentGamer->getName()));
+        btChangeName->setEnabled(true);
     }
 }
 
@@ -170,9 +160,7 @@ void LobbyMenu::onBtStartPressed()
     qDebug()<<"LobbyMenu : enter 'onBtStartPressed'";
     if(client != 0)
     {
-        client->launchGame(
-                "10.3.4/8.6.4/9.5.3/7.6.3/@6.300.300.50.110.-1/4.500.500.30.100.2/5.400.200.10.10.-1/3.300.100.50.100.1/",
-                "10.150_30_2_1,/8./9./7./@6.50,1,-1,0,0/4.20,1,2,0,0/5.0,1,-1,0,0/3.50,1,1,0,0/");
+        client->launchGame(cbbMap->currentText());
     }
     else
     {
@@ -183,7 +171,8 @@ void LobbyMenu::onBtStartPressed()
 void LobbyMenu::onBtChangeNamePressed()
 {
     bool ok;
-    QString text = QInputDialog::getText(this, tr("Entrez votre pseudo")
+    QString text;
+    text = QInputDialog::getText(this, tr("Entrez votre pseudo")
                                          ,tr("Pseudo :"), QLineEdit::Normal,
                                          "", &ok);
     if(ok)
@@ -201,6 +190,11 @@ void LobbyMenu::onSuccessfulConnexion()
 {
     qDebug()<<"LobbyMenu : successfull connexion to server";
     txtConnected->setText("Connecté");
+}
+
+void LobbyMenu::onAddMap(QString s)
+{
+    cbbMap->addItem(s);
 }
 
 /*----------------------------------------------------*/
@@ -254,6 +248,7 @@ void LobbyMenu::disableUI()
     cbtReady->setEnabled(false);
     btConnect->setEnabled(false);
     txtAdressIP->setEnabled(false);
+    btChangeName->setEnabled(false);
     updateUI();
 
     setClient(0);
@@ -276,6 +271,7 @@ void LobbyMenu::setClient(GameClient *c)
                 this,SLOT(showError(QAbstractSocket::SocketError)));
         connect(client,SIGNAL(connexionOk()),this,SLOT(onSuccessfulConnexion()));
         connect(client,SIGNAL(updateLobby()),this,SLOT(updateUI()));
+        connect(client,SIGNAL(addMapName(QString)),this,SLOT(onAddMap(QString)));
     }
 }
 
@@ -288,19 +284,4 @@ void LobbyMenu::setServer(GameServer *s)
         delete server;
     }
     server = s;
-}
-
-void LobbyMenu::loadMapsFromFile()
-{
-    QDir d(MAP_FILE);
-    if(!d.exists())
-    {
-        d.mkpath(".");
-        return;
-    }
-
-    QStringList filter;
-    filter << MAP_EXTENSION;
-    QStringList lstMap = d.entryList(filter);
-    cbbMap->addItems(lstMap);
 }

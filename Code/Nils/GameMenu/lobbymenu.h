@@ -47,6 +47,7 @@ private slots:
     void onBtChangeNamePressed();
     void onBtReadyPressed();
     void onSuccessfulConnexion();
+    void onAddMap(QString s);
 
 private:
     /*INTERFACE*/
@@ -72,7 +73,6 @@ private:
     void disableUI();
     void setClient(GameClient *c);
     void setServer(GameServer* s);
-    void loadMapsFromFile();
 
 };
 

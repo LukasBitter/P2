@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QAbstractSocket>
+#include <QStringList>
 
 class Server;
 class QTcpSocket;
@@ -39,11 +40,21 @@ private:
     int const refreshLoopMS;
     int const port;
     GamerList &lstGamer;
+    QStringList lstMapName;
 
     /*METHODE PRIVE*/
     void sendToAllGamer(QString s);
     void updateGamerList();
     void timerEvent(QTimerEvent *event);
+    void loadMapsFromFile();
+    QString checkReadyToLaunchGame();
+
+    /*RECEPTION*/
+    void receive_C_REQUEST_SLOT(QTcpSocket *t, QString msg);
+    void receive_C_LAUNCH_GAME(QTcpSocket *t, QString msg);
+    void receive_C_SET_READY(QTcpSocket *t, QString msg);
+    void receive_C_SET_NAME(QTcpSocket *t, QString msg);
+    void receive_C_GAMER_ACTION(QTcpSocket *t, QString msg);
 };
 
 #endif // GAMESERVER_H

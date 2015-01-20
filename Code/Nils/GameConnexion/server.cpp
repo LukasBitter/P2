@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <process.h>
 #include "GameConnexion/server.h"
-#include "GameComponent/map.h"
 #include "gamer.h"
 
 

@@ -14,14 +14,16 @@ public:
     ~MapFile();
 
     /*ASSESSEUR / MUTATEUR*/
-    bool isValide();
-    QString getCreationString();
+    bool isValide()const;
+    QString getCreationString()const;
     void setCreationString(QString s);
-    QString getUpdateString();
+    QString getUpdateString()const;
     void setUpdateString(QString s);
-    int getNumberOfSlot();
+    int getNumberOfSlot()const;
     void addSlot(QString gamerSlots);
-    QString getSlot(int slotNumber, Gamer* g);
+    QString getSlot(int slotNumber, Gamer* g)const;
+    int getVersion() const;
+    void setVersion(int v);
 
     /*LECTURE-ECRITURE*/
     void loadFromFile(QString file);
@@ -34,6 +36,7 @@ private:
     QStringList gamerSlots;
     bool valide;
 
+    /*METHODE PRIVE*/
     QStringList loadFileLine(QString file);
     void saveFileLine(QString file, QStringList line);
     void initialisation();
