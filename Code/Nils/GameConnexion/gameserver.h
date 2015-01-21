@@ -44,18 +44,18 @@ private:
     QStringList lstMapName;
 
     /*METHODE PRIVE*/
-    void sendToAllGamer(QString s);
+    void sendToAllGamer(const QString s);
     void updateGamerList();
     void timerEvent(QTimerEvent *event);
     void loadMapsFromFile();
     NETWORK_INFORMATION checkReadyToLaunchGame(MapFile &m);
 
     /*RECEPTION*/
-    void receive_C_REQUEST_SLOT(QTcpSocket *t, QString msg);
-    void receive_C_LAUNCH_GAME(QTcpSocket *t, QString msg);
-    void receive_C_UPDATE_CURRENT_GAMER(QTcpSocket *t, QString msg);
-    void receive_C_SET_NAME(QTcpSocket *t, QString msg);
-    void receive_C_GAMER_ACTION(QTcpSocket *t, QString msg);
+    void receive_C_REQUEST_SLOT(QTcpSocket *t, const QString &msg);
+    void receive_C_LAUNCH_GAME(QTcpSocket *t, const QString &msg);
+    void receive_C_UPDATE_CURRENT_GAMER(QTcpSocket *t, const QString &msg);
+    void receive_C_SET_NAME(QTcpSocket *t, const QString &msg);
+    void receive_C_GAMER_ACTION(QTcpSocket *t, const QString &msg);
 };
 
 #endif // GAMESERVER_H

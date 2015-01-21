@@ -17,7 +17,8 @@ class GameServer;
 class GameContext;
 class QLabel;
 
-namespace GameMenu {
+namespace GameMenu
+{
     class LobbyMenu;
 }
 
@@ -70,7 +71,6 @@ private:
 
     /*OUTIL*/
     bool host;
-    int const maxGamer;
     GameServer *server;
     GameClient *client;
 

@@ -29,6 +29,7 @@ Client::Client(int port, QString host, QObject *parent) : QObject(parent),
 void Client::onErrorOccured(QAbstractSocket::SocketError socketError)
 {
     qWarning()<<"Client : enter 'onErrorOccured'"<<socketError;
+
     emit errorOccured(socketError);
 }
 
@@ -60,6 +61,7 @@ void Client::readFromSocket()
                 return;
             in >> blockSize;
         }
+
         if (socket.bytesAvailable() < blockSize)
             return;
 
@@ -74,6 +76,7 @@ void Client::readFromSocket()
 void Client::afterConnexion()
 {
     qDebug()<<"Client : successfull connexion to server";
+
     emit connected();
 }
 

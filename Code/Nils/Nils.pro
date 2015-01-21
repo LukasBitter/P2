@@ -32,7 +32,8 @@ HEADERS += \
     enumlibrary.h \
     GameComponent/gameview.h \
     mapfile.h \
-    GameComponent/editview.h
+    GameComponent/editview.h \
+    GameMenu/editormenu.h
 
 SOURCES += \
     GameComponent/connexion.cpp \
@@ -61,7 +62,8 @@ SOURCES += \
     main.cpp \
     GameComponent/gameview.cpp \
     mapfile.cpp \
-    GameComponent/editview.cpp
+    GameComponent/editview.cpp \
+    GameMenu/editormenu.cpp
 
 OTHER_FILES += \
     Notes.txt

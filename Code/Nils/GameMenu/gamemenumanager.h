@@ -5,11 +5,13 @@
 
 class WelcomeMenu;
 class LobbyMenu;
+class EditorMenu;
 class QWidget;
 class QStackedLayout;
 class GameContext;
 
-namespace GameMenu {
+namespace GameMenu
+{
     class GameMenuManager;
 }
 
@@ -20,7 +22,6 @@ class GameMenuManager : public QMainWindow
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     GameMenuManager(QWidget *parent = 0);
-    ~GameMenuManager();
 
     /*SIGNALS/SLOTS*/
 public slots:
@@ -30,6 +31,7 @@ private slots:
     void goToLobbyAsHost();
     void goToLobbyAsClient();
     void goToGame(GameContext *gc);
+    void goToEditor();
 
 private:
     /*INTERFACE*/
@@ -37,6 +39,7 @@ private:
     QStackedLayout *layout;
     WelcomeMenu *welcomemenu;
     LobbyMenu *lobbymenu;
+    EditorMenu *editor;
 
     /*METHODE PRIVE*/
     void setUpUI();

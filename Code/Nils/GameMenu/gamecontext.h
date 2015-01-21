@@ -7,7 +7,8 @@ class GameClient;
 class GameServer;
 class GameView;
 
-namespace GameMenu {
+namespace GameMenu
+{
     class GameContext;
 }
 
@@ -19,10 +20,11 @@ public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     GameContext(GameClient *c, GameServer *s=0, QWidget *parent=0);
     ~GameContext();
+
 private:
+    /*OUTIL*/
     GameClient *c;
     GameServer *s;
 };
-
 
 #endif // GAMECONTEXT_H

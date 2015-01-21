@@ -24,20 +24,21 @@ public:
     explicit Gamer(QObject *parent=0);
 
     /*ASSESSEUR / MUTATEUR*/
-    void setColor(QColor &c);
-    QColor getColor() const;
-    void setSocket(QTcpSocket *s);
-    QTcpSocket *getSocket() const;
     bool isReady()const;
+    QTcpSocket *getSocket() const;
     QString getName()const;
+    int getSlotNumber()const;
+    QColor getColor() const;
+
+    void setColor(const QColor &c);
+    void setSocket(QTcpSocket *s);
     void setReady(bool b);
-    void setName(QString &s);
+    void setName(const QString &s);
     void setSlotNumber(int no);
-    int getSlotNumber();
 
     /*MISE A JOUR*/
-    QString getUpdateString();
-    void updateFromString(QString &s);
+    QString getUpdateString()const;
+    void updateFromString(const QString &s);
 
 private:
     /*OUTIL*/

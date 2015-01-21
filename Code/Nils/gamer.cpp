@@ -23,7 +23,7 @@ Gamer::Gamer(QObject *parent): QObject(parent), ready(false),
 /*ASSESSEUR / MUTATEUR*/
 /*----------------------------------------------------*/
 
-void Gamer::setColor(QColor &c)
+void Gamer::setColor(const QColor &c)
 {
     color = c;
 }
@@ -58,7 +58,7 @@ void Gamer::setReady(bool b)
     ready = b;
 }
 
-void Gamer::setName(QString &s)
+void Gamer::setName(const QString &s)
 {
     name = s;
 }
@@ -68,7 +68,7 @@ void Gamer::setSlotNumber(int no)
     slotNumber = no;
 }
 
-int Gamer::getSlotNumber()
+int Gamer::getSlotNumber()const
 {
     return slotNumber;
 }
@@ -77,16 +77,17 @@ int Gamer::getSlotNumber()
 /*MISE A JOUR*/
 /*----------------------------------------------------*/
 
-QString Gamer::getUpdateString()
+QString Gamer::getUpdateString() const
 {
     return QString("%1,%2,%3,%4,%5,%6").arg(color.red()).
            arg(color.green()).arg(color.blue()).arg(name).
-            arg(ready).arg(slotNumber);
+           arg(ready).arg(slotNumber);
 }
 
-void Gamer::updateFromString(QString &s)
+void Gamer::updateFromString(const QString &s)
 {
     QStringList nodeStr = s.split(",");
+
     if(nodeStr.size() == 6)
     {
         color.setRed(nodeStr.first().toInt());
@@ -97,7 +98,7 @@ void Gamer::updateFromString(QString &s)
         nodeStr.pop_front();
         name = nodeStr.first();
         nodeStr.pop_front();
-        ready = (nodeStr.first() == "1" ? true : false);
+        ready = nodeStr.first().toInt();
         nodeStr.pop_front();
         slotNumber = nodeStr.first().toInt();
     }

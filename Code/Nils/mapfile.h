@@ -11,23 +11,22 @@ class MapFile
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     MapFile();
-    ~MapFile();
 
     /*ASSESSEUR / MUTATEUR*/
     bool isValide()const;
-    QString getCreationString()const;
-    void setCreationString(QString s);
     QString getUpdateString()const;
-    void setUpdateString(QString s);
-    int getNumberOfSlot()const;
-    void addSlot(QString gamerSlots);
+    QString getCreationString() const;
     QString getSlot(int slotNumber, Gamer* g)const;
     int getVersion() const;
+    int getNumberOfSlot()const;
+
     void setVersion(int v);
+    void setUpdateString(QString s);
+    void addSlot(QString gamerSlots);
 
     /*LECTURE-ECRITURE*/
-    void loadFromFile(QString file);
-    void saveToFile(QString file);
+    void loadFromFile(const QString &file);
+    void saveToFile(const QString &file)const;
 private:
     /*ENTREE-SORTIE*/
     int version;
@@ -37,8 +36,8 @@ private:
     bool valide;
 
     /*METHODE PRIVE*/
-    QStringList loadFileLine(QString file);
-    void saveFileLine(QString file, QStringList line);
+    QStringList loadFileLine(const QString &file)const;
+    void saveFileLine(const QString &file, const QStringList &line)const;
     void initialisation();
 };
 

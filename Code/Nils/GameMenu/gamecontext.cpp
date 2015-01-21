@@ -12,6 +12,7 @@
 GameContext::GameContext(GameClient *c, GameServer *s, QWidget *parent):
     QWidget(parent), c(0),s(0)
 {
+    //AJOUT CLIENT
     if(c != 0)
     {
         QGridLayout *l = new QGridLayout(this);
@@ -23,6 +24,8 @@ GameContext::GameContext(GameClient *c, GameServer *s, QWidget *parent):
     {
         qCritical()<<"GameContext : unexpected case in 'GameContext'";
     }
+
+    //AJOUT SERVEUR
     if(s != 0)
     {
         qDebug()<<"GameContext : created with server";

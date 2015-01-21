@@ -64,12 +64,12 @@ private:
     void updateCurrentGamer();
 
     /*RECEPTION*/
-    void receive_C_GAMER_INFO(QString &msg);
-    void receive_C_INFORMATION(QString &msg);
-    void receive_C_LAUNCH_GAME(QString &msg);
-    void receive_C_LOBBY_UPDATE(QString &msg);
-    void receive_C_MAP_UPDATE(QString &msg);
-    void receive_C_ADD_MAP(QString &msg);
+    void receive_C_GAMER_INFO(const QString &msg);
+    void receive_C_INFORMATION(const QString &msg);
+    void receive_C_LAUNCH_GAME(const QString &msg);
+    void receive_C_LOBBY_UPDATE(const QString &msg);
+    void receive_C_MAP_UPDATE(const QString &msg);
+    void receive_C_ADD_MAP(const QString &msg);
 };
 
 #endif // GAMECLIENT_H

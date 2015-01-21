@@ -16,23 +16,20 @@ public:
     ~GamerList();
 
     /*ASSESSEUR / MUTATEUR*/
-    const QHash<int,Gamer *> & getLstGamer();
+    const QHash<int,Gamer *> & getLstGamer()const;
     Gamer * getGamer(int idGamer) const;
     Gamer * getGamer(QTcpSocket *socket)const;
-    bool isNameExist(QString &s);
+    bool isNameExist(const QString &s)const;
     void addGamer(Gamer* g);
 
     /*MISE A JOUR*/
-    QString getLstGamerUpdateString();
-    void updateLstGamerFromString(QString &s);
+    QString getLstGamerUpdateString()const;
+    void updateLstGamerFromString(const QString &s);
 
 private:
     /*OUTIL*/
     QHash<int,Gamer *> lstGamers;
     QList<QColor> lstColor;
-
-    /*METHODE PRIVE*/
-    QColor getNextColor();
 };
 
 #endif // GAMERLIST_H

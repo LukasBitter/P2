@@ -18,6 +18,7 @@ Server::Server(int port, int maxConnexion, QObject *parent) :
 
     tcpServer.setMaxPendingConnections(maxConnexion);
     tcpServer.listen(QHostAddress::Any, port);
+
     if(tcpServer.isListening())
     {
         qDebug()<<"Server : is listening port";
@@ -35,6 +36,7 @@ Server::Server(int port, int maxConnexion, QObject *parent) :
 void Server::onNewClient()
 {
     qDebug()<<"Server : new client has joint the server";
+
     QTcpSocket *activeSocket = tcpServer.nextPendingConnection();
 
     blockSizeArray.insert(activeSocket, 0);
@@ -69,12 +71,14 @@ void Server::readFromSocket()
         blockSize = 0;
         emit messageReciveFromClient(socket, clientMessage);
     }
+
     blockSizeArray.insert(socket,blockSize);
 }
 
 void Server::onErrorOccured(QAbstractSocket::SocketError socketError)
 {
     qWarning()<<"Server : enter 'onErrorOccured'"<<socketError;
+
     emit errorOccured(socketError);
 }
 

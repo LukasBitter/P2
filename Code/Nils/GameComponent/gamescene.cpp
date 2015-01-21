@@ -95,7 +95,6 @@ GameScene::~GameScene()
 /*SURCHARGE*/
 /*----------------------------------------------------*/
 
-
 void GameScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 {
     Q_UNUSED(event);

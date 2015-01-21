@@ -2,7 +2,9 @@
 #include "lobbymenu.h"
 #include "welcomemenu.h"
 #include "gamecontext.h"
+#include "editormenu.h"
 #include <QStackedLayout>
+
 
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
@@ -11,17 +13,6 @@
 GameMenuManager::GameMenuManager(QWidget *parent) : QMainWindow(parent)
 {
     setUpUI();
-
-    //Connexion
-    connect(welcomemenu,SIGNAL(btHostGamePressed()),this,SLOT(goToLobbyAsHost()));
-    connect(welcomemenu,SIGNAL(btJointGamePressed()),this,SLOT(goToLobbyAsClient()));
-    connect(welcomemenu,SIGNAL(btQuitPressed()),this,SLOT(close()));
-    connect(lobbymenu,SIGNAL(returnToMenu()),this,SLOT(returnToMenu()));
-    connect(lobbymenu,SIGNAL(play(GameContext*)),this,SLOT(goToGame(GameContext*)));
-}
-
-GameMenuManager::~GameMenuManager()
-{
 }
 
 /*----------------------------------------------------*/
@@ -55,6 +46,13 @@ void GameMenuManager::goToGame(GameContext *gc)
     layout->setCurrentWidget(gc);
 }
 
+void GameMenuManager::goToEditor()
+{
+    qDebug()<<"GameMenuManager : want switch to editor";
+    layout->addWidget(editor);
+    layout->setCurrentWidget(editor);
+}
+
 /*----------------------------------------------------*/
 /*METHODE PRIVE*/
 /*----------------------------------------------------*/
@@ -64,15 +62,25 @@ void GameMenuManager::setUpUI()
     centralWidget = new QWidget(this);
     layout = new QStackedLayout(centralWidget);
 
-    //Proprieté de la fenetre
+    //PARAMETRAGE
     setFixedSize(800,600);
 
-    //Composant
+    //INSTANTIATION
     welcomemenu = new WelcomeMenu(this);
+    editor = new EditorMenu(this);
     lobbymenu = new LobbyMenu(this);
 
+    //CONNEXION
+    connect(welcomemenu,SIGNAL(btHostGamePressed()),this,SLOT(goToLobbyAsHost()));
+    connect(welcomemenu,SIGNAL(btJointGamePressed()),this,SLOT(goToLobbyAsClient()));
+    connect(welcomemenu,SIGNAL(btEditorPressed()),this,SLOT(goToEditor()));
+    connect(welcomemenu,SIGNAL(btQuitPressed()),this,SLOT(close()));
+    connect(lobbymenu,SIGNAL(returnToMenu()),this,SLOT(returnToMenu()));
+    connect(lobbymenu,SIGNAL(play(GameContext*)),this,SLOT(goToGame(GameContext*)));
 
+    //AJOUT LAYOUT
     layout->addWidget(welcomemenu);
+    layout->addWidget(editor);
     layout->addWidget(lobbymenu);
 
     centralWidget->setLayout(layout);

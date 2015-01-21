@@ -2,23 +2,24 @@
 #include <QPushButton>
 #include <QGridLayout>
 
+
+/*----------------------------------------------------*/
+/*CONSTRUCTEUR / DESTRUCTEUR*/
+/*----------------------------------------------------*/
+
 WelcomeMenu::WelcomeMenu(QWidget *parent) :
     QWidget(parent)
 {
-    btHostGame = new QPushButton("Host", this);
-    btJointGame = new QPushButton("Joint", this);
-    btQuit = new QPushButton("Quit", this);
+    setUpUI();
+}
 
-    connect(btHostGame,SIGNAL(clicked()),this,SLOT(onBtHostGamePressed()));
-    connect(btJointGame,SIGNAL(clicked()),this,SLOT(onBtJointGamePressed()));
-    connect(btQuit,SIGNAL(clicked()),this,SLOT(onBtQuitPressed()));
+/*----------------------------------------------------*/
+/*SIGNALS/SLOTS*/
+/*----------------------------------------------------*/
 
-    QGridLayout *l = new QGridLayout(this);
-    l->addWidget(btHostGame, 0, 0);
-    l->addWidget(btJointGame, 1, 0);
-    l->addWidget(btQuit, 2, 0);
-
-    this->setLayout(l);
+void WelcomeMenu::onBtEditorPressed()
+{
+    emit btEditorPressed();
 }
 
 void WelcomeMenu::onBtHostGamePressed()
@@ -34,4 +35,32 @@ void WelcomeMenu::onBtJointGamePressed()
 void WelcomeMenu::onBtQuitPressed()
 {
     emit btQuitPressed();
+}
+
+/*----------------------------------------------------*/
+/*METHODE PRIVE*/
+/*----------------------------------------------------*/
+
+void WelcomeMenu::setUpUI()
+{
+    //INSTANTIATION
+    btHostGame = new QPushButton("Host", this);
+    btJointGame = new QPushButton("Joint", this);
+    btQuit = new QPushButton("Quit", this);
+    btEditor = new QPushButton("Editor", this);
+
+    //CONNEXION
+    connect(btHostGame,SIGNAL(clicked()),this,SLOT(onBtHostGamePressed()));
+    connect(btJointGame,SIGNAL(clicked()),this,SLOT(onBtJointGamePressed()));
+    connect(btQuit,SIGNAL(clicked()),this,SLOT(onBtQuitPressed()));
+    connect(btEditor,SIGNAL(clicked()),this,SLOT(onBtEditorPressed()));
+
+    //AJOUT LAYOUT
+    QGridLayout *l = new QGridLayout(this);
+    l->addWidget(btEditor, 1, 0);
+    l->addWidget(btHostGame, 2, 0);
+    l->addWidget(btJointGame, 5, 0);
+    l->addWidget(btQuit, 10, 0);
+
+    this->setLayout(l);
 }

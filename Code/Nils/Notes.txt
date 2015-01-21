@@ -15,4 +15,8 @@ Defin pournles valeur fixe
 Mettre des reference partout ou c'est possible poour le passage de méthode
 Laiser ou ne pas laisser les methode appeler dans le case quand il n'y a qu'ûne seul oppération
 arg des string concatenable dans la meme fonction
-s
+
+
+Doute:
+const dans texte de slot?
+Référence empeche inline?

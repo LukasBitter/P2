@@ -24,7 +24,7 @@
 /*----------------------------------------------------*/
 
 LobbyMenu::LobbyMenu(QWidget *parent) :  QWidget(parent),
-    server(0), client(0), maxGamer(4), host(false)
+    server(0), client(0), host(false)
 {
     setUpUI();
     disableUI();
@@ -51,7 +51,7 @@ void LobbyMenu::enableServerUI()
     btStart->setEnabled(true);
     cbtReady->setEnabled(true);
 
-    setServer(new GameServer(maxGamer, this));
+    setServer(new GameServer(MAX_GAMER, this));
     setClient(new GameClient("127.0.0.1", this));
     host = true;
 }
@@ -282,13 +282,13 @@ void LobbyMenu::setUpUI()
 
     //PEUPLEMENT
 
-    tblStatus->setRowCount(maxGamer);
+    tblStatus->setRowCount(MAX_GAMER);
     tblStatus->setColumnCount(4);
     QStringList &s = *new QStringList();
     s<<"Nom joueur"<<"Couleur"<<"Slot spawn"<<"Pret";
     tblStatus->setHorizontalHeaderLabels(s);
 
-    for(int i = 1; i <= maxGamer; ++i)
+    for(int i = 1; i <= MAX_GAMER; ++i)
     {
         cbbSlot->addItem(QString("%1").arg(i));
     }

@@ -51,12 +51,14 @@ const Gamer *GameClient::getCurrentGamer() const
 void GameClient::launchGame(QString mapName)
 {
     qDebug()<<"GameClient : enter 'launchGame'";
+
     client->sendMessageToServer(QString("%1#%2").arg(C_LAUNCH_GAME).arg(mapName));
 }
 
 void GameClient::setName(QString name)
 {
     qDebug()<<"GameClient : enter 'setName'";
+
     Gamer *g = lstGamer.getGamer(gamerId);
     g->setName(name);
     updateCurrentGamer();
@@ -65,6 +67,7 @@ void GameClient::setName(QString name)
 void GameClient::setReady(bool r)
 {
     qDebug()<<"GameClient : enter 'setReady'";
+
     Gamer *g = lstGamer.getGamer(gamerId);
     g->setReady(r);
     updateCurrentGamer();
@@ -73,6 +76,7 @@ void GameClient::setReady(bool r)
 void GameClient::setColor(QColor c)
 {
     qDebug()<<"GameClient : enter 'setColor'";
+
     Gamer *g = lstGamer.getGamer(gamerId);
     g->setColor(c);
     updateCurrentGamer();
@@ -81,6 +85,7 @@ void GameClient::setColor(QColor c)
 void GameClient::setSlot(int s)
 {
     qDebug()<<"GameClient : enter 'setSlot'";
+
     Gamer *g = lstGamer.getGamer(gamerId);
     g->setSlotNumber(s);
     updateCurrentGamer();
@@ -89,13 +94,16 @@ void GameClient::setSlot(int s)
 void GameClient::onErrorOccured(QAbstractSocket::SocketError socketError)
 {
     qWarning()<<"GameClient : enter 'onErrorOccured'"<<socketError;
+
     emit errorOccured(socketError);
 }
 
 void GameClient::onMessageRecive(QString s)
 {
     QStringList msgStr = s.split("#");
+
     if(msgStr.size() != 2) return;
+
     NETWORK_COMMANDE cmd = (NETWORK_COMMANDE)msgStr.first().toInt();
     msgStr.pop_front();
     QString msg = msgStr.first();
@@ -146,14 +154,17 @@ void GameClient::onMessageRecive(QString s)
 void GameClient::onClientConnected()
 {
     qDebug()<<"GameClient : enter 'onClientConnected'";
+
     QString message = QString("%1#").arg(C_REQUEST_SLOT);
     client->sendMessageToServer(message);
+
     emit connexionOk();
 }
 
 void GameClient::sendClientAction(QString actionString)
 {
     qDebug()<<"GameClient : enter 'sendClientAction'";
+
     QString message = QString("%1#%2").arg(C_GAMER_ACTION).arg(actionString);
     client->sendMessageToServer(message);
 }
@@ -165,6 +176,7 @@ void GameClient::sendClientAction(QString actionString)
 void GameClient::updateCurrentGamer()
 {
     qDebug()<<"GameClient : enter 'updateCurrentGamer'";
+
     Gamer *g = lstGamer.getGamer(gamerId);
     QString message = QString("%1#%2").arg(C_UPDATE_CURRENT_GAMER).
             arg(g->getUpdateString());
@@ -175,24 +187,26 @@ void GameClient::updateCurrentGamer()
 /*RECEPTION*/
 /*----------------------------------------------------*/
 
-void GameClient::receive_C_GAMER_INFO(QString &msg)
+void GameClient::receive_C_GAMER_INFO(const QString &msg)
 {
     gamerId = msg.toInt();
 }
 
-void GameClient::receive_C_INFORMATION(QString &msg)
+void GameClient::receive_C_INFORMATION(const QString &msg)
 {
     NETWORK_INFORMATION info = (NETWORK_INFORMATION)msg.toInt();
+
     emit errorOccured(info);
 }
 
-void GameClient::receive_C_LAUNCH_GAME(QString &msg)
+void GameClient::receive_C_LAUNCH_GAME(const QString &msg)
 {
     if(gamerId != -1)
     {
         map = new GameView(msg, lstGamer, lstGamer.getGamer(gamerId));
         connect(map, SIGNAL(gamerAction(QString)),
                 this, SLOT(sendClientAction(QString)));
+
         emit switchToGame();
     }
     else
@@ -201,18 +215,19 @@ void GameClient::receive_C_LAUNCH_GAME(QString &msg)
     }
 }
 
-void GameClient::receive_C_LOBBY_UPDATE(QString &msg)
+void GameClient::receive_C_LOBBY_UPDATE(const QString &msg)
 {
     lstGamer.updateLstGamerFromString(msg);
+
     emit updateLobby();
 }
 
-void GameClient::receive_C_MAP_UPDATE(QString &msg)
+void GameClient::receive_C_MAP_UPDATE(const QString &msg)
 {
     if(map != 0)map->updateFromString(msg);
 }
 
-void GameClient::receive_C_ADD_MAP(QString &msg)
+void GameClient::receive_C_ADD_MAP(const QString &msg)
 {
     emit addMapName(msg);
 }

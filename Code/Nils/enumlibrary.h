@@ -28,6 +28,12 @@ enum GAMER_ACTION
     GA_USEPOWER,
 };
 
+enum EDITOR_ACTION
+{
+    EA_ADD,
+    EA_REMOVE,
+};
+
 
 enum NETWORK_INFORMATION
 {
@@ -41,5 +47,7 @@ enum NETWORK_INFORMATION
     I_MAP_NOT_BIG_ENOUGH,
     I_NOT_READY,
 };
+
+#define MAX_GAMER 4
 
 #endif // ENUMLIB_H

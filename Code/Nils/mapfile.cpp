@@ -15,11 +15,6 @@ MapFile::MapFile()
     initialisation();
 }
 
-MapFile::~MapFile()
-{
-
-}
-
 /*----------------------------------------------------*/
 /*ASSESSEUR / MUTATEUR*/
 /*----------------------------------------------------*/
@@ -35,6 +30,7 @@ QString MapFile::getCreationString() const
     {
         return creation;
     }
+
     return "";
 }
 
@@ -44,6 +40,7 @@ QString MapFile::getUpdateString() const
     {
         return update;
     }
+
     return "";
 }
 
@@ -53,6 +50,7 @@ int MapFile::getNumberOfSlot() const
     {
         return gamerSlots.size();
     }
+
     return 0;
 }
 
@@ -64,6 +62,7 @@ void MapFile::addSlot(QString s)
 QString MapFile::getSlot(int slotNumber, Gamer *g) const
 {
     int gamerId = 0;
+
     if(g != 0)
     {
         gamerId = g->getId();
@@ -75,6 +74,7 @@ QString MapFile::getSlot(int slotNumber, Gamer *g) const
         qDebug()<<gamerSlots.value(slotNumber);
         return QString(gamerSlots.value(slotNumber)).arg(gamerId);
     }
+
     return "";
 }
 
@@ -92,9 +92,10 @@ void MapFile::setVersion(int v)
 /*LECTURE-ECRITURE*/
 /*----------------------------------------------------*/
 
-void MapFile::loadFromFile(QString file)
+void MapFile::loadFromFile(const QString &file)
 {
     initialisation();
+
     bool versionOk = false;
     bool nbGamerOk = false;
     int nbGamer = 0;
@@ -110,6 +111,7 @@ void MapFile::loadFromFile(QString file)
         for(int i = 0; i < nbGamer; ++i)
         {
             QString tmp = lstFile.value(i+4);
+
             if(!tmp.isEmpty())
             {
                 gamerSlots<<tmp;
@@ -123,7 +125,7 @@ void MapFile::loadFromFile(QString file)
     }
 }
 
-void MapFile::saveToFile(QString file)
+void MapFile::saveToFile(const QString &file) const
 {
     QStringList line;
 
@@ -140,9 +142,10 @@ void MapFile::saveToFile(QString file)
 /*METHODE PRIVE*/
 /*----------------------------------------------------*/
 
-QStringList MapFile::loadFileLine(QString file)
+QStringList MapFile::loadFileLine(const QString &file) const
 {
     qDebug()<<"MapFile : enter 'loadFileLine'";
+
     QStringList lstFile;
     QFile f(file);
 
@@ -155,10 +158,12 @@ QStringList MapFile::loadFileLine(QString file)
         if (f.open(QIODevice::ReadOnly))
         {
             QTextStream in(&f);
+
             while (!in.atEnd())
             {
                 lstFile<<in.readLine();
             }
+
             f.close();
         }
         else
@@ -170,9 +175,10 @@ QStringList MapFile::loadFileLine(QString file)
     return lstFile;
 }
 
-void MapFile::saveFileLine(QString file, QStringList line)
+void MapFile::saveFileLine(const QString &file, const QStringList &line)const
 {
     qDebug()<<"MapFile : enter 'saveFileLine'";
+
     QFile f(file);
 
     if(!f.exists())
@@ -184,10 +190,12 @@ void MapFile::saveFileLine(QString file, QStringList line)
         if (f.open(QIODevice::WriteOnly | QIODevice::Text))
         {
             QTextStream out(&f);
+
             foreach(QString s , line)
             {
                 out<<s<<"\n";
             }
+
             f.close();
         }
         else
@@ -202,6 +210,6 @@ void MapFile::initialisation()
     version = 0;
     creation = "";
     update = "";
-    gamerSlots.clear();
     valide = false;
+    gamerSlots.clear();
 }

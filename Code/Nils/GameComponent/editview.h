@@ -32,10 +32,10 @@ public:
 
     /*SURCHARGE*/
     void keyPressEvent(QKeyEvent *e);
-    void mousePressEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *e);
     void dropEvent(QDropEvent *event);
 
-    /*MISE A JOUR*/
+    /*LECTURE-ECRITURE*/
     void loadMapName(QString s);
     void saveMapName(QString s);
 
@@ -46,6 +46,9 @@ private:
     /*OUTIL*/
     GameScene * scene; ///< Scene de jeu
     GamerList lstGamer;
+    EDITOR_ACTION action;
+    Node *currentSelection;
+    Node *lastSelection;
 
     /*METHODE PRIVE*/
     void setUpUI();
