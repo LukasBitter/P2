@@ -22,16 +22,19 @@
  *
  * A la création un identifiant unique est défini.
  */
-Connexion::Connexion(Node &n1, Node &n2, GamerList &gl)
+Connexion::Connexion(Node &n1, Node &n2, const GamerList &gl)
     : QGraphicsItem(0), n1(n1), n2(n2), lstGamer(gl)
 {
     setNextId();
     setX(n1.x());
     setY(n1.y());
+    setZValue(1);
 
     //Calcule de la distance de la connexion
     pathLength = (int)sqrt(pow(n1.x()-n2.x(),2)+
-                      pow(n1.y()-n2.y(),2));;
+                      pow(n1.y()-n2.y(),2));
+    pathLength -= -n2.getRadius();
+    pathLength -= -n1.getRadius();
 }
 
 Connexion::~Connexion()
@@ -62,7 +65,8 @@ void Connexion::paint(QPainter *painter,
     //Angle entre les 2 noeud de la connexion
     qreal angle = qRadiansToDegrees(qAtan2(n1.y()-n2.y(),n1.x()-n2.x()))+90;
     painter->rotate(angle);
-    painter->drawLine(0, n1.getRadius(), 0, pathLength-n2.getRadius());
+    painter->translate(0, n1.getRadius());
+    painter->drawLine(0, 0, 0, pathLength);
 
     foreach(Squad *s, lstSquad1To2)
     {
@@ -73,12 +77,14 @@ void Connexion::paint(QPainter *painter,
         p[2]=QPointF(5,s->getProgress());
         painter->drawConvexPolygon( p, 3);
     }
+    painter->rotate(180);
+    painter->translate(0, pathLength);
     foreach(Squad *s, lstSquad2To1)
     {
         painter->setBrush(s->getOwner().getColor());
         QPointF  p[3];
         p[0]=QPointF(-5,s->getProgress());
-        p[1]=QPointF(0,s->getProgress()-5);
+        p[1]=QPointF(0,s->getProgress()+5);
         p[2]=QPointF(5,s->getProgress());
         painter->drawConvexPolygon( p, 3);
     }
@@ -148,10 +154,10 @@ void Connexion::sendSquad(Squad s, int nodeId)
     if(queue != 0)
     {
         //Récupère la squad la plus proche du début
-        Squad *sMin = queue.last();
+        Squad *sMin = queue->last();
 
         if(sMin != 0 && sMin->getProgress() == 0 &&
-                sMin->getOwner() == s.getOwner())
+                sMin->getOwner().getId() == s.getOwner().getId())
         {
             //Fusion des squads
             sMin->setNbRessources(sMin->getNbRessources()+s.getNbRessources());
@@ -160,25 +166,7 @@ void Connexion::sendSquad(Squad s, int nodeId)
         {
             //Ajout direct
             s.setProgress(0);
-            lstSquad1To2.push_front(new Squad(s));
-        }
-    }
-    else if(nodeId == n2.getId())
-    {
-        //Récupère la squad la plus proche du début
-        Squad *sMin = lstSquad2To1.last();
-
-        if(sMin != 0 && sMin->getProgress() == 0 &&
-                sMin->getOwner() == s.getOwner())
-        {
-            //Fusion des squads
-            sMin->setNbRessources(sMin->getNbRessources()+s.getNbRessources());
-        }
-        else
-        {
-            //Ajout direct
-            s.setProgress(0);
-            lstSquad1To2.push_front(new Squad(s));
+            queue->enqueue(new Squad(s));
         }
     }
 }
@@ -194,7 +182,7 @@ void Connexion::sendSquad(Squad s, int nodeId)
  * Retourne l'état de la connexion sous format texte.
  * Permet de mettre a jour une autre connexion via cette chaine.
  */
-QString Connexion::getUpdateString()
+QString Connexion::getUpdateString() const
 {
     QString s;
     foreach (Squad *s1to2, lstSquad1To2)
@@ -202,12 +190,21 @@ QString Connexion::getUpdateString()
         s.append(QString("%1_%2_%3_0,").arg(s1to2->getProgress()).
                  arg(s1to2->getNbRessources()).arg(s1to2->getOwner().getId()));
     }
+    s.resize(s.size()-1);
     foreach (Squad *s1to2, lstSquad2To1)
     {
         s.append(QString("%1_%2_%3_1,").arg(s1to2->getProgress()).
                  arg(s1to2->getNbRessources()).arg(s1to2->getOwner().getId()));
     }
+    s.resize(s.size()-1);
     return s;
+}
+
+QString Connexion::getCreationString() const
+{
+    return QString("%1,%2,%3").arg(getId()).
+                     arg(n1.getId()).
+                     arg(n2.getId());
 }
 
 /**
@@ -218,6 +215,8 @@ QString Connexion::getUpdateString()
  */
 void Connexion::updateFromString(QString &s)
 {
+    if(s.isEmpty()) return;
+
     //Efface toutes les squad présente dans la connexion
     qDeleteAll(lstSquad1To2);
     lstSquad1To2.clear();
@@ -242,24 +241,45 @@ void Connexion::updateFromString(QString &s)
             Gamer *g = lstGamer.getGamer(ownerId);
             if(g != 0)
             {
-                Squad *squad = new Squad(*g);
+                Squad s(*g);
+                s.setNbRessources(nbRessources);
+                s.setProgress(progress);
+
                 if(direction==0)
                 {
-                    sendSquad(squad, n1);
+                    sendSquad(s, n1.getId());
                 }
                 else
                 {
-                    sendSquad(squad, n2);
+                    sendSquad(s, n2.getId());
                 }
-                squad->setNbRessources(nbRessources);
-                squad->setProgress(progress);
             }
             else
             {
-                qCritical()<<"Connexion : unexpected case in 'updateFromString'";
+                qCritical()<<"Connexion : unexpected case in 'updateFromString' (1)";
             }
         }
-        //Pas de critical ici, car VIRGULE!
+        else
+        {
+            qCritical()<<"Connexion : unexpected case in 'updateFromString' (2)";
+        }
+    }
+}
+
+void Connexion::getCreationValue(QString &s, int &connexionId, int &node1Id, int &node2Id)
+{
+    QStringList nodeStr = s.split(",");
+    if(nodeStr.size() == 3)
+    {
+        connexionId = nodeStr.first().toInt();
+        nodeStr.pop_front();
+        node1Id = nodeStr.first().toInt();
+        nodeStr.pop_front();
+        node2Id = nodeStr.first().toInt();
+    }
+    else
+    {
+        qCritical()<<"Connexion : unexpected case in 'getCreationValue'";
     }
 }
 
@@ -275,20 +295,14 @@ void Connexion::advanceSquad()
     foreach(Squad *s, lstSquad1To2)
     {
         int p = s->getProgress();
-        if(p < pathLength-n2.getRadius())
-        {
-            ++p;
-            s->setProgress(p);
-        }
+        ++p;
+        s->setProgress(p);
     }
     foreach(Squad *s, lstSquad2To1)
     {
         int p = s->getProgress();
-        if(p > n1.getRadius())
-        {
-            --p;
-            s->setProgress(p);
-        }
+        ++p;
+        s->setProgress(p);
     }
 }
 
@@ -315,7 +329,7 @@ void Connexion::resolveSquadFigth()
             //S1 gagnant
             s1->setNbRessources(r1-r2);
             delete s2;
-            lstSquad2To1.pop_back();
+            lstSquad2To1.dequeue();
 
         }
         else if(r1 < r2)
@@ -323,15 +337,15 @@ void Connexion::resolveSquadFigth()
             //S2 gagnant
             s2->setNbRessources(r2-r1);
             delete s1;
-            lstSquad1To2.pop_back();
+            lstSquad1To2.dequeue();
         }
         else
         {
             //Egalité du combat
             delete s2;
             delete s1;
-            lstSquad2To1.pop_back();
-            lstSquad1To2.pop_back();
+            lstSquad2To1.dequeue();
+            lstSquad1To2.dequeue();
         }
     }
 }
@@ -347,19 +361,21 @@ void Connexion::checkSquadArrive()
     foreach(Squad *s, lstSquad1To2)
     {
         int p = s->getProgress();
-        if(p >= pathLength-n2.getRadius())
+        if(p >= pathLength)
         {
-            n2.incoming(s);
-            lstSquad1To2.pop_back();
+            n2.incoming(*s);
+            delete s;
+            lstSquad1To2.dequeue();
         }
     }
     foreach(Squad *s, lstSquad2To1)
     {
         int p = s->getProgress();
-        if(p <= n1.getRadius())
+        if(p >= pathLength)
         {
-            n1.incoming(s);
-            lstSquad2To1.pop_back();
+            n1.incoming(*s);
+            delete s;
+            lstSquad2To1.dequeue();
         }
     }
 }
@@ -374,11 +390,12 @@ void Connexion::checkSquadArrive()
 QList<QPair<Squad *, Squad *> > Connexion::checkSquadColision()
 {
     QList<QPair<Squad *, Squad *> > lstColision;
+
     foreach(Squad *s1to2, lstSquad1To2)
     {
         foreach(Squad *s2to1, lstSquad2To1)
         {
-            if(abs(s1to2->getProgress()-s2to1->getProgress()) <= 1 &&
+            if(abs(s1to2->getProgress()+s2to1->getProgress()) >= pathLength &&
                     &s1to2->getOwner() != &s2to1->getOwner())
             {
                 lstColision.append(QPair<Squad *, Squad *>(s1to2, s2to1));
@@ -386,36 +403,4 @@ QList<QPair<Squad *, Squad *> > Connexion::checkSquadColision()
         }
     }
     return lstColision;
-}
-
-/**
- * @brief Connexion::getSquadToMerge
- * @param g Propriétaire de la squad
- * @param from Provenance de la squad
- * @return Première ou deuxième squad appartenant a 'g' en provenance de 'from'
- */
-Squad *Connexion::getFirstSquad(const Gamer &g, Node &from)
-{
-    Squad *sMin1;
-    Squad *sMin2;
-    if(&from == &n1)
-    {
-        sMin1 = lstSquad1To2.value(0, 0);
-        sMin2 = lstSquad1To2.value(1, 0);
-    }
-    else if(&from == &n2)
-    {
-        sMin1 = lstSquad2To1.value(0, 0);
-        sMin2 = lstSquad2To1.value(1, 0);
-    }
-
-    if(sMin1 != 0 && &sMin1->getOwner() == &g)
-    {
-        return sMin1;
-    }
-    else if(sMin2 != 0 && &sMin2->getOwner() == &g)
-    {
-        return sMin2;
-    }
-    return 0;
 }

@@ -9,9 +9,8 @@ Squad::Squad(const Gamer &g) : owner(g)
 
 }
 
-Squad::Squad(const Squad &s)
+Squad::Squad(const Squad &s) : owner(s.owner)
 {
-    owner = s.owner;
     progress = s.progress;
     nbRessource = s.nbRessource;
 }

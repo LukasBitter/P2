@@ -128,11 +128,9 @@ void GameView::applyGamerAction(QString s)
         qDebug()<<"Map : in 'applyGamerAction' recive GA_SEND";
 
         Node *nodeFrom = scene->getNode(nodeFromId);
-        Node *nodeTo = scene->getNode(nodeToId);
-        if(nodeFrom != 0 && nodeTo != 0 &&
-                nodeFrom->getOwner()->getId() == gamerId)
+        if(nodeFrom != 0 && nodeFrom->getOwner()->getId() == gamerId)
         {
-            nodeFrom->sendSquad(param, *nodeTo);
+            nodeFrom->sendSquad(param, nodeToId);
         }
         break;
     }

@@ -11,3 +11,4 @@ Defin pournles valeur fixe
 Doute:
 Foreach sur autre chose qu'un pointeur, copie de l'objet?
 Référence empeche inline?
+Demander pour constructeur base

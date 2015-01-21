@@ -23,63 +23,35 @@ GameScene::GameScene(QString create, GamerList &gl, const Gamer *g, QObject *par
     QStringList allNodesAndConnexions = create.split("@");
     if(allNodesAndConnexions.size() == 2)
     {
-        QStringList allConnexionsStr = allNodesAndConnexions.first().split("/");
+        QStringList allConnexionsStr =
+                allNodesAndConnexions.first().split("/");
         allNodesAndConnexions.pop_front();
-        QStringList allNodesStr = allNodesAndConnexions.first().split("/");
+        QStringList allNodesStr =
+                allNodesAndConnexions.first().split("/");
 
         foreach (QString s, allNodesStr)
         {
-            QStringList nodeStr = s.split(".");
-            if(nodeStr.size() == 6)
-            {
-                int numberId = nodeStr.first().toInt();
-                nodeStr.pop_front();
-                int posX = nodeStr.first().toInt();
-                nodeStr.pop_front();
-                int posY = nodeStr.first().toInt();
-                nodeStr.pop_front();
-                int radius = nodeStr.first().toInt();
-                nodeStr.pop_front();
-                int ressourcesMax = nodeStr.first().toInt();
-                nodeStr.pop_front();
-                int ownerId = nodeStr.first().toInt();
-
-                Node *n = new Node(posX, posY, radius,ressourcesMax,lstGamer,
-                                   lstGamer.getGamer(ownerId));
-                n->setId(numberId);
-                addNode(*n);
-            }
-            else
-            {
-                qCritical()<<"GameScene : unexpected case in 'GameScene' when create nodes";
-            }
+            Node *n = new Node(s, lstGamer);
+            addNode(*n);
+            qDebug()<<lstNode.size();
         }
 
         foreach (QString s, allConnexionsStr)
         {
-            QStringList connexionStr = s.split(".");
-            if(connexionStr.size() == 3)
-            {
-                int numberId = connexionStr.first().toInt();
-                connexionStr.pop_front();
-                int idNode1 = connexionStr.first().toInt();
-                connexionStr.pop_front();
-                int idNode2 = connexionStr.first().toInt();
+            int numberId;
+            int idNode1;
+            int idNode2;
+            Connexion::getCreationValue(s,numberId,idNode1,idNode2);
 
-                Node *n1 = getNode(idNode1);
-                Node *n2 = getNode(idNode2);
-                Connexion *c = new Connexion(*n1, *n2, lstGamer);
-                c->setId(numberId);
+            Node *n1 = getNode(idNode1);
+            Node *n2 = getNode(idNode2);
+            Connexion *c = new Connexion(*n1, *n2, lstGamer);
+            c->setId(numberId);
 
-                n1->addConnexion(c);
-                n2->addConnexion(c);
-                lstConnexion.insert(c->getId(), c);
-                addItem(c);
-            }
-            else
-            {
-                qCritical()<<"GameScene : unexpected case in 'GameScene' when create connexions";
-            }
+            n1->connect(idNode2,c);
+            n2->connect(idNode1,c);
+            lstConnexion.insert(numberId, c);
+            addItem(c);
         }
     }
 }
@@ -107,7 +79,6 @@ void GameScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 
 void GameScene::addNode(Node &n)
 {
-    n.setZValue(10);
     lstNode.insert(n.getId(),&n);
     addItem(&n);
 }
@@ -117,9 +88,9 @@ void GameScene::addConnexion(Node &n1, Node &n2)
     if(lstNode.contains(n1.getId()) &&
             lstNode.contains(n2.getId()))
     {
-        n1.connect(n2);
-        Connexion *c = n1.getConnexion(n2);
-        c->setZValue(1);
+        Connexion *c = new Connexion(n1, n2, lstGamer);
+        n1.connect(n2.getId(), c);
+        n2.connect(n1.getId(), c);
         lstConnexion.insert(c->getId(),c);
         addItem(c);
     }
@@ -204,11 +175,30 @@ QString GameScene::getUpdateString()
     {
         s.append(QString("%1.%2/").arg(c->getId()).arg(c->getUpdateString()));
     }
+    s.resize(s.size()-1);
     s.append("@");
     foreach (Node *n, lstNode)
     {
         s.append(QString("%1.%2/").arg(n->getId()).arg(n->getUpdateString()));
     }
+    s.resize(s.size()-1);
+    return s;
+}
+
+QString GameScene::getCreationString()
+{
+    QString s;
+    foreach (Connexion *c, lstConnexion)
+    {
+        s.append(QString("%1/").arg(c->getCreationString()));
+    }
+    s.resize(s.size()-1);
+    s.append("@");
+    foreach (Node *n, lstNode)
+    {
+        s.append(QString("%1/").arg(n->getCreationString()));
+    }
+    s.resize(s.size()-1);
     return s;
 }
 
@@ -217,9 +207,11 @@ void GameScene::updateFromString(QString &s)
     QStringList allNodesAndConnexions = s.split("@");
     if(allNodesAndConnexions.size() == 2)
     {
-        QStringList allConnexionsStr = allNodesAndConnexions.first().split("/");
+        QStringList allConnexionsStr =
+                allNodesAndConnexions.first().split("/");
         allNodesAndConnexions.pop_front();
-        QStringList allNodesStr = allNodesAndConnexions.first().split("/");
+        QStringList allNodesStr =
+                allNodesAndConnexions.first().split("/");
 
         foreach (QString s, allConnexionsStr)
         {
@@ -232,7 +224,10 @@ void GameScene::updateFromString(QString &s)
                 Connexion *c = getConnexion(numberId);
                 c->updateFromString(data);
             }
-            //Pas de critical ici, car VIRGULE!
+            else
+            {
+                qCritical()<<"GameScene : unexpected case in 'updateFromString' (1)";
+            }
         }
 
         foreach (QString s, allNodesStr)
@@ -246,35 +241,14 @@ void GameScene::updateFromString(QString &s)
                 Node *n = getNode(numberId);
                 n->updateFromString(data);
             }
-            //Pas de critical ici, car VIRGULE!
+            else
+            {
+                qCritical()<<"GameScene : unexpected case in 'updateFromString' (2)";
+            }
         }
     }
-}
-
-QString GameScene::getCreationString()
-{
-    QString s;
-    foreach (Connexion *c, lstConnexion)
+    else
     {
-        s.append(QString("%1.%2.%3/").arg(c->getId()).
-                 arg(c->getNode1().getId()).
-                 arg(c->getNode2().getId()));
+        qCritical()<<"GameScene : unexpected case in 'updateFromString' (3)";
     }
-    s.append("@");
-    foreach (Node *n, lstNode)
-    {
-        int id = -1;
-        if(n->getOwner()!= 0)id = n->getOwner()->getId();
-        s.append(QString("%1.%2.%3.%4.%5.%6/").arg(n->getId()).
-                 arg(n->x()).
-                 arg(n->y()).
-                 arg(n->getRadius()).
-                 arg(n->getRessourcesMax()).
-                 arg(id));
-    }
-    return s;
 }
-
-/*----------------------------------------------------*/
-/*METHODE PRIVE*/
-/*----------------------------------------------------*/

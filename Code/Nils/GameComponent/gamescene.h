@@ -51,8 +51,6 @@ private:
     /*OUTIL*/
     QHash<int, Node *> lstNode; ///< Liste de tous les noeuds
     QHash<int, Connexion *> lstConnexion; ///< Liste de toutes les connexions
-
-    /*METHODE PRIVE*/
 };
 
 #endif // GAMESCENE_H

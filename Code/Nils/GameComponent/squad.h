@@ -21,7 +21,6 @@ public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     Squad(const Gamer &g);
     Squad(const Squad &s);
-    //opérateur egale auto
 
     /*ASSESSEUR / MUTATEUR*/
     int getProgress() const;

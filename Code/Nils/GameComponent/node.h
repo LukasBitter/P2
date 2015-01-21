@@ -26,7 +26,8 @@ class Node : public QGraphicsItem, public IdentityToken
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     explicit Node(int x, int y, int radius, int ressourcesMax,
-                  GamerList &gl, Gamer *g=0);
+                  const GamerList &gl, Gamer *g=0);
+    explicit Node(QString &create, GamerList &gl);
 
     /*SURCHARGE*/
     QRectF boundingRect() const;
@@ -54,18 +55,19 @@ public:
     void connect(int nodeId, Connexion *c);
     void disconnect(int nodeId);
 
-    void incoming(Squad *s);
+    void incoming(Squad s);
     void sendSquad(int ressource, int nodeId);
 
     /*MISE A JOUR*/
-    QString getUpdateString();
+    QString getUpdateString() const;
+    QString getCreationString() const;
     void updateFromString(QString &s);
 
 private:
     /*ENTREE*/
-    const int ressourcesMax; ///< Capacité maximale du noeud
+    int ressourcesMax; ///< Capacité maximale du noeud
     const Gamer *owner; ///< Propriétaire acctuel du noeud
-    GamerList &lstGamer; ///< Liste des joueurs
+    const GamerList &lstGamer; ///< Liste des joueurs
 
     /*TOOL*/
     int radius; ///< Rayon du noeud

@@ -12,8 +12,8 @@
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-Node::Node(int x, int y, int radius, int ressourcesMax, GamerList &gl, Gamer *g)
-    : QGraphicsItem(0), radius(radius), owner(g), invicible(false),
+Node::Node(int x, int y, int radius, int ressourcesMax, const GamerList &gl, Gamer *g)
+    : QGraphicsItem(0), radius(radius), owner(g), invicible(false), ressourcesRate(0),
       ressourcesMax(ressourcesMax), nbRessources(0), counterAdvance(0),
       armorLvl(0), lstGamer(gl)
 {
@@ -22,6 +22,30 @@ Node::Node(int x, int y, int radius, int ressourcesMax, GamerList &gl, Gamer *g)
     setNextId();
     setX(x);
     setY(y);
+    setZValue(10);
+}
+
+Node::Node(QString &create, GamerList &gl) : Node(0,0,0,0,gl,0)
+{
+    QStringList nodeStr = create.split(",");
+    if(nodeStr.size() == 6)
+    {
+        setId(nodeStr.first().toInt());
+        nodeStr.pop_front();
+        setX(nodeStr.first().toInt());
+        nodeStr.pop_front();
+        setY(nodeStr.first().toInt());
+        nodeStr.pop_front();
+        radius = nodeStr.first().toInt();
+        nodeStr.pop_front();
+        ressourcesMax = nodeStr.first().toInt();
+        nodeStr.pop_front();
+        owner = lstGamer.getGamer(nodeStr.first().toInt());
+    }
+    else
+    {
+        qCritical()<<"Node : unexpected case in 'Node'";
+    }
 }
 
 /*----------------------------------------------------*/
@@ -198,12 +222,10 @@ bool Node::isConnected(int nodeId) const
     return mapConnexion.contains(nodeId);
 }
 
-void Node::incoming(Squad *s)
+void Node::incoming(Squad s)
 {
-    if(s == 0) return;
-
-    const Gamer &g = s->getOwner();
-    int ressource = s->getNbRessources();
+    const Gamer &g = s.getOwner();
+    int ressource = s.getNbRessources();
     delete &s;
 
     if(&g == owner)
@@ -240,9 +262,9 @@ void Node::sendSquad(int ressource, int nodeId)
         if(nbToSend > 0)
         {
             nbRessources -= nbToSend;
-            Squad *s = new Squad(*owner);
-            s->setNbRessources(nbToSend);
-            mapConnexion.value(nodeId)->sendSquad(s, *this);
+            Squad s = Squad(*owner);
+            s.setNbRessources(nbToSend);
+            mapConnexion.value(nodeId)->sendSquad(s, getId());
         }
     }
 
@@ -253,13 +275,23 @@ void Node::sendSquad(int ressource, int nodeId)
 /*MISE A JOUR*/
 /*----------------------------------------------------*/
 
-QString Node::getUpdateString()
+QString Node::getUpdateString() const
 {
     int idGamer  = -1;
     if(owner != 0)idGamer = owner->getId();
+
     return QString("%1,%2,%3,%4,%5").arg(nbRessources).
            arg(ressourcesRate).arg(idGamer).arg(armorLvl).
             arg(invicible);
+}
+
+QString Node::getCreationString() const
+{
+    int idGamer  = -1;
+    if(owner != 0)idGamer = owner->getId();
+
+    return QString("%1,%2,%3,%4,%5,%6").arg(getId()).arg(x()).arg(y()).
+           arg(radius).arg(ressourcesMax).arg(idGamer);
 }
 
 void Node::updateFromString(QString &s)

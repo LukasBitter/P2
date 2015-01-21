@@ -26,7 +26,7 @@ class Connexion : public QGraphicsItem, public IdentityToken
 
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    explicit Connexion(Node &n1, Node &n2, GamerList &gl);
+    explicit Connexion(Node &n1, Node &n2, const GamerList &gl);
     virtual ~Connexion();
 
     /*SURCHARGE*/
@@ -44,14 +44,16 @@ public:
     void sendSquad(Squad s, int nodeId);
 
     /*MISE A JOUR*/
-    QString getUpdateString();
+    QString getUpdateString() const;
+    QString getCreationString() const;
     void updateFromString(QString &s);
+    static void getCreationValue(QString &s, int &connexionId, int &node1Id, int &node2Id);
 
 private:
     /*ENTREE*/
     Node &n1; ///< Point d'ancrage de la connexion
     Node &n2; ///< Point d'ancrage de la connexion
-    GamerList &lstGamer; ///< Liste des joueurs
+    const GamerList &lstGamer; ///< Liste des joueurs
 
     /*OUTIL*/
     int pathLength; ///< Durée en nombre de "tic" de la traversée d'un noeud a l'autre
@@ -65,7 +67,6 @@ private:
     void resolveSquadFigth();
     void checkSquadArrive();
     QList<QPair<Squad *, Squad *> > checkSquadColision();
-    Squad *getFirstSquad(const Gamer &g, Node &from);
 };
 
 #endif // CONNEXION_H
