@@ -7,10 +7,6 @@
 
 class QTcpSocket;
 
-namespace GameComponent {
-class Gamer;
-}
-
 /**
  * @class Gamer
  * @brief Représente un joueur de la partie

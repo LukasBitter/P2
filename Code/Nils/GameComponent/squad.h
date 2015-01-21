@@ -1,11 +1,10 @@
 #ifndef SQUAD_H
 #define SQUAD_H
 
-#include "identitytoken.h"
-
 class Gamer;
 
-namespace GameComponent {
+namespace GameComponent
+{
 class Squad;
 }
 
@@ -16,11 +15,13 @@ class Squad;
  * Ce n'est pas un objet QGraphicsItem utilisé dans la scène,
  * mais une structure logique utilisé par la classe Connexion.
  */
-class Squad : public IdentityToken
+class Squad
 {
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     Squad(const Gamer &g);
+    Squad(const Squad &s);
+    //opérateur egale auto
 
     /*ASSESSEUR / MUTATEUR*/
     int getProgress() const;

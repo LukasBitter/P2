@@ -1,22 +1,13 @@
-
-resolveSquadFigth et checkSquadColision pourrais travaillez sur des pointeur de afin de minimiser les copie
-Je n'aime pas bcp comment sont implementer les méthode de parsing, sans pointeur il se passe des copie implicite
-Tester si la virgule en trop en fin de parsing peu faire du chenis
 Remplacer les for each par des while dans connexion.sendSquad
 vérifier pourquoi il ne faut pas appelker dragMoveEvent de la scene
-ACCES CONCURENT DEPUIS LES TIMER!!!!!
 
 Faire une hierarchiede class pour le client et server, il y a des redondence evitable
-Convertir la Gamerlist en attribut des objet
 Possibiliter d arreter l'ecoute du serveur durant la connexion tout en gardant la communication -> close()
 SingleTon sur le game context, et securiset le vidage de la liste de gammer
 Break dans la boucle de reception du serveur
 Defin pournles valeur fixe
-Mettre des reference partout ou c'est possible poour le passage de méthode
-Laiser ou ne pas laisser les methode appeler dans le case quand il n'y a qu'ûne seul oppération
-arg des string concatenable dans la meme fonction
 
 
 Doute:
-const dans texte de slot?
+Foreach sur autre chose qu'un pointeur, copie de l'objet?
 Référence empeche inline?

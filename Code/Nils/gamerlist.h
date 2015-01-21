@@ -20,6 +20,7 @@ public:
     Gamer * getGamer(int idGamer) const;
     Gamer * getGamer(QTcpSocket *socket)const;
     bool isNameExist(const QString &s)const;
+
     void addGamer(Gamer* g);
 
     /*MISE A JOUR*/

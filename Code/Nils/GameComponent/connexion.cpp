@@ -23,7 +23,7 @@
  * A la création un identifiant unique est défini.
  */
 Connexion::Connexion(Node &n1, Node &n2, GamerList &gl)
-    : QGraphicsObject(0), n1(n1), n2(n2), lstGamer(gl)
+    : QGraphicsItem(0), n1(n1), n2(n2), lstGamer(gl)
 {
     setNextId();
     setX(n1.x());
@@ -132,44 +132,53 @@ bool Connexion::isConnextedTo(Node &n) const
  * Si des squads sont ajouter et entre en collision avec une squad
  * alliée déjà présente au debut, elles fusionnent
  */
-void Connexion::sendSquad(Squad *s, Node &from)
+void Connexion::sendSquad(Squad s, int nodeId)
 {
-    if(s == 0)return;
+    QQueue<Squad *> *queue = 0;
 
-    if(&from == &n1)
+    if(nodeId == n1.getId())
+    {
+        queue = &lstSquad1To2;
+    }
+    else if(nodeId == n2.getId())
+    {
+        queue = &lstSquad2To1;
+    }
+
+    if(queue != 0)
     {
         //Récupère la squad la plus proche du début
-        Squad *sMin = getFirstSquad(s->getOwner(), n1);
+        Squad *sMin = queue.last();
 
-        if(sMin != 0 && sMin->getProgress() == n1.getRadius())
+        if(sMin != 0 && sMin->getProgress() == 0 &&
+                sMin->getOwner() == s.getOwner())
         {
             //Fusion des squads
-            sMin->setNbRessources(sMin->getNbRessources()+s->getNbRessources());
-            delete s;
+            sMin->setNbRessources(sMin->getNbRessources()+s.getNbRessources());
         }
         else
         {
             //Ajout direct
-            s->setProgress(n1.getRadius());
-            lstSquad1To2.push_front(s);
+            s.setProgress(0);
+            lstSquad1To2.push_front(new Squad(s));
         }
     }
-    else if(&from == &n2)
+    else if(nodeId == n2.getId())
     {
         //Récupère la squad la plus proche du début
-        Squad *sMin = getFirstSquad(s->getOwner(), n2);
+        Squad *sMin = lstSquad2To1.last();
 
-        if(sMin != 0 && sMin->getProgress() == pathLength-n2.getRadius())
+        if(sMin != 0 && sMin->getProgress() == 0 &&
+                sMin->getOwner() == s.getOwner())
         {
             //Fusion des squads
-            sMin->setNbRessources(sMin->getNbRessources()+s->getNbRessources());
-            delete s;
+            sMin->setNbRessources(sMin->getNbRessources()+s.getNbRessources());
         }
         else
         {
             //Ajout direct
-            s->setProgress(pathLength-n2.getRadius());
-            lstSquad2To1.push_front(s);
+            s.setProgress(0);
+            lstSquad1To2.push_front(new Squad(s));
         }
     }
 }

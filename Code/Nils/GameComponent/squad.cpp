@@ -6,7 +6,14 @@
 
 Squad::Squad(const Gamer &g) : owner(g)
 {
-    setNextId();
+
+}
+
+Squad::Squad(const Squad &s)
+{
+    owner = s.owner;
+    progress = s.progress;
+    nbRessource = s.nbRessource;
 }
 
 /*----------------------------------------------------*/

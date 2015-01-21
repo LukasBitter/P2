@@ -11,7 +11,8 @@ class Squad;
 class QPainter;
 class GamerList;
 
-namespace GameComponent {
+namespace GameComponent
+{
 class Node;
 }
 
@@ -19,20 +20,13 @@ class Node;
  * @class Node
  * @brief Représente les noeuds
  */
-class Node : public QGraphicsObject, public IdentityToken
+class Node : public QGraphicsItem, public IdentityToken
 {
-    /*
-     * Besoin d acceder à la méthode addConnexion lors de
-     * la création de map à partir d'une chaine de création
-     */
-    friend class GameScene;
-    Q_OBJECT
 
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     explicit Node(int x, int y, int radius, int ressourcesMax,
                   GamerList &gl, Gamer *g=0);
-    virtual ~Node();
 
     /*SURCHARGE*/
     QRectF boundingRect() const;
@@ -44,21 +38,24 @@ public:
 
     /*ASSESSEUR / MUTATEUR*/
     int getRessources() const;
-    void setRessources(int r);
     int getRessourcesRate() const;
-    void setRessourcesRate(int r);
     int getRessourcesMax() const;
-    int getRadius() const;
     int getArmorLvl() const;
-    void setArmorLvl(int a);
+    int getRadius() const;
     bool getInvicibility() const;
+    const Gamer* getOwner()const;
+    bool isConnected(int nodeId) const;
+
+    void setRessources(int r);
+    void setRessourcesRate(int r);
+    void setArmorLvl(int a);
     void setInvicibility(bool b);
-    const Gamer* getOwner();
-    void connect(Node &n);
-    bool isConnected(Node &n) const;
-    Connexion* getConnexion(Node &n) const;
+
+    void connect(int nodeId, Connexion *c);
+    void disconnect(int nodeId);
+
     void incoming(Squad *s);
-    void sendSquad(int ressource, Node &n);
+    void sendSquad(int ressource, int nodeId);
 
     /*MISE A JOUR*/
     QString getUpdateString();
@@ -66,22 +63,20 @@ public:
 
 private:
     /*ENTREE*/
-    int nbRessources; ///< Nombre de ressources acctuellement dans le noeud
-    int armorLvl; ///< Armure du noeud en nombre de ressources
-    int ressourcesRate; ///< Taux de croissance des ressources par "tic"
     const int ressourcesMax; ///< Capacité maximale du noeud
     const Gamer *owner; ///< Propriétaire acctuel du noeud
-    bool invicible; ///< Indique si le noeud est invincible
     GamerList &lstGamer; ///< Liste des joueurs
 
     /*TOOL*/
     int radius; ///< Rayon du noeud
-    QMap<Node *, Connexion *> mapConnexion; ///< Cle = noeud distant, Valeur = pointeur sur sa connextion
+    int armorLvl; ///< Armure du noeud en nombre de ressources
+    int ressourcesRate; ///< Taux de croissance des ressources par "tic"
+    int nbRessources; ///< Nombre de ressources acctuellement dans le noeud
+    bool invicible; ///< Indique si le noeud est invincible
     int counterAdvance; ///< Reducteur de "tic" pour le gain de ressource
+    QMap<int, Connexion *> mapConnexion; ///< Cle = id noeud distant, Valeur = pointeur sur sa connextion
 
     /*METHODE PRIVE*/
-    void addConnexion(Connexion *c);
-    void removeConnexion(Node &n);
     int dealDamageOnArmor(int damage);
 };
 

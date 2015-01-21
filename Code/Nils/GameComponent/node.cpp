@@ -13,7 +13,7 @@
 /*----------------------------------------------------*/
 
 Node::Node(int x, int y, int radius, int ressourcesMax, GamerList &gl, Gamer *g)
-    : QGraphicsObject(0), radius(radius), owner(g), invicible(false),
+    : QGraphicsItem(0), radius(radius), owner(g), invicible(false),
       ressourcesMax(ressourcesMax), nbRessources(0), counterAdvance(0),
       armorLvl(0), lstGamer(gl)
 {
@@ -22,23 +22,6 @@ Node::Node(int x, int y, int radius, int ressourcesMax, GamerList &gl, Gamer *g)
     setNextId();
     setX(x);
     setY(y);
-}
-
-Node::~Node()
-{
-    foreach(Connexion *c, mapConnexion)
-    {
-        if(&c->getNode1() == this)
-        {
-            c->getNode2().removeConnexion(*this);
-        }
-        else if(&c->getNode2() == this)
-        {
-            c->getNode1().removeConnexion(*this);
-        }
-    }
-    qDeleteAll(mapConnexion);
-    mapConnexion.clear();
 }
 
 /*----------------------------------------------------*/
@@ -167,7 +150,7 @@ void Node::setInvicibility(bool b)
     invicible = b;
 }
 
-const Gamer* Node::getOwner()
+const Gamer* Node::getOwner() const
 {
     return owner;
 }
@@ -196,29 +179,23 @@ void Node::setRessources(int r)
     }
 }
 
-void Node::connect(Node &n)
+void Node::connect(int nodeId, Connexion *c)
 {
-    if(!mapConnexion.contains(&n) && &n != this)
+    if(!mapConnexion.contains(nodeId) && nodeId != getId() &&
+            (&c->getNode1() == this || &c->getNode2() == this))
     {
-        Connexion *c = new Connexion(*this,n, lstGamer);
-        mapConnexion.insert(&n, c);
-        n.addConnexion(c);
+        mapConnexion.insert(nodeId, c);
     }
 }
 
-bool Node::isConnected(Node &n) const
+void Node::disconnect(int nodeId)
 {
-    return mapConnexion.contains(&n);
+    mapConnexion.remove(nodeId);
 }
 
-Connexion * Node::getConnexion(Node &n) const
+bool Node::isConnected(int nodeId) const
 {
-    Connexion *c = 0;
-    if(mapConnexion.contains(&n))
-    {
-        c = mapConnexion.value(&n);
-    }
-    return c;
+    return mapConnexion.contains(nodeId);
 }
 
 void Node::incoming(Squad *s)
@@ -255,9 +232,9 @@ void Node::incoming(Squad *s)
     update();
 }
 
-void Node::sendSquad(int ressource, Node &n)
+void Node::sendSquad(int ressource, int nodeId)
 {
-    if(&n != this && mapConnexion.contains(&n))
+    if(nodeId != getId() && mapConnexion.contains(nodeId))
     {
         int nbToSend = ressource > nbRessources ? nbRessources : ressource;
         if(nbToSend > 0)
@@ -265,7 +242,7 @@ void Node::sendSquad(int ressource, Node &n)
             nbRessources -= nbToSend;
             Squad *s = new Squad(*owner);
             s->setNbRessources(nbToSend);
-            mapConnexion.value(&n)->sendSquad(s, *this);
+            mapConnexion.value(nodeId)->sendSquad(s, *this);
         }
     }
 
@@ -310,27 +287,6 @@ void Node::updateFromString(QString &s)
 /*----------------------------------------------------*/
 /*METHODE PRIVE*/
 /*----------------------------------------------------*/
-
-void Node::addConnexion(Connexion *c)
-{
-    if(&c->getNode1() == this &&
-            !mapConnexion.contains(&c->getNode2()) &&
-            &c->getNode2() != this)
-    {
-        mapConnexion.insert(&c->getNode2(), c);
-    }
-    else if(&c->getNode2() == this &&
-            !mapConnexion.contains(&c->getNode1()) &&
-            &c->getNode1() != this)
-    {
-        mapConnexion.insert(&c->getNode1(), c);
-    }
-}
-
-void Node::removeConnexion(Node &n)
-{
-    mapConnexion.remove(&n);
-}
 
 int Node::dealDamageOnArmor(int damage)
 {

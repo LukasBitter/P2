@@ -12,7 +12,8 @@ class QObject;
 class Squad;
 class GamerList;
 
-namespace GameComponent {
+namespace GameComponent
+{
 class Connexion;
 }
 
@@ -20,9 +21,8 @@ class Connexion;
  * @class Connexion
  * @brief Représente les liens entre les noeuds
  */
-class Connexion : public QGraphicsObject, public IdentityToken
+class Connexion : public QGraphicsItem, public IdentityToken
 {
-    Q_OBJECT
 
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
@@ -40,7 +40,8 @@ public:
     Node &getNode1() const;
     Node &getNode2() const;
     bool isConnextedTo(Node &n) const;
-    void sendSquad(Squad *s, Node &from);
+
+    void sendSquad(Squad s, int nodeId);
 
     /*MISE A JOUR*/
     QString getUpdateString();
@@ -51,12 +52,13 @@ private:
     Node &n1; ///< Point d'ancrage de la connexion
     Node &n2; ///< Point d'ancrage de la connexion
     GamerList &lstGamer; ///< Liste des joueurs
-    int pathLength; ///< Durée en nombre de "tic" de la traversée d'un noeud a l'autre
 
     /*OUTIL*/
+    int pathLength; ///< Durée en nombre de "tic" de la traversée d'un noeud a l'autre
+    int counterAdvance; ///< Diviseur de tic
     QQueue<Squad *> lstSquad1To2; ///< File de transfère du noeud 1 au noeud 2
     QQueue<Squad *> lstSquad2To1; ///< File de transfère du noeud 2 au noeud 1
-    int counterAdvance; ///< Diviseur de tic
+
 
     /*METHODE PRIVE*/
     void advanceSquad();
