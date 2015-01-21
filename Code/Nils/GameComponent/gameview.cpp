@@ -195,12 +195,10 @@ void GameView::setUpUI()
     setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate );
     setRenderHint( QPainter::Antialiasing, true );
-    //setDragMode(QGraphicsView::RubberBandDrag);
 
     ui = new PowerInterface();
     ui->setX(0);
     ui->setY(0);
     ui->setMana(1000);
     scene->addItem(ui);
-    //connect(ui,SIGNAL(powerPressed(POWER_NAME)),this,SLOT(powerPressed(POWER_NAME)));
 }

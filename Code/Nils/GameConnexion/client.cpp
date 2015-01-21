@@ -32,7 +32,7 @@ void Client::onErrorOccured(QAbstractSocket::SocketError socketError)
     emit errorOccured(socketError);
 }
 
-void Client::sendMessageToServer(QString &msg)
+void Client::sendMessageToServer(QString msg)
 {
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);

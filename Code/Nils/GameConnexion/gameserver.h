@@ -11,6 +11,7 @@ class Server;
 class QTcpSocket;
 class GameView;
 class GamerList;
+class MapFile;
 
 namespace GameConnexion {
     class GameServer;
@@ -28,11 +29,9 @@ public:
     /*SIGNALS/SLOTS*/
 signals:
     void errorOccured(QAbstractSocket::SocketError socketError);
-    void serverIsListening();
 private slots:
     void onErrorOccured(QAbstractSocket::SocketError socketError);
-    void onMessageRecive(QTcpSocket *t, QString &msg);
-    void onServerIsListening();
+    void onMessageRecive(QTcpSocket *t, QString msg);
 
 private:
     /*OUTIL*/
@@ -49,7 +48,7 @@ private:
     void updateGamerList();
     void timerEvent(QTimerEvent *event);
     void loadMapsFromFile();
-    NETWORK_INFORMATION checkReadyToLaunchGame();
+    NETWORK_INFORMATION checkReadyToLaunchGame(MapFile &m);
 
     /*RECEPTION*/
     void receive_C_REQUEST_SLOT(QTcpSocket *t, QString msg);

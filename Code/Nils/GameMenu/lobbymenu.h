@@ -49,20 +49,24 @@ private slots:
     void onBtChangeNamePressed();
     void onBtReadyPressed();
     void onSuccessfulConnexion();
-    void onAddMap(QString &s);
+    void onAddMap(QString s);
+    void onCbbColorChanged(int i);
+    void onCbbSlotChanged(int i);
 
 private:
     /*INTERFACE*/
-    QComboBox *cbbMap;
-    QCheckBox *cbtReady;
-    QPushButton *btStart;
-    QTableWidget *tblStatus;
     QLineEdit *txtAdressIP;
     QLabel *txtName;
-    QLabel *txtConnected;
     QPushButton *btChangeName;
     QPushButton *btConnect;
+    QTableWidget *tblStatus;
+    QComboBox *cbbMap;
+    QCheckBox *cbtReady;
+    QComboBox *cbbSlot;
+    QComboBox *cbbColor;
+    QPushButton *btStart;
     QPushButton *btReturn;
+    QLabel *txtConnected;
 
     /*OUTIL*/
     bool host;

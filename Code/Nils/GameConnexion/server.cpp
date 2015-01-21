@@ -67,7 +67,7 @@ void Server::readFromSocket()
         in >> clientMessage;
 
         blockSize = 0;
-        emit messageReciveFromClient(*socket, clientMessage);
+        emit messageReciveFromClient(socket, clientMessage);
     }
     blockSizeArray.insert(socket,blockSize);
 }
@@ -78,7 +78,7 @@ void Server::onErrorOccured(QAbstractSocket::SocketError socketError)
     emit errorOccured(socketError);
 }
 
-void Server::sendMessageToClient(QTcpSocket &socket, QString &msg)
+void Server::sendMessageToClient(QTcpSocket *socket, QString msg)
 {
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
@@ -89,6 +89,6 @@ void Server::sendMessageToClient(QTcpSocket &socket, QString &msg)
     out.device()->seek(0);
     out << (quint16)(block.size() - sizeof(quint16));
 
-    socket.write(block);
-    socket.flush();
+    socket->write(block);
+    socket->flush();
 }

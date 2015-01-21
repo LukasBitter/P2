@@ -13,8 +13,8 @@
  *
  * A la création un identifiant unique est défini.
  */
-Gamer::Gamer(QObject *parent)
-    : QObject(parent), ready(false), name(""), color(Qt::white)
+Gamer::Gamer(QObject *parent): QObject(parent), ready(false),
+    name(""), color(Qt::white), slotNumber(-1)
 {
     setNextId();
 }

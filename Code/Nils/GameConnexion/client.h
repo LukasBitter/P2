@@ -26,7 +26,7 @@ signals:
     void messageReciveFromServeur(QString);
     void connected();
 public slots:
-    void sendMessageToServer(QString &msg);
+    void sendMessageToServer(QString msg);
 private slots:
     void readFromSocket();
     void afterConnexion();

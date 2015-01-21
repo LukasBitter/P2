@@ -24,11 +24,10 @@ public:
     /*SIGNALS/SLOTS*/
 signals:
     void errorOccured(QAbstractSocket::SocketError socketError);
-    void messageReciveFromClient(QTcpSocket &t, QString msg);
-    void serverIsListening();
+    void messageReciveFromClient(QTcpSocket *t, QString msg);
 
 public slots:
-    void sendMessageToClient(QTcpSocket &socket, QString &msg);
+    void sendMessageToClient(QTcpSocket *socket, QString msg);
 private slots:
     void onErrorOccured(QAbstractSocket::SocketError socketError);
     void readFromSocket();

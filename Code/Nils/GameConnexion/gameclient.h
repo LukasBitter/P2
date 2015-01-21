@@ -40,17 +40,17 @@ signals:
     void connexionOk();
     void switchToGame();
 public slots:
-    void launchGame(QString &mapName);
-    void setName(QString &name);
+    void launchGame(QString mapName);
+    void setName(QString name);
     void setReady(bool r);
-    void setColor(QColor &c);
+    void setColor(QColor c);
     void setSlot(int s);
 
 private slots:
     void onErrorOccured(QAbstractSocket::SocketError socketError);
-    void onMessageRecive(QString &msg);
+    void onMessageRecive(QString msg);
     void onClientConnected();
-    void sendClientAction(QString &actionString);
+    void sendClientAction(QString actionString);
 
 private:
     /*OUTIL*/

@@ -71,6 +71,8 @@ QString MapFile::getSlot(int slotNumber, Gamer *g) const
 
     if(valide && slotNumber < gamerSlots.size()  && slotNumber >= 0)
     {
+        qDebug()<<gamerSlots.size();
+        qDebug()<<gamerSlots.value(slotNumber);
         return QString(gamerSlots.value(slotNumber)).arg(gamerId);
     }
     return "";
@@ -108,7 +110,10 @@ void MapFile::loadFromFile(QString file)
         for(int i = 0; i < nbGamer; ++i)
         {
             QString tmp = lstFile.value(i+4);
-            if(!tmp.isEmpty())gamerSlots<<tmp;
+            if(!tmp.isEmpty())
+            {
+                gamerSlots<<tmp;
+            }
         }
 
         if(versionOk && nbGamerOk && gamerSlots.size() == nbGamer)
