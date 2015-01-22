@@ -1,6 +1,4 @@
-#include <QtWidgets>
-#include <QDebug>
-
+#include "global.h"
 #include <stdlib.h>
 #include <process.h>
 #include "GameConnexion/server.h"
@@ -69,6 +67,7 @@ void Server::readFromSocket()
         in >> clientMessage;
 
         blockSize = 0;
+
         emit messageReciveFromClient(socket, clientMessage);
     }
 

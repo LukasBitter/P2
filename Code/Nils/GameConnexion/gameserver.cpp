@@ -2,8 +2,7 @@
 #include "server.h"
 #include "GameComponent/gameview.h"
 #include "gamer.h"
-#include <QTcpSocket>
-#include <QDir>
+#include "global.h"
 #include "mapfile.h"
 
 
@@ -178,6 +177,8 @@ NETWORK_INFORMATION GameServer::checkReadyToLaunchGame(MapFile &m)
 
 void GameServer::receive_C_REQUEST_SLOT(QTcpSocket *t, const QString &msg)
 {
+    Q_UNUSED(msg);
+
     if(!lockConnexion)
     {
         qDebug()<<"GameServer : accept client";
@@ -252,5 +253,7 @@ void GameServer::receive_C_UPDATE_CURRENT_GAMER(QTcpSocket *t, const QString &ms
 
 void GameServer::receive_C_GAMER_ACTION(QTcpSocket *t, const QString &msg)
 {
+    Q_UNUSED(t);
+
     map->applyGamerAction(msg);
 }

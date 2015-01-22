@@ -15,11 +15,10 @@ namespace GameInterface {
  */
 class PowerArmore : public Power
 {
-    Q_OBJECT
 
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    PowerArmore(QObject *parent=0);
+    PowerArmore();
 
     /*SURCHARGE*/
     void powerAction(Node *n);

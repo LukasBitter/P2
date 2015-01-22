@@ -1,6 +1,5 @@
 #include "button.h"
-#include <QPainter>
-#include <QStyleOptionGraphicsItem>
+#include "global.h"
 
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/

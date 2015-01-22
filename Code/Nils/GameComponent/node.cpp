@@ -3,10 +3,7 @@
 #include "connexion.h"
 #include "gamer.h"
 #include "gamerlist.h"
-#include <QPainter>
-#include <QtWidgets>
-#include <QDebug>
-
+#include "global.h"
 
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
@@ -217,6 +214,16 @@ void Node::disconnect(int nodeId)
     mapConnexion.remove(nodeId);
 }
 
+Connexion *Node::getConnexion(int nodeId) const
+{
+    return mapConnexion.value(nodeId, 0);
+}
+
+QMap<int, Connexion *> Node::getConnexions() const
+{
+    return mapConnexion;
+}
+
 bool Node::isConnected(int nodeId) const
 {
     return mapConnexion.contains(nodeId);
@@ -314,6 +321,7 @@ void Node::updateFromString(QString &s)
         qCritical()<<"Node : unexpected case in 'updateFromString'";
     }
     update();
+
 }
 
 /*----------------------------------------------------*/

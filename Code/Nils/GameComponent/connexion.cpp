@@ -3,9 +3,7 @@
 #include "gamer.h"
 #include "squad.h"
 #include "gamerlist.h"
-#include <QPainter>
-#include <QtMath>
-#include <QDebug>
+#include "global.h"
 
 
 /*----------------------------------------------------*/
@@ -33,17 +31,27 @@ Connexion::Connexion(Node &n1, Node &n2, const GamerList &gl)
     //Calcule de la distance de la connexion
     pathLength = (int)sqrt(pow(n1.x()-n2.x(),2)+
                       pow(n1.y()-n2.y(),2));
-    pathLength -= -n2.getRadius();
-    pathLength -= -n1.getRadius();
+    pathLength -= n2.getRadius();
+    pathLength -= n1.getRadius();
+
+    //Connexion des noeud
+    n1.connect(n2.getId(), this);
+    n2.connect(n1.getId(), this);
 }
 
 Connexion::~Connexion()
 {
+    qDebug()<<"Connexion : destroy";
+
     //Efface toutes les squad présente dans la connexion
     qDeleteAll(lstSquad1To2);
     lstSquad1To2.clear();
     qDeleteAll(lstSquad2To1);
     lstSquad2To1.clear();
+
+    //Déconnecte des noeud
+    n1.disconnect(n2.getId());
+    n2.disconnect(n1.getId());
 }
 
 /*----------------------------------------------------*/
@@ -70,24 +78,27 @@ void Connexion::paint(QPainter *painter,
 
     foreach(Squad *s, lstSquad1To2)
     {
+        qDebug()<<s->getProgress();
         painter->setBrush(s->getOwner().getColor());
         QPointF  p[3];
         p[0]=QPointF(-5,s->getProgress());
         p[1]=QPointF(0,s->getProgress()+5);
         p[2]=QPointF(5,s->getProgress());
-        painter->drawConvexPolygon( p, 3);
+        painter->drawConvexPolygon(p, 3);
     }
     painter->rotate(180);
-    painter->translate(0, pathLength);
+    painter->translate(0, -pathLength);
     foreach(Squad *s, lstSquad2To1)
     {
+        qDebug()<<s->getProgress();
         painter->setBrush(s->getOwner().getColor());
         QPointF  p[3];
         p[0]=QPointF(-5,s->getProgress());
         p[1]=QPointF(0,s->getProgress()+5);
         p[2]=QPointF(5,s->getProgress());
-        painter->drawConvexPolygon( p, 3);
+        painter->drawConvexPolygon(p, 3);
     }
+
     painter->restore();
 }
 
@@ -154,7 +165,7 @@ void Connexion::sendSquad(Squad s, int nodeId)
     if(queue != 0)
     {
         //Récupère la squad la plus proche du début
-        Squad *sMin = queue->last();
+        Squad *sMin = queue->isEmpty() ? 0 : queue->last();
 
         if(sMin != 0 && sMin->getProgress() == 0 &&
                 sMin->getOwner().getId() == s.getOwner().getId())
@@ -241,17 +252,17 @@ void Connexion::updateFromString(QString &s)
             Gamer *g = lstGamer.getGamer(ownerId);
             if(g != 0)
             {
-                Squad s(*g);
-                s.setNbRessources(nbRessources);
-                s.setProgress(progress);
+                Squad *s = new Squad(*g);
+                s->setNbRessources(nbRessources);
+                s->setProgress(progress);
 
                 if(direction==0)
                 {
-                    sendSquad(s, n1.getId());
+                    lstSquad1To2.append(s);
                 }
                 else
                 {
-                    sendSquad(s, n2.getId());
+                    lstSquad2To1.append(s);
                 }
             }
             else
@@ -363,6 +374,7 @@ void Connexion::checkSquadArrive()
         int p = s->getProgress();
         if(p >= pathLength)
         {
+            qdebug
             n2.incoming(*s);
             delete s;
             lstSquad1To2.dequeue();

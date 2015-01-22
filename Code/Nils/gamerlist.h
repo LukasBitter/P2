@@ -30,7 +30,6 @@ public:
 private:
     /*OUTIL*/
     QHash<int,Gamer *> lstGamers;
-    QList<QColor> lstColor;
 };
 
 #endif // GAMERLIST_H

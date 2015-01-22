@@ -1,6 +1,6 @@
 #include "gamer.h"
 #include "gamerlist.h"
-#include <QDebug>
+#include "global.h"
 
 
 /*----------------------------------------------------*/
@@ -13,8 +13,13 @@
  *
  * A la création un identifiant unique est défini.
  */
-Gamer::Gamer(QObject *parent): QObject(parent), ready(false),
-    name(""), color(Qt::white), slotNumber(-1)
+Gamer::Gamer(QObject *parent):
+    QObject(parent),
+    ready(false),
+    name(""),
+    color(Qt::white),
+    slotNumber(-1),
+    socket(0)
 {
     setNextId();
 }

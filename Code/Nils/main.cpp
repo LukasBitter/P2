@@ -2,7 +2,7 @@
 #include "GameMenu/gamemenumanager.h"
 #include "GameComponent/gameview.h"
 #include "gamerlist.h"
-#include <QDebug>
+#include "global.h"
 
 #include "GameComponent/gamescene.h"
 #include "GameComponent/node.h"
@@ -23,6 +23,7 @@ void createGame()
     s.addConnexion(n3,n2);
     s.addConnexion(n1,n3);
     s.addConnexion(n4,n3);
+    s.advance();
     qDebug()<<s.getCreationString();
     qDebug()<<s.getUpdateString();
     qDebug()<<"_____________";
@@ -43,12 +44,11 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    createGame();
+//    createGame();
+//    return 0;
 
-    return 0;
 
-
-//    GameMenuManager l;
-//    l.show();
-//    return a.exec();
+    GameMenuManager l;
+    l.show();
+    return a.exec();
 }

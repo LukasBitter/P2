@@ -2,11 +2,7 @@
 #include "GameComponent/node.h"
 #include "GameComponent/GameInterface/button.h"
 #include "GameComponent/GameInterface/Powers/power.h"
-#include "GameComponent/GameInterface/Powers/powerarmore.h"
-#include "GameComponent/GameInterface/Powers/powerdestroy.h"
-#include "GameComponent/GameInterface/Powers/powerinvincibility.h"
-#include "GameComponent/GameInterface/Powers/powerteleportation.h"
-#include <QPainter>
+#include "global.h"
 
 
 /*----------------------------------------------------*/
@@ -15,29 +11,7 @@
 
 PowerInterface::PowerInterface(QGraphicsItem * parent) : QGraphicsWidget(parent),mana(0)
 {
-    btPowerDestroy = new Button("Destroy", this);
-    btPowerInvincibility = new Button("Invincibility", this);
-    btPowerTeleportation = new Button("Teleportation", this);
-    btPowerArmore = new Button("Armor", this);
-
-    powerArmore = new PowerArmore(this);
-    powerDestroy = new PowerDestroy(this);
-    powerInvincibility = new PowerInvincibility(this);
-    powerTeleportation = new PowerTeleportation(this);
-
-    connect(btPowerDestroy, SIGNAL(pressed()), this, SLOT(btPowerDestroyPressed()));
-    connect(btPowerInvincibility, SIGNAL(pressed()), this, SLOT(btPowerInvincibilityPressed()));
-    connect(btPowerTeleportation, SIGNAL(pressed()), this, SLOT(btPowerTeleportationPressed()));
-    connect(btPowerArmore, SIGNAL(pressed()), this, SLOT(btPowerArmorePressed()));
-
-    btPowerDestroy->setX(75);
-    btPowerInvincibility->setX(75);
-    btPowerTeleportation->setX(75);
-    btPowerArmore->setX(75);
-    btPowerDestroy->setY(25);
-    btPowerInvincibility->setY(75);
-    btPowerTeleportation->setY(125);
-    btPowerArmore->setY(175);
+    setUpUI();
 }
 
 PowerInterface::~PowerInterface()
@@ -53,8 +27,11 @@ QRectF PowerInterface::boundingRect() const
     return QRectF(0, 0, 100, 200);
 }
 
-void PowerInterface::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
+void PowerInterface::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+
     painter->setBrush(Qt::lightGray);
     painter->drawRect(boundingRect());
 }
@@ -88,7 +65,7 @@ void PowerInterface::usePowerDestroy(Node *n)
     if(mana >= cost)
     {
         mana -= cost;
-        powerDestroy->enablePower(n);
+        powerDestroy.enablePower(n);
     }
 }
 
@@ -98,7 +75,7 @@ void PowerInterface::usePowerInvincibility(Node *n)
     if(mana >= cost)
     {
         mana -= cost;
-        powerInvincibility->enablePower(n);
+        powerInvincibility.enablePower(n);
     }
 }
 
@@ -108,7 +85,7 @@ void PowerInterface::usePowerTeleportation(Node *from, Node *to)
     if(mana >= cost)
     {
         mana -= cost;
-        powerTeleportation->enablePower(from, to);
+        powerTeleportation.enablePower(from, to);
     }
 }
 
@@ -118,7 +95,7 @@ void PowerInterface::usePowerArmore(Node *n)
     if(mana >= cost)
     {
         mana -= cost;
-        powerArmore->enablePower(n);
+        powerArmore.enablePower(n);
     }
 }
 
@@ -140,4 +117,32 @@ void PowerInterface::btPowerTeleportationPressed() const
 void PowerInterface::btPowerArmorePressed() const
 {
     emit powerPressed(P_ARMORE);
+}
+
+void PowerInterface::setUpUI()
+{
+    //INSTANTIATION
+
+    btPowerDestroy = new Button("Destroy", this);
+    btPowerInvincibility = new Button("Invincibility", this);
+    btPowerTeleportation = new Button("Teleportation", this);
+    btPowerArmore = new Button("Armor", this);
+
+    //CONNEXION
+
+    connect(btPowerDestroy, SIGNAL(pressed()), this, SLOT(btPowerDestroyPressed()));
+    connect(btPowerInvincibility, SIGNAL(pressed()), this, SLOT(btPowerInvincibilityPressed()));
+    connect(btPowerTeleportation, SIGNAL(pressed()), this, SLOT(btPowerTeleportationPressed()));
+    connect(btPowerArmore, SIGNAL(pressed()), this, SLOT(btPowerArmorePressed()));
+
+    //POSITIONNEMENT
+
+    btPowerDestroy->setX(75);
+    btPowerInvincibility->setX(75);
+    btPowerTeleportation->setX(75);
+    btPowerArmore->setX(75);
+    btPowerDestroy->setY(25);
+    btPowerInvincibility->setY(75);
+    btPowerTeleportation->setY(125);
+    btPowerArmore->setY(175);
 }

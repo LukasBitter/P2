@@ -3,8 +3,7 @@
 #include "connexion.h"
 #include "gamer.h"
 #include "gamerlist.h"
-#include <QGraphicsSceneDragDropEvent>
-#include <QDebug>
+#include "global.h"
 
 
 /*----------------------------------------------------*/
@@ -12,7 +11,7 @@
 /*----------------------------------------------------*/
 
 GameScene::GameScene(GamerList &gl, const Gamer *g, QObject *parent) :
-    QGraphicsScene(parent), lstGamer(gl),owner(g)
+    QGraphicsScene(parent), lstGamer(gl), owner(g)
 {
     setSceneRect(0, 0, 800, 600);
 }
@@ -33,7 +32,6 @@ GameScene::GameScene(QString create, GamerList &gl, const Gamer *g, QObject *par
         {
             Node *n = new Node(s, lstGamer);
             addNode(*n);
-            qDebug()<<lstNode.size();
         }
 
         foreach (QString s, allConnexionsStr)
@@ -47,9 +45,6 @@ GameScene::GameScene(QString create, GamerList &gl, const Gamer *g, QObject *par
             Node *n2 = getNode(idNode2);
             Connexion *c = new Connexion(*n1, *n2, lstGamer);
             c->setId(numberId);
-
-            n1->connect(idNode2,c);
-            n2->connect(idNode1,c);
             lstConnexion.insert(numberId, c);
             addItem(c);
         }
@@ -58,8 +53,16 @@ GameScene::GameScene(QString create, GamerList &gl, const Gamer *g, QObject *par
 
 GameScene::~GameScene()
 {
-    //La scene s'occupe de detruire les noeud et les connexions
-    //Efface simplement la liste des pointeurs
+    qDebug()<<"GameScene : destroy";
+
+    //Les connexion doivent impérativement être supprimé avant les noeud
+    foreach (Connexion *c, lstConnexion)
+    {
+        removeItem(c);
+    }
+    lstConnexion.clear();
+
+    //La scene s'occupe de detruire les noeud
     lstNode.clear();
 }
 
@@ -77,27 +80,10 @@ void GameScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 /*ASSESSEUR / MUTATEUR*/
 /*----------------------------------------------------*/
 
-void GameScene::addNode(Node &n)
-{
-    lstNode.insert(n.getId(),&n);
-    addItem(&n);
-}
-
-void GameScene::addConnexion(Node &n1, Node &n2)
-{
-    if(lstNode.contains(n1.getId()) &&
-            lstNode.contains(n2.getId()))
-    {
-        Connexion *c = new Connexion(n1, n2, lstGamer);
-        n1.connect(n2.getId(), c);
-        n2.connect(n1.getId(), c);
-        lstConnexion.insert(c->getId(),c);
-        addItem(c);
-    }
-}
-
 int GameScene::getTotalRessources(Gamer &g)
 {
+    qDebug()<<"GameScene : enter 'getTotalRessources'";
+
     int total = 0;
     foreach (Node *n, lstNode)
     {
@@ -108,6 +94,8 @@ int GameScene::getTotalRessources(Gamer &g)
 
 int GameScene::getAvrageRessourcesRate(Gamer &g)
 {
+    qDebug()<<"GameScene : enter 'getAvrageRessourcesRate'";
+
     int sum = 0;
     int nb = 0;
     foreach (Node *n, lstNode)
@@ -120,6 +108,8 @@ int GameScene::getAvrageRessourcesRate(Gamer &g)
 
 int GameScene::getTotalRessources()
 {
+    qDebug()<<"GameScene : enter 'getTotalRessources'";
+
     int total = 0;
     foreach (Node *n, lstNode)
     {
@@ -130,6 +120,8 @@ int GameScene::getTotalRessources()
 
 int GameScene::getAvrageRessourcesRate()
 {
+    qDebug()<<"GameScene : enter 'getAvrageRessourcesRate'";
+
     int sum = 0;
     foreach (Node *n, lstNode)
     {
@@ -140,28 +132,56 @@ int GameScene::getAvrageRessourcesRate()
 
 Node *GameScene::getNode(int idNode)
 {
-    if(lstNode.contains(idNode))
-    {
-        return lstNode.value(idNode);
-    }
-    else
-    {
-        qWarning()<<"GameScene : 'getNode' return a null pointer";
-        return 0;
-    }
+    //qDebug()<<"GameScene : enter 'getNode'";
+
+    return lstNode.value(idNode, 0);
 }
 
 Connexion *GameScene::getConnexion(int idConnexion)
 {
-    if(lstConnexion.contains(idConnexion))
+    //qDebug()<<"GameScene : enter 'getConnexion'";
+
+    return lstConnexion.value(idConnexion, 0);
+}
+
+void GameScene::addNode(Node &n)
+{
+    qDebug()<<"GameScene : enter 'addNode'";
+
+    lstNode.insert(n.getId(),&n);
+    addItem(&n);
+}
+
+void GameScene::addConnexion(Node &n1, Node &n2)
+{
+    qDebug()<<"GameScene : enter 'addConnexion'";
+
+    if(lstNode.contains(n1.getId()) &&
+            lstNode.contains(n2.getId()))
     {
-        return lstConnexion.value(idConnexion);
+        Connexion *c = new Connexion(n1, n2, lstGamer);
+        lstConnexion.insert(c->getId(),c);
+        addItem(c);
     }
-    else
+}
+
+void GameScene::removeNode(Node &n)
+{
+    qDebug()<<"GameScene : enter 'removeNode'";
+
+    foreach (Connexion *c, n.getConnexions())
     {
-        qWarning()<<"GameScene : 'getConnexion' return a null pointer";
-        return 0;
+        removeItem(c);
     }
+    removeItem(&n);
+}
+
+void GameScene::removeConnexion(Node &n1, Node &n2)
+{
+    qDebug()<<"GameScene : enter 'removeConnexion'";
+
+    Connexion *c = n1.getConnexion(n2.getId());
+    removeItem(c);
 }
 
 /*----------------------------------------------------*/
@@ -170,6 +190,8 @@ Connexion *GameScene::getConnexion(int idConnexion)
 
 QString GameScene::getUpdateString()
 {
+    //qDebug()<<"GameScene : enter 'getUpdateString'";
+
     QString s;
     foreach (Connexion *c, lstConnexion)
     {
@@ -187,6 +209,8 @@ QString GameScene::getUpdateString()
 
 QString GameScene::getCreationString()
 {
+    //qDebug()<<"GameScene : enter 'getCreationString'";
+
     QString s;
     foreach (Connexion *c, lstConnexion)
     {
@@ -204,6 +228,8 @@ QString GameScene::getCreationString()
 
 void GameScene::updateFromString(QString &s)
 {
+    //qDebug()<<"GameScene : enter 'updateFromString'";
+
     QStringList allNodesAndConnexions = s.split("@");
     if(allNodesAndConnexions.size() == 2)
     {
@@ -222,7 +248,8 @@ void GameScene::updateFromString(QString &s)
                 connexionStr.pop_front();
                 QString &data = connexionStr.first();
                 Connexion *c = getConnexion(numberId);
-                c->updateFromString(data);
+                if(c != 0) c->updateFromString(data);
+                else qCritical()<<"GameScene : unexpected case in 'updateFromString' (3)";
             }
             else
             {
@@ -239,7 +266,8 @@ void GameScene::updateFromString(QString &s)
                 nodeStr.pop_front();
                 QString &data = nodeStr.first();
                 Node *n = getNode(numberId);
-                n->updateFromString(data);
+                if(n != 0) n->updateFromString(data);
+                else qCritical()<<"GameScene : unexpected case in 'updateFromString' (4)";
             }
             else
             {

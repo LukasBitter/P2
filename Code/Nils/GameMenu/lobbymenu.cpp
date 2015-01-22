@@ -4,19 +4,7 @@
 #include "gamecontext.h"
 #include "gamerlist.h"
 #include "gamer.h"
-#include <QPushButton>
-#include <QTableWidget>
-#include <QCheckBox>
-#include <QComboBox>
-#include <QTextEdit>
-#include <QGridLayout>
-#include <QLineEdit>
-#include <QMessageBox>
-#include <QStringList>
-#include <QStandardItem>
-#include <QInputDialog>
-#include <QLabel>
-#include <QDir>
+#include "global.h"
 
 
 /*----------------------------------------------------*/

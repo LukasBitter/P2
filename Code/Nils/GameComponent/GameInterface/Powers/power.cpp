@@ -1,21 +1,23 @@
 #include "power.h"
-#include <QTimer>
-
-#include <QDebug>
+#include "global.h"
 
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-Power::Power(int countDownTime, int powerTime, QObject *parent): QObject(parent),
-    ready(true)
+Power::Power(int countDownTime, int powerTime):
+    reloadCD(0), powerCD(0)
 {
-    countDown = new QTimer(this);
-    endPower = new QTimer(this);
-    countDown->setInterval(countDownTime);
-    endPower->setInterval(powerTime);
-    connect(countDown, SIGNAL(timeout()), this, SLOT(restorCountDown()));
-    connect(endPower, SIGNAL(timeout()), this, SLOT(powerEnd()));
+    if(countDownTime >= powerTime)
+    {
+        this->countDownTime = countDownTime;
+        this->powerTime = powerTime;
+    }
+    else
+    {
+        this->countDownTime = countDownTime;
+        this->powerTime = countDownTime;
+    }
 }
 
 /*----------------------------------------------------*/
@@ -24,35 +26,35 @@ Power::Power(int countDownTime, int powerTime, QObject *parent): QObject(parent)
 
 void Power::enablePower()
 {
-    if(!ready) return;
+    if(!isReady()) return;
     powerAction();
     activateCountDown();
 }
 
 void Power::enablePower(Node *n)
 {
-    if(!ready) return;
+    if(!isReady()) return;
     powerAction(n);
     activateCountDown();
 }
 
 void Power::enablePower(Node *n1, Node *n2)
 {
-    if(!ready) return;
+    if(!isReady()) return;
     powerAction(n1,n2);
     activateCountDown();
 }
 
 void Power::enablePower(int v, Node *n)
 {
-    if(!ready) return;
+    if(!isReady()) return;
     powerAction(v,n);
     activateCountDown();
 }
 
 void Power::enablePower(int v, Node *n1, Node *n2)
 {
-    if(!ready) return;
+    if(!isReady()) return;
     powerAction(v,n1,n2);
     activateCountDown();
 }
@@ -106,24 +108,25 @@ void Power::onPowerReady()
 
 bool Power::isReady() const
 {
-    return ready;
+    return powerCD <= 0;
 }
 
-/*----------------------------------------------------*/
-/*SIGNALS/SLOTS*/
-/*----------------------------------------------------*/
-
-void Power::restorCountDown()
+void Power::advence()
 {
-    onPowerReady();
-    countDown->stop();
-    ready = true;
-}
+    if(reloadCD > 0) --reloadCD;
+    if(powerCD > 0) --powerCD;
 
-void Power::powerEnd()
-{
-    onPowerFinishing();
-    endPower->stop();
+    if(reloadCD == 0)
+    {
+        onPowerReady();
+        reloadCD = -1;
+    }
+
+    if(powerCD == 0)
+    {
+        onPowerFinishing();
+        powerCD = -1;
+    }
 }
 
 /*----------------------------------------------------*/
@@ -132,9 +135,8 @@ void Power::powerEnd()
 
 void Power::activateCountDown()
 {
-    ready = false;
-    endPower->start();
-    countDown->start();
+    powerCD = powerTime;
+    reloadCD = countDownTime;
 }
 
 

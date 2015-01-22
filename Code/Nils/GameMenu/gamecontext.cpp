@@ -2,7 +2,7 @@
 #include "GameConnexion/gameclient.h"
 #include "GameConnexion/gameserver.h"
 #include "GameComponent/gameview.h"
-#include <QGridLayout>
+#include "global.h"
 
 
 /*----------------------------------------------------*/

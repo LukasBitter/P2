@@ -1,7 +1,8 @@
 #ifndef IDENTITYTOKEN_H
 #define IDENTITYTOKEN_H
 
-namespace GameComponent {
+namespace GameComponent
+{
 class IdentityToken;
 }
 

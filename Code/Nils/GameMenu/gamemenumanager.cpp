@@ -3,7 +3,7 @@
 #include "welcomemenu.h"
 #include "gamecontext.h"
 #include "editormenu.h"
-#include <QStackedLayout>
+#include "global.h"
 
 
 /*----------------------------------------------------*/
@@ -49,8 +49,8 @@ void GameMenuManager::goToGame(GameContext *gc)
 void GameMenuManager::goToEditor()
 {
     qDebug()<<"GameMenuManager : want switch to editor";
-    layout->addWidget(editor);
-    layout->setCurrentWidget(editor);
+    editormenu->newView();
+    layout->setCurrentWidget(editormenu);
 }
 
 /*----------------------------------------------------*/
@@ -63,14 +63,17 @@ void GameMenuManager::setUpUI()
     layout = new QStackedLayout(centralWidget);
 
     //PARAMETRAGE
-    setFixedSize(800,600);
+
+    setFixedSize(820,620);
 
     //INSTANTIATION
+
     welcomemenu = new WelcomeMenu(this);
-    editor = new EditorMenu(this);
+    editormenu = new EditorMenu(this);
     lobbymenu = new LobbyMenu(this);
 
     //CONNEXION
+
     connect(welcomemenu,SIGNAL(btHostGamePressed()),this,SLOT(goToLobbyAsHost()));
     connect(welcomemenu,SIGNAL(btJointGamePressed()),this,SLOT(goToLobbyAsClient()));
     connect(welcomemenu,SIGNAL(btEditorPressed()),this,SLOT(goToEditor()));
@@ -79,8 +82,9 @@ void GameMenuManager::setUpUI()
     connect(lobbymenu,SIGNAL(play(GameContext*)),this,SLOT(goToGame(GameContext*)));
 
     //AJOUT LAYOUT
+
     layout->addWidget(welcomemenu);
-    layout->addWidget(editor);
+    layout->addWidget(editormenu);
     layout->addWidget(lobbymenu);
 
     centralWidget->setLayout(layout);

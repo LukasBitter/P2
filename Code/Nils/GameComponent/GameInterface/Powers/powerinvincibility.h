@@ -15,11 +15,10 @@ namespace GameInterface {
  */
 class PowerInvincibility : public Power
 {
-    Q_OBJECT
 
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    PowerInvincibility(QObject *parent=0);
+    PowerInvincibility();
 
     /*SURCHARGE*/
     void powerAction(Node *n);

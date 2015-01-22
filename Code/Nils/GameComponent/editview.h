@@ -13,7 +13,8 @@ class Connexion;
 class QDropEvent;
 class PowerInterface;
 
-namespace GameComponent {
+namespace GameComponent
+{
 class EditView;
 }
 
@@ -46,7 +47,7 @@ private:
     /*OUTIL*/
     GameScene * scene; ///< Scene de jeu
     GamerList lstGamer;
-    EDITOR_ACTION action;
+    ACTIONS action;
     Node *currentSelection;
     Node *lastSelection;
 

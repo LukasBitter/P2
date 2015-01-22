@@ -5,18 +5,14 @@
 #include "gamerlist.h"
 #include "gamescene.h"
 #include "GameInterface/powerinterface.h"
-#include <QKeyEvent>
-#include <QMouseEvent>
-#include <QDropEvent>
-#include <QMimeData>
-#include <QDebug>
+#include "global.h"
 
 
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-GameView::GameView(GamerList &gl, const Gamer *g, QWidget *parent) :
+GameView::GameView(GamerList &gl, Gamer *g, QWidget *parent) :
     QGraphicsView(parent), owner(g), scene(0), ui(0),
     percentToSend(100)
 {
@@ -24,7 +20,7 @@ GameView::GameView(GamerList &gl, const Gamer *g, QWidget *parent) :
     setUpUI();
 }
 
-GameView::GameView(QString create, GamerList &gl, const Gamer *g, QWidget *parent):
+GameView::GameView(QString create, GamerList &gl, Gamer *g, QWidget *parent):
     QGraphicsView(parent), owner(g), scene(0), ui(0),
     percentToSend(100)
 {
@@ -111,7 +107,7 @@ void GameView::applyGamerAction(QString s)
 {
     QStringList msgStr = s.split(".");
     if(msgStr.size() != 5) return;
-    GAMER_ACTION cmd = (GAMER_ACTION)msgStr.first().toInt();
+    ACTIONS cmd = (ACTIONS)msgStr.first().toInt();
     msgStr.pop_front();
     int gamerId = msgStr.first().toInt(); //Identifiant du joueur
     msgStr.pop_front();
@@ -160,7 +156,6 @@ void GameView::selectionChange()
         currentSelection = 0;
     }
 }
-
 
 /*----------------------------------------------------*/
 /*METHODE PRIVE*/

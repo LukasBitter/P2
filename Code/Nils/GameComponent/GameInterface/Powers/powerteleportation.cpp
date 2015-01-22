@@ -6,8 +6,8 @@
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-PowerTeleportation::PowerTeleportation(QObject *parent) :
-    Power(15000,0, parent)
+PowerTeleportation::PowerTeleportation() :
+    Power(150,0)
 {
 }
 
@@ -21,8 +21,8 @@ void PowerTeleportation::powerAction(Node *n1, Node *n2)
     {
         int ressources = n1->getRessources()/2;
         n1->setRessources(n1->getRessources() - ressources);
-        Squad *s = new Squad(*n1->getOwner());
-        s->setNbRessources(ressources);
-        //n2->incoming(s);
+        Squad s(*n1->getOwner());
+        s.setNbRessources(ressources);
+        n2->incoming(s);
     }
 }

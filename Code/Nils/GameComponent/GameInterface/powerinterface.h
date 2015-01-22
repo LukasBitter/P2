@@ -3,6 +3,10 @@
 
 #include <QGraphicsWidget>
 #include "enumlibrary.h"
+#include "GameComponent/GameInterface/Powers/powerarmore.h"
+#include "GameComponent/GameInterface/Powers/powerdestroy.h"
+#include "GameComponent/GameInterface/Powers/powerinvincibility.h"
+#include "GameComponent/GameInterface/Powers/powerteleportation.h"
 
 class Node;
 class Power;
@@ -29,7 +33,7 @@ public:
 
     /*SURCHARGE*/
     QRectF boundingRect() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *);
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
     /*ASSESSEUR / MUTATEUR*/
     void setMana(int mana);
@@ -59,10 +63,13 @@ private:
 
     /*OUTIL*/
     int mana; ///< Réservoir de ressources consomées par les pouvoirs
-    Power *powerDestroy;
-    Power *powerInvincibility;
-    Power *powerTeleportation;
-    Power *powerArmore;
+    PowerDestroy powerDestroy;
+    PowerInvincibility powerInvincibility;
+    PowerTeleportation powerTeleportation;
+    PowerArmore powerArmore;
+
+    /*METHODE PRIVE*/
+    void setUpUI();
 };
 
 #endif // POWERINTERFACE_H

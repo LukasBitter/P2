@@ -5,6 +5,8 @@ QMAKE_CXXFLAGS_WARN_ON += -Wno-reorder
 TARGET = Nils
 TEMPLATE = app
 
+PRECOMPILED_HEADER = global.h
+
 HEADERS += \
     GameComponent/connexion.h \
     GameComponent/node.h \
@@ -33,7 +35,8 @@ HEADERS += \
     GameComponent/gameview.h \
     mapfile.h \
     GameComponent/editview.h \
-    GameMenu/editormenu.h
+    GameMenu/editormenu.h \
+    GameComponent/actionmanager.h
 
 SOURCES += \
     GameComponent/connexion.cpp \
@@ -63,7 +66,8 @@ SOURCES += \
     GameComponent/gameview.cpp \
     mapfile.cpp \
     GameComponent/editview.cpp \
-    GameMenu/editormenu.cpp
+    GameMenu/editormenu.cpp \
+    GameComponent/actionmanager.cpp
 
 OTHER_FILES += \
     Notes.txt

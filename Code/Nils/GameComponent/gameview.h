@@ -12,7 +12,8 @@ class Connexion;
 class QDropEvent;
 class PowerInterface;
 
-namespace GameComponent {
+namespace GameComponent
+{
 class GameView;
 }
 
@@ -26,8 +27,8 @@ class GameView: public QGraphicsView
 
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    explicit GameView(GamerList &gl, const Gamer *g = 0, QWidget *parent=0);
-    explicit GameView(QString create, GamerList &gl, const Gamer *g=0, QWidget *parent=0);
+    explicit GameView(GamerList &gl, Gamer *g = 0, QWidget *parent=0);
+    explicit GameView(QString create, GamerList &gl, Gamer *g=0, QWidget *parent=0);
     virtual ~GameView();
 
     /*SURCHARGE*/
@@ -53,7 +54,7 @@ private slots:
 private:
     /*INTERFACE*/
     PowerInterface *ui; ///< Interface utilisateur de gestion des pouvoirs
-    const Gamer *owner; ///< Joueur actuellement au commande de la map
+    Gamer *owner; ///< Joueur actuellement au commande de la map
     Node *currentSelection;
     Node *lastSelection;
 

@@ -1,12 +1,10 @@
 #ifndef POWER_H
 #define POWER_H
 
-#include <QObject>
-
-class QTimer;
 class Node;
 
-namespace GameInterface {
+namespace GameInterface
+{
     class Power;
 }
 
@@ -14,13 +12,11 @@ namespace GameInterface {
  * @class Power
  * @brief Classe parent de tous les pouvoirs
  */
-class Power : public QObject
+class Power
 {
-    Q_OBJECT
-
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    Power(int countDown, int powerTime, QObject *parent=0);
+    Power(int countDownTime, int powerTime);
 
     /*SURCHARGE*/
     void enablePower();
@@ -40,17 +36,14 @@ public:
 
     /*ASSESSEUR / MUTATEUR*/
     bool isReady()const;
-
-    /*SIGNALS/SLOTS*/
-private slots:
-    void restorCountDown();
-    void powerEnd();
+    void advence();
 
 private:
+    int countDownTime;
+    int powerTime;
     /*OUTIL*/
-    QTimer *countDown; ///< Temps de recharge du pouvoir
-    QTimer *endPower; ///< Durée du pouvoir
-    bool ready; ///< Indique si le pouvoir est pret
+    int reloadCD; ///< Temps de recharge du pouvoir
+    int powerCD; ///< Durée du pouvoir
 
     /*METHODE PRIVE*/
     void activateCountDown();

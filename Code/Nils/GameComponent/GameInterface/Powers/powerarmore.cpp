@@ -5,8 +5,8 @@
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-PowerArmore::PowerArmore(QObject *parent) :
-    Power(5000,5000,parent), memory(0), armorLvl(20)
+PowerArmore::PowerArmore() : Power(50,50), memory(0),
+    armorLvl(20)
 {
 }
 

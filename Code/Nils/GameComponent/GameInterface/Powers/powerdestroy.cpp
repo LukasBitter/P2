@@ -7,8 +7,8 @@
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-PowerDestroy::PowerDestroy(QObject *parent) :
-    Power(30000,0, parent)
+PowerDestroy::PowerDestroy() :
+    Power(300,0)
 {
 }
 

@@ -1,7 +1,6 @@
-Remplacer les for each par des while dans connexion.sendSquad
+
 vérifier pourquoi il ne faut pas appelker dragMoveEvent de la scene
 
-Faire une hierarchiede class pour le client et server, il y a des redondence evitable
 Possibiliter d arreter l'ecoute du serveur durant la connexion tout en gardant la communication -> close()
 SingleTon sur le game context, et securiset le vidage de la liste de gammer
 Break dans la boucle de reception du serveur
@@ -9,6 +8,10 @@ Defin pournles valeur fixe
 
 
 Doute:
-Foreach sur autre chose qu'un pointeur, copie de l'objet?
-Référence empeche inline?
-Demander pour constructeur base
+-Foreach sur autre chose qu'un pointeur, copie de l'objet?
+-Référence empeche inline?
+-Demander pour constructeur base
+
+Généralisation possible pour:
+-Connexion et node
+-Client et serveur
