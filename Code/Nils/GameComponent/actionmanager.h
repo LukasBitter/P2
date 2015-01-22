@@ -17,7 +17,8 @@ class ActionManager : public QObject
 
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    ActionManager(QObject *parent);
+    ActionManager(QObject *parent = 0);
+    virtual ~ActionManager();
 
     /*SIGNALS/SLOTS*/
 signals:

@@ -78,7 +78,6 @@ void Connexion::paint(QPainter *painter,
 
     foreach(Squad *s, lstSquad1To2)
     {
-        qDebug()<<s->getProgress();
         painter->setBrush(s->getOwner().getColor());
         QPointF  p[3];
         p[0]=QPointF(-5,s->getProgress());
@@ -90,7 +89,6 @@ void Connexion::paint(QPainter *painter,
     painter->translate(0, -pathLength);
     foreach(Squad *s, lstSquad2To1)
     {
-        qDebug()<<s->getProgress();
         painter->setBrush(s->getOwner().getColor());
         QPointF  p[3];
         p[0]=QPointF(-5,s->getProgress());
@@ -201,7 +199,6 @@ QString Connexion::getUpdateString() const
         s.append(QString("%1_%2_%3_0,").arg(s1to2->getProgress()).
                  arg(s1to2->getNbRessources()).arg(s1to2->getOwner().getId()));
     }
-    s.resize(s.size()-1);
     foreach (Squad *s1to2, lstSquad2To1)
     {
         s.append(QString("%1_%2_%3_1,").arg(s1to2->getProgress()).
@@ -226,13 +223,14 @@ QString Connexion::getCreationString() const
  */
 void Connexion::updateFromString(QString &s)
 {
-    if(s.isEmpty()) return;
 
     //Efface toutes les squad présente dans la connexion
     qDeleteAll(lstSquad1To2);
     lstSquad1To2.clear();
     qDeleteAll(lstSquad2To1);
     lstSquad2To1.clear();
+
+    if(s.isEmpty()) return;
 
     //Recreation des squad depuis le texte de mise à jour
     QStringList allSquadsStr = s.split(",");
@@ -273,6 +271,7 @@ void Connexion::updateFromString(QString &s)
         else
         {
             qCritical()<<"Connexion : unexpected case in 'updateFromString' (2)";
+            qDebug()<<squadStr;
         }
     }
 }
@@ -371,10 +370,8 @@ void Connexion::checkSquadArrive()
 {
     foreach(Squad *s, lstSquad1To2)
     {
-        int p = s->getProgress();
-        if(p >= pathLength)
+        if(s->getProgress() >= pathLength)
         {
-            qdebug
             n2.incoming(*s);
             delete s;
             lstSquad1To2.dequeue();
@@ -382,8 +379,7 @@ void Connexion::checkSquadArrive()
     }
     foreach(Squad *s, lstSquad2To1)
     {
-        int p = s->getProgress();
-        if(p >= pathLength)
+        if(s->getProgress() >= pathLength)
         {
             n1.incoming(*s);
             delete s;

@@ -5,6 +5,7 @@
 #include <QGraphicsView>
 #include "connexion.h"
 #include "enumlibrary.h"
+#include "actionmanager.h"
 
 class GameScene;
 class Node;
@@ -33,16 +34,17 @@ public:
 
     /*SURCHARGE*/
     void keyPressEvent(QKeyEvent *e);
-    void mousePressEvent(QMouseEvent *event);
     void dropEvent(QDropEvent *event);
 
-    /*MISE A JOUR*/
+    /*ASSESSEUR / MUTATEUR*/
+    void setPercentToSend(int percent);
+
+    /*DELEGUES*/
     QString getUpdateString();
     void updateFromString(QString s);
     QString getCreationString();
 
     /*SIGNALS/SLOTS*/
-    void setPercentToSend(int percent);
 signals:
     void gamerAction(QString action);
 public slots:
@@ -50,17 +52,21 @@ public slots:
     void applyGamerAction(QString action);
 private slots:
     void selectionChange();
+    void onDoAction(ACTIONS action);
+    void onDoAction(ACTIONS action, Node *n);
+    void onDoAction(ACTIONS action, Node *n1, Node *n2);
 
 private:
     /*INTERFACE*/
-    PowerInterface *ui; ///< Interface utilisateur de gestion des pouvoirs
+    PowerInterface *powerUi; ///< Interface utilisateur de gestion des pouvoirs
+
+    /*ENTREE*/
     Gamer *owner; ///< Joueur actuellement au commande de la map
-    Node *currentSelection;
-    Node *lastSelection;
 
     /*OUTIL*/
     GameScene * scene; ///< Scene de jeu
     float percentToSend; ///< Pourcentage du noeud à envoyer lors d'un envoi
+    ActionManager actionManager;
 
     /*METHODE PRIVE*/
     void sendSquad(Node *from, Node *to);

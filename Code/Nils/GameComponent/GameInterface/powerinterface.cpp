@@ -24,7 +24,7 @@ PowerInterface::~PowerInterface()
 
 QRectF PowerInterface::boundingRect() const
 {
-    return QRectF(0, 0, 100, 200);
+    return QRectF(0, 0, 50, 185);
 }
 
 void PowerInterface::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -137,12 +137,12 @@ void PowerInterface::setUpUI()
 
     //POSITIONNEMENT
 
-    btPowerDestroy->setX(75);
-    btPowerInvincibility->setX(75);
-    btPowerTeleportation->setX(75);
-    btPowerArmore->setX(75);
+    btPowerDestroy->setX(25);
+    btPowerInvincibility->setX(25);
+    btPowerTeleportation->setX(25);
+    btPowerArmore->setX(25);
     btPowerDestroy->setY(25);
-    btPowerInvincibility->setY(75);
-    btPowerTeleportation->setY(125);
-    btPowerArmore->setY(175);
+    btPowerInvincibility->setY(70);
+    btPowerTeleportation->setY(115);
+    btPowerArmore->setY(160);
 }
