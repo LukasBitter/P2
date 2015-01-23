@@ -2,7 +2,6 @@
 #include "GameComponent/node.h"
 #include "GameComponent/GameInterface/button.h"
 #include "GameComponent/GameInterface/Powers/power.h"
-#include "global.h"
 
 
 /*----------------------------------------------------*/
@@ -12,10 +11,6 @@
 PowerInterface::PowerInterface(QGraphicsItem * parent) : QGraphicsWidget(parent),mana(0)
 {
     setUpUI();
-}
-
-PowerInterface::~PowerInterface()
-{
 }
 
 /*----------------------------------------------------*/

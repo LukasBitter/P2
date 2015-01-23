@@ -36,7 +36,8 @@ HEADERS += \
     mapfile.h \
     GameComponent/editview.h \
     GameMenu/editormenu.h \
-    GameComponent/actionmanager.h
+    GameComponent/actionmanager.h \
+    GameComponent/GameInterface/editorinterface.h
 
 SOURCES += \
     GameComponent/connexion.cpp \
@@ -67,7 +68,8 @@ SOURCES += \
     mapfile.cpp \
     GameComponent/editview.cpp \
     GameMenu/editormenu.cpp \
-    GameComponent/actionmanager.cpp
+    GameComponent/actionmanager.cpp \
+    GameComponent/GameInterface/editorinterface.cpp
 
 OTHER_FILES += \
     Notes.txt

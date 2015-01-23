@@ -12,7 +12,8 @@ class Node;
 class Power;
 class Button;
 
-namespace GameInterface {
+namespace GameInterface
+{
 class PowerInterface;
 }
 
@@ -29,7 +30,6 @@ class PowerInterface : public QGraphicsWidget
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     PowerInterface(QGraphicsItem * parent = 0);
-    ~PowerInterface();
 
     /*SURCHARGE*/
     QRectF boundingRect() const;
