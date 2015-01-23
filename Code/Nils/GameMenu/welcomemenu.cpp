@@ -1,6 +1,5 @@
 #include "welcomemenu.h"
-#include <QPushButton>
-#include <QGridLayout>
+#include "global.h"
 
 
 /*----------------------------------------------------*/
@@ -44,18 +43,21 @@ void WelcomeMenu::onBtQuitPressed()
 void WelcomeMenu::setUpUI()
 {
     //INSTANTIATION
+
     btHostGame = new QPushButton("Host", this);
     btJointGame = new QPushButton("Joint", this);
     btQuit = new QPushButton("Quit", this);
     btEditor = new QPushButton("Editor", this);
 
     //CONNEXION
+
     connect(btHostGame,SIGNAL(clicked()),this,SLOT(onBtHostGamePressed()));
     connect(btJointGame,SIGNAL(clicked()),this,SLOT(onBtJointGamePressed()));
     connect(btQuit,SIGNAL(clicked()),this,SLOT(onBtQuitPressed()));
     connect(btEditor,SIGNAL(clicked()),this,SLOT(onBtEditorPressed()));
 
     //AJOUT LAYOUT
+
     QGridLayout *l = new QGridLayout(this);
     l->addWidget(btEditor, 1, 0);
     l->addWidget(btHostGame, 2, 0);

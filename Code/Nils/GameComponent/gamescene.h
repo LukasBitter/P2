@@ -8,7 +8,8 @@ class Connexion;
 class GamerList;
 class Gamer;
 
-namespace GameComponent {
+namespace GameComponent
+{
 class GameScene;
 }
 
@@ -18,6 +19,8 @@ class GameScene;
  */
 class GameScene : public QGraphicsScene
 {
+    Q_OBJECT
+
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     GameScene(GamerList &gl, const Gamer *g = 0, QObject *parent=0);
@@ -28,15 +31,17 @@ public:
     void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
 
     /*ASSESSEUR / MUTATEUR*/
-    void addNode(Node &n);
-    void addConnexion(Node &n1, Node &n2);
     int getTotalRessources(Gamer &g);
     int getAvrageRessourcesRate(Gamer &g);
     int getTotalRessources();
     int getAvrageRessourcesRate();
-    void setPercentToSend(int percent);
     Node *getNode(int idNode);
     Connexion *getConnexion(int idConnexion);
+
+    void addNode(Node &n);
+    void addConnexion(Node &n1, Node &n2);
+    void removeNode(Node &n);
+    void removeConnexion(Node &n1, Node &n2);
 
     /*MISE A JOUR*/
     QString getUpdateString();

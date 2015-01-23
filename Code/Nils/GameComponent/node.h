@@ -54,6 +54,8 @@ public:
 
     void connect(int nodeId, Connexion *c);
     void disconnect(int nodeId);
+    Connexion *getConnexion(int nodeId) const;
+    QMap<int, Connexion *> getConnexions() const;
 
     void incoming(Squad s);
     void sendSquad(int ressource, int nodeId);

@@ -1,9 +1,7 @@
 #include "mapfile.h"
 #include "gamer.h"
 #include "GameComponent/node.h"
-#include <QFile>
-#include <QTextStream>
-#include <QDebug>
+#include "global.h"
 
 
 /*----------------------------------------------------*/
@@ -26,6 +24,8 @@ bool MapFile::isValide() const
 
 QString MapFile::getCreationString() const
 {
+    qDebug()<<"MapFile : enter 'getCreationString'";
+
     if(valide)
     {
         return creation;
@@ -36,6 +36,8 @@ QString MapFile::getCreationString() const
 
 QString MapFile::getUpdateString() const
 {
+    qDebug()<<"MapFile : enter 'getUpdateString'";
+
     if(valide)
     {
         return update;
@@ -46,6 +48,8 @@ QString MapFile::getUpdateString() const
 
 int MapFile::getNumberOfSlot() const
 {
+    qDebug()<<"MapFile : enter 'getNumberOfSlot'";
+
     if(valide)
     {
         return gamerSlots.size();
@@ -56,11 +60,15 @@ int MapFile::getNumberOfSlot() const
 
 void MapFile::addSlot(QString s)
 {
+    qDebug()<<"MapFile : enter 'addSlot'";
+
     gamerSlots.append(s);
 }
 
 QString MapFile::getSlot(int slotNumber, Gamer *g) const
 {
+    qDebug()<<"MapFile : enter 'getSlot'";
+
     int gamerId = 0;
 
     if(g != 0)
@@ -70,8 +78,9 @@ QString MapFile::getSlot(int slotNumber, Gamer *g) const
 
     if(valide && slotNumber < gamerSlots.size()  && slotNumber >= 0)
     {
-        qDebug()<<gamerSlots.size();
-        qDebug()<<gamerSlots.value(slotNumber);
+
+        qDebug()<<"MapFile : in 'getSlot' value returned : "<<QString(gamerSlots.value(slotNumber)).arg(gamerId);
+
         return QString(gamerSlots.value(slotNumber)).arg(gamerId);
     }
 
@@ -80,11 +89,15 @@ QString MapFile::getSlot(int slotNumber, Gamer *g) const
 
 int MapFile::getVersion() const
 {
+    qDebug()<<"MapFile : enter 'getVersion'";
+
     return version;
 }
 
 void MapFile::setVersion(int v)
 {
+    qDebug()<<"MapFile : enter 'setVersion'";
+
     version = v;
 }
 
@@ -94,6 +107,8 @@ void MapFile::setVersion(int v)
 
 void MapFile::loadFromFile(const QString &file)
 {
+    qDebug()<<"MapFile : enter 'loadFromFile'";
+
     initialisation();
 
     bool versionOk = false;
@@ -127,6 +142,8 @@ void MapFile::loadFromFile(const QString &file)
 
 void MapFile::saveToFile(const QString &file) const
 {
+    qDebug()<<"MapFile : enter 'saveToFile'";
+
     QStringList line;
 
     line.append(QString("%1").arg(version));

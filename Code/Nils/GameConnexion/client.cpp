@@ -1,8 +1,4 @@
-#include <QtWidgets>
-#include <QtNetwork>
-#include <QDebug>
-#include <QStringBuilder>
-
+#include "global.h"
 #include "GameConnexion/client.h"
 #include "gamer.h"
 

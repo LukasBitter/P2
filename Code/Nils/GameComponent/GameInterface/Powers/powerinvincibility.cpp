@@ -5,8 +5,8 @@
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-PowerInvincibility::PowerInvincibility(QObject *parent) :
-    Power(20000,5000, parent), memory(0)
+PowerInvincibility::PowerInvincibility() :
+    Power(200,50), memory(0)
 {
 }
 

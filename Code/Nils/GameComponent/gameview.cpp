@@ -5,35 +5,32 @@
 #include "gamerlist.h"
 #include "gamescene.h"
 #include "GameInterface/powerinterface.h"
-#include <QKeyEvent>
-#include <QMouseEvent>
-#include <QDropEvent>
-#include <QMimeData>
-#include <QDebug>
+#include "global.h"
 
 
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-GameView::GameView(GamerList &gl, const Gamer *g, QWidget *parent) :
-    QGraphicsView(parent), owner(g), scene(0), ui(0),
+GameView::GameView(GamerList &gl, Gamer *g, QWidget *parent) :
+    QGraphicsView(parent), owner(g), scene(0), powerUi(0),
     percentToSend(100)
 {
-    scene = new GameScene(gl, g, this);
+    scene = new GameScene(gl, g, 0);
     setUpUI();
 }
 
-GameView::GameView(QString create, GamerList &gl, const Gamer *g, QWidget *parent):
-    QGraphicsView(parent), owner(g), scene(0), ui(0),
+GameView::GameView(QString create, GamerList &gl, Gamer *g, QWidget *parent):
+    QGraphicsView(parent), owner(g), scene(0), powerUi(0),
     percentToSend(100)
 {
-    scene = new GameScene(create, gl, g, this);
+    scene = new GameScene(create, gl, g, 0);
     setUpUI();
 }
 
 GameView::~GameView()
 {
+    qDebug()<<"GameView : destroy";
     delete scene;
 }
 
@@ -43,26 +40,42 @@ GameView::~GameView()
 
 void GameView::keyPressEvent(QKeyEvent *e)
 {
-    QGraphicsView::keyPressEvent(e);
-    if(e->key() == Qt::Key_Space)
+    switch (e->key())
     {
-        sendSquad(lastSelection, currentSelection);
+    case Qt::Key_Q:
+    {
+        setPercentToSend(25);
+        actionManager.actionChanged(GA_SEND);
     }
-}
+        break;
+    case Qt::Key_W:
+    {
+        setPercentToSend(50);
+        actionManager.actionChanged(GA_SEND);
+    }
+        break;
+    case Qt::Key_E:
+    {
+        setPercentToSend(75);
+        actionManager.actionChanged(GA_SEND);
+    }
+        break;
+    case Qt::Key_R:
+    {
+        setPercentToSend(100);
+        actionManager.actionChanged(GA_SEND);
+    }
+        break;
+    default:
+        break;
+    }
 
-void GameView::mousePressEvent(QMouseEvent *e)
-{
-    if(e->button()== Qt::RightButton)
-    {
-        //Ordre déplacement via clic droit
-        Node *nodeTo = dynamic_cast <Node*>(itemAt(e->pos()));
-        sendSquad(currentSelection, nodeTo);
-    }
-    QGraphicsView::mousePressEvent(e);
+    QGraphicsView::keyPressEvent(e);
 }
 
 void GameView::dropEvent(QDropEvent *event)
 {
+    actionManager.actionChanged(NO_ACTION);
     if(event->mimeData()->hasText())
     {
         //Ordre déplacement via drag&drop
@@ -74,13 +87,17 @@ void GameView::dropEvent(QDropEvent *event)
     QGraphicsView::dropEvent(event);
 }
 
+/*----------------------------------------------------*/
+/*ASSESSEUR / MUTATEUR*/
+/*----------------------------------------------------*/
+
 void GameView::setPercentToSend(int percent)
 {
     if(percent>=0 && percent<=100) percentToSend = percent;
 }
 
 /*----------------------------------------------------*/
-/*MISE A JOUR*/
+/*DELEGUES*/
 /*----------------------------------------------------*/
 
 QString GameView::getUpdateString()
@@ -111,7 +128,7 @@ void GameView::applyGamerAction(QString s)
 {
     QStringList msgStr = s.split(".");
     if(msgStr.size() != 5) return;
-    GAMER_ACTION cmd = (GAMER_ACTION)msgStr.first().toInt();
+    ACTIONS cmd = (ACTIONS)msgStr.first().toInt();
     msgStr.pop_front();
     int gamerId = msgStr.first().toInt(); //Identifiant du joueur
     msgStr.pop_front();
@@ -149,18 +166,42 @@ void GameView::applyGamerAction(QString s)
 void GameView::selectionChange()
 {
     QList<QGraphicsItem *> lst = scene->selectedItems();
+
+    Node *nodeTo = 0;
+
     if(!lst.isEmpty())
     {
-        lastSelection = currentSelection;
-        currentSelection = dynamic_cast <Node*>(lst.first());
+        nodeTo = dynamic_cast <Node*>(lst.first());
     }
-    else
-    {
-        lastSelection = 0;
-        currentSelection = 0;
-    }
+    actionManager.selectionChanged(nodeTo);
 }
 
+void GameView::onDoAction(ACTIONS action)
+{
+    qDebug()<<"GameView : enter 'onDoAction'";
+
+}
+
+void GameView::onDoAction(ACTIONS action, Node *n)
+{
+    qDebug()<<"GameView : enter 'onDoAction'";
+
+}
+
+void GameView::onDoAction(ACTIONS action, Node *n1, Node *n2)
+{
+    qDebug()<<"GameView : enter 'onDoAction'";
+    switch (action)
+    {
+    case GA_SEND:
+        sendSquad(n1, n2);
+        scene->clearSelection();
+        actionManager.clear();
+        break;
+    default:
+        break;
+    }
+}
 
 /*----------------------------------------------------*/
 /*METHODE PRIVE*/
@@ -185,18 +226,30 @@ void GameView::usePower(int nodeFromId, int nodeToId, POWER_NAME p)
 
 void GameView::setUpUI()
 {
-    setScene(scene);
-    connect(scene,SIGNAL(selectionChanged()),this,SLOT(selectionChange()));
-
     // Désactivation des scrollbars
     setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate );
     setRenderHint( QPainter::Antialiasing, true );
 
-    ui = new PowerInterface();
-    ui->setX(0);
-    ui->setY(0);
-    ui->setMana(1000);
-    scene->addItem(ui);
+
+    setScene(scene);
+    connect(scene,SIGNAL(selectionChanged()),this,SLOT(selectionChange()));
+    connect(&actionManager,SIGNAL(doAction(ACTIONS)),this,SLOT(onDoAction(ACTIONS)));
+    connect(&actionManager,SIGNAL(doAction(ACTIONS,Node*)),this,SLOT(onDoAction(ACTIONS,Node*)));
+    connect(&actionManager,SIGNAL(doAction(ACTIONS,Node*,Node*)),this,SLOT(onDoAction(ACTIONS,Node*,Node*)));
+
+
+    powerUi = new PowerInterface();
+    powerUi->setX(0);
+    powerUi->setY(0);
+    powerUi->setMana(1000);
+    scene->addItem(powerUi);
 }
+
+
+//if(e->button()== Qt::LeftButton)
+//{
+//    Node *nodeTo = dynamic_cast <Node*>(itemAt(e->pos()));
+//    action.selectionChanged(nodeTo);
+//}

@@ -3,9 +3,7 @@
 #include "connexion.h"
 #include "gamer.h"
 #include "gamescene.h"
-#include <QKeyEvent>
-#include <QMouseEvent>
-#include <QDebug>
+#include "global.h"
 
 
 /*----------------------------------------------------*/

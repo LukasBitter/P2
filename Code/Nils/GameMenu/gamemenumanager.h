@@ -39,7 +39,7 @@ private:
     QStackedLayout *layout;
     WelcomeMenu *welcomemenu;
     LobbyMenu *lobbymenu;
-    EditorMenu *editor;
+    EditorMenu *editormenu;
 
     /*METHODE PRIVE*/
     void setUpUI();

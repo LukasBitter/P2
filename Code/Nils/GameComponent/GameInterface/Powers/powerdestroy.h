@@ -15,11 +15,10 @@ namespace GameInterface {
  */
 class PowerDestroy : public Power
 {
-    Q_OBJECT
 
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    PowerDestroy(QObject *parent=0);
+    PowerDestroy();
 
     /*SURCHARGE*/
     void powerAction(Node *n);

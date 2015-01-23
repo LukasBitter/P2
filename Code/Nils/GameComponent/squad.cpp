@@ -4,7 +4,7 @@
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-Squad::Squad(const Gamer &g) : owner(g)
+Squad::Squad(const Gamer &g) : owner(g), progress(0), nbRessource(0)
 {
 
 }

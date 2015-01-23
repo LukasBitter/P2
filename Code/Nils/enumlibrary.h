@@ -22,18 +22,14 @@ enum POWER_NAME
     P_ARMORE,
 };
 
-enum GAMER_ACTION
+enum ACTIONS
 {
+    NO_ACTION,
     GA_SEND,
     GA_USEPOWER,
-};
-
-enum EDITOR_ACTION
-{
     EA_ADD,
     EA_REMOVE,
 };
-
 
 enum NETWORK_INFORMATION
 {

@@ -18,6 +18,7 @@ public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     EditorMenu(QWidget *parent=0);
 
+    void newView();
 private:
     /*OUTIL*/
     EditView *edit;

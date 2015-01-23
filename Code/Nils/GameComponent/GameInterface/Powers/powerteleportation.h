@@ -15,11 +15,10 @@ namespace GameInterface {
  */
 class PowerTeleportation : public Power
 {
-    Q_OBJECT
 
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    PowerTeleportation(QObject *parent=0);
+    PowerTeleportation();
 
     /*SURCHARGE*/
     void powerAction(Node *n1, Node *n2);

@@ -3,9 +3,7 @@
 #include "gamer.h"
 #include "squad.h"
 #include "gamerlist.h"
-#include <QPainter>
-#include <QtMath>
-#include <QDebug>
+#include "global.h"
 
 
 /*----------------------------------------------------*/
@@ -33,17 +31,27 @@ Connexion::Connexion(Node &n1, Node &n2, const GamerList &gl)
     //Calcule de la distance de la connexion
     pathLength = (int)sqrt(pow(n1.x()-n2.x(),2)+
                       pow(n1.y()-n2.y(),2));
-    pathLength -= -n2.getRadius();
-    pathLength -= -n1.getRadius();
+    pathLength -= n2.getRadius();
+    pathLength -= n1.getRadius();
+
+    //Connexion des noeud
+    n1.connect(n2.getId(), this);
+    n2.connect(n1.getId(), this);
 }
 
 Connexion::~Connexion()
 {
+    qDebug()<<"Connexion : destroy";
+
     //Efface toutes les squad présente dans la connexion
     qDeleteAll(lstSquad1To2);
     lstSquad1To2.clear();
     qDeleteAll(lstSquad2To1);
     lstSquad2To1.clear();
+
+    //Déconnecte des noeud
+    n1.disconnect(n2.getId());
+    n2.disconnect(n1.getId());
 }
 
 /*----------------------------------------------------*/
@@ -75,10 +83,10 @@ void Connexion::paint(QPainter *painter,
         p[0]=QPointF(-5,s->getProgress());
         p[1]=QPointF(0,s->getProgress()+5);
         p[2]=QPointF(5,s->getProgress());
-        painter->drawConvexPolygon( p, 3);
+        painter->drawConvexPolygon(p, 3);
     }
     painter->rotate(180);
-    painter->translate(0, pathLength);
+    painter->translate(0, -pathLength);
     foreach(Squad *s, lstSquad2To1)
     {
         painter->setBrush(s->getOwner().getColor());
@@ -86,8 +94,9 @@ void Connexion::paint(QPainter *painter,
         p[0]=QPointF(-5,s->getProgress());
         p[1]=QPointF(0,s->getProgress()+5);
         p[2]=QPointF(5,s->getProgress());
-        painter->drawConvexPolygon( p, 3);
+        painter->drawConvexPolygon(p, 3);
     }
+
     painter->restore();
 }
 
@@ -154,7 +163,7 @@ void Connexion::sendSquad(Squad s, int nodeId)
     if(queue != 0)
     {
         //Récupère la squad la plus proche du début
-        Squad *sMin = queue->last();
+        Squad *sMin = queue->isEmpty() ? 0 : queue->last();
 
         if(sMin != 0 && sMin->getProgress() == 0 &&
                 sMin->getOwner().getId() == s.getOwner().getId())
@@ -190,7 +199,6 @@ QString Connexion::getUpdateString() const
         s.append(QString("%1_%2_%3_0,").arg(s1to2->getProgress()).
                  arg(s1to2->getNbRessources()).arg(s1to2->getOwner().getId()));
     }
-    s.resize(s.size()-1);
     foreach (Squad *s1to2, lstSquad2To1)
     {
         s.append(QString("%1_%2_%3_1,").arg(s1to2->getProgress()).
@@ -215,13 +223,14 @@ QString Connexion::getCreationString() const
  */
 void Connexion::updateFromString(QString &s)
 {
-    if(s.isEmpty()) return;
 
     //Efface toutes les squad présente dans la connexion
     qDeleteAll(lstSquad1To2);
     lstSquad1To2.clear();
     qDeleteAll(lstSquad2To1);
     lstSquad2To1.clear();
+
+    if(s.isEmpty()) return;
 
     //Recreation des squad depuis le texte de mise à jour
     QStringList allSquadsStr = s.split(",");
@@ -241,17 +250,17 @@ void Connexion::updateFromString(QString &s)
             Gamer *g = lstGamer.getGamer(ownerId);
             if(g != 0)
             {
-                Squad s(*g);
-                s.setNbRessources(nbRessources);
-                s.setProgress(progress);
+                Squad *s = new Squad(*g);
+                s->setNbRessources(nbRessources);
+                s->setProgress(progress);
 
                 if(direction==0)
                 {
-                    sendSquad(s, n1.getId());
+                    lstSquad1To2.append(s);
                 }
                 else
                 {
-                    sendSquad(s, n2.getId());
+                    lstSquad2To1.append(s);
                 }
             }
             else
@@ -262,6 +271,7 @@ void Connexion::updateFromString(QString &s)
         else
         {
             qCritical()<<"Connexion : unexpected case in 'updateFromString' (2)";
+            qDebug()<<squadStr;
         }
     }
 }
@@ -360,8 +370,7 @@ void Connexion::checkSquadArrive()
 {
     foreach(Squad *s, lstSquad1To2)
     {
-        int p = s->getProgress();
-        if(p >= pathLength)
+        if(s->getProgress() >= pathLength)
         {
             n2.incoming(*s);
             delete s;
@@ -370,8 +379,7 @@ void Connexion::checkSquadArrive()
     }
     foreach(Squad *s, lstSquad2To1)
     {
-        int p = s->getProgress();
-        if(p >= pathLength)
+        if(s->getProgress() >= pathLength)
         {
             n1.incoming(*s);
             delete s;

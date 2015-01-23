@@ -1,7 +1,6 @@
 #include "gamerlist.h"
 #include "gamer.h"
-#include <QColor>
-#include <QDebug>
+#include "global.h"
 
 
 /*----------------------------------------------------*/
@@ -10,10 +9,7 @@
 
 GamerList::GamerList()
 {
-    lstColor.append(Qt::red);
-    lstColor.append(Qt::green);
-    lstColor.append(Qt::yellow);
-    lstColor.append(Qt::blue);
+
 }
 
 GamerList::~GamerList()
@@ -33,14 +29,7 @@ const QHash<int, Gamer *> &GamerList::getLstGamer() const
 
 Gamer *GamerList::getGamer(int idGamer)const
 {
-    if(lstGamers.contains(idGamer))
-    {
-        return lstGamers.value(idGamer);
-    }
-    else
-    {
-        return 0;
-    }
+    return lstGamers.value(idGamer, 0);
 }
 
 Gamer *GamerList::getGamer(QTcpSocket *socket) const
@@ -84,6 +73,7 @@ QString GamerList::getLstGamerUpdateString() const
     {
         s.append(QString("%1.%2/").arg(g->getId()).arg(g->getUpdateString()));
     }
+    s.resize(s.size()-1);
 
     return s;
 }
