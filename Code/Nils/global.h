@@ -32,5 +32,6 @@
 #include <QGraphicsSceneDragDropEvent>
 #include <QtMath>
 #include <QStyleOptionGraphicsItem>
+#include <QGraphicsWidget>
 
 #endif // GLOBAL_H

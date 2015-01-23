@@ -1,7 +1,7 @@
 #ifndef POWERINTERFACE_H
 #define POWERINTERFACE_H
 
-#include <QGraphicsWidget>
+#include "global.h"
 #include "enumlibrary.h"
 #include "GameComponent/GameInterface/Powers/powerarmore.h"
 #include "GameComponent/GameInterface/Powers/powerdestroy.h"
@@ -33,7 +33,7 @@ public:
 
     /*SURCHARGE*/
     QRectF boundingRect() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget); 
 
     /*ASSESSEUR / MUTATEUR*/
     void setMana(int mana);
@@ -42,17 +42,20 @@ public:
 
     /*SIGNALS/SLOTS*/
 signals:
-    void powerPressed(POWER_NAME name)const;
+    void powerPressed(POWER_NAME name);
 public slots:
     void usePowerDestroy(Node *n);
     void usePowerInvincibility(Node *n);
     void usePowerTeleportation(Node *from, Node *to);
     void usePowerArmore(Node *n);
+
+    void shortCutPressed(QKeyEvent *e);
+    void usePower(POWER_NAME name, Node *n1, Node *n2);
 private slots:
-    void btPowerDestroyPressed()const;
-    void btPowerInvincibilityPressed()const;
-    void btPowerTeleportationPressed()const;
-    void btPowerArmorePressed()const;
+    void btPowerDestroyPressed();
+    void btPowerInvincibilityPressed();
+    void btPowerTeleportationPressed();
+    void btPowerArmorePressed();
 
 private:
     /*INTERFACE*/

@@ -61,6 +61,8 @@ int PowerInterface::getMana() const
 
 void PowerInterface::usePowerDestroy(Node *n)
 {
+    qDebug()<<"PowerInterface : enter 'usePowerDestroy'";
+
     const int cost = 80;
     if(mana >= cost)
     {
@@ -71,6 +73,8 @@ void PowerInterface::usePowerDestroy(Node *n)
 
 void PowerInterface::usePowerInvincibility(Node *n)
 {
+    qDebug()<<"PowerInterface : enter 'usePowerInvincibility'";
+
     const int cost = 50;
     if(mana >= cost)
     {
@@ -81,6 +85,8 @@ void PowerInterface::usePowerInvincibility(Node *n)
 
 void PowerInterface::usePowerTeleportation(Node *from, Node *to)
 {
+    qDebug()<<"PowerInterface : enter 'usePowerTeleportation'";
+
     const int cost = 40;
     if(mana >= cost)
     {
@@ -91,6 +97,8 @@ void PowerInterface::usePowerTeleportation(Node *from, Node *to)
 
 void PowerInterface::usePowerArmore(Node *n)
 {
+    qDebug()<<"PowerInterface : enter 'usePowerArmore'";
+
     const int cost = 10;
     if(mana >= cost)
     {
@@ -99,22 +107,72 @@ void PowerInterface::usePowerArmore(Node *n)
     }
 }
 
-void PowerInterface::btPowerDestroyPressed() const
+void PowerInterface::shortCutPressed(QKeyEvent *e)
+{
+    switch (e->key())
+    {
+    case Qt::Key_1:
+    {
+        btPowerDestroyPressed();
+        break;
+    }
+    case Qt::Key_2:
+    {
+        btPowerInvincibilityPressed();
+        break;
+    }
+    case Qt::Key_3:
+    {
+        btPowerTeleportationPressed();
+        break;
+    }
+    case Qt::Key_4:
+    {
+        btPowerArmorePressed();
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+void PowerInterface::usePower(POWER_NAME name, Node *n1, Node *n2)
+{
+    switch (name)
+    {
+    case P_DESTROY:
+        if(n1 != 0)usePowerDestroy(n1);
+        break;
+    case P_INVINCIBILITY:
+        if(n1 != 0)usePowerInvincibility(n1);
+        break;
+    case P_TELEPORTATION:
+        if(n1 != 0 && n2 != 0)usePowerTeleportation(n1, n2);
+        break;
+    case P_ARMORE:
+        if(n1 != 0)usePowerArmore(n1);
+        break;
+    default:
+        break;
+    }
+}
+
+void PowerInterface::btPowerDestroyPressed()
 {
     emit powerPressed(P_DESTROY);
 }
 
-void PowerInterface::btPowerInvincibilityPressed() const
+void PowerInterface::btPowerInvincibilityPressed()
 {
     emit powerPressed(P_INVINCIBILITY);
 }
 
-void PowerInterface::btPowerTeleportationPressed() const
+void PowerInterface::btPowerTeleportationPressed()
 {
     emit powerPressed(P_TELEPORTATION);
 }
 
-void PowerInterface::btPowerArmorePressed() const
+void PowerInterface::btPowerArmorePressed()
 {
     emit powerPressed(P_ARMORE);
 }

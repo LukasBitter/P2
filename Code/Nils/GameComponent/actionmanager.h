@@ -20,6 +20,10 @@ public:
     ActionManager(QObject *parent = 0);
     virtual ~ActionManager();
 
+    /*CONVERTION*/
+    static ACTIONS powerToAction(POWER_NAME p);
+    static POWER_NAME actionToPower(ACTIONS p);
+
     /*SIGNALS/SLOTS*/
 signals:
     void doAction(ACTIONS action);
