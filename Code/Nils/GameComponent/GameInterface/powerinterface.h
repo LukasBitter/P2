@@ -35,24 +35,19 @@ public:
     /*SURCHARGE*/
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget); 
+    void timerEvent(QTimerEvent *event);
 
     /*ASSESSEUR / MUTATEUR*/
     void setMana(int mana);
     void addMana(int mana);
     int getMana()const;
-    void advence();
 
     /*SIGNALS/SLOTS*/
 signals:
-    void powerPressed(POWER_NAME name);
+    void powerPressed(ACTIONS a);
 public slots:
-    void usePowerDestroy(Node *n);
-    void usePowerInvincibility(Node *n);
-    void usePowerTeleportation(Node *from, Node *to);
-    void usePowerArmore(Node *n);
-
     void shortCutPressed(QKeyEvent *e);
-    void usePower(POWER_NAME name, Node *n1, Node *n2);
+    void usePower(ACTIONS a, Node *n1, Node *n2);
 private slots:
     void btPowerDestroyPressed();
     void btPowerInvincibilityPressed();
@@ -61,6 +56,7 @@ private slots:
 
 private:
     /*INTERFACE*/
+    QGraphicsTextItem *txtMana;
     Button *btPowerDestroy;
     Button *btPowerInvincibility;
     Button *btPowerTeleportation;
@@ -79,6 +75,10 @@ private:
 
     /*METHODE PRIVE*/
     void setUpUI();
+    void usePowerDestroy(Node *n);
+    void usePowerInvincibility(Node *n);
+    void usePowerTeleportation(Node *from, Node *to);
+    void usePowerArmore(Node *n);
 };
 
 #endif // POWERINTERFACE_H

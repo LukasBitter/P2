@@ -7,7 +7,7 @@
 /*----------------------------------------------------*/
 
 PowerTeleportation::PowerTeleportation() :
-    Power(150,0)
+    Power(15,0)
 {
 }
 

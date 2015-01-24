@@ -111,29 +111,9 @@ bool Power::isReady() const
     return powerCD <= 0;
 }
 
-int Power::getCountDownTime() const
+double Power::percentReload() const
 {
-    return countDownTime;
-}
-
-int Power::getPowerTime() const
-{
-    return powerTime;
-}
-
-int Power::getReloadCD() const
-{
-    return reloadCD;
-}
-
-int Power::getPowerCD() const
-{
-    return powerCD;
-}
-
-float Power::percentReload() const
-{
-    return (((float)countDownTime)/100)*(countDownTime-reloadCD);
+    return ((double)(countDownTime-reloadCD)/(double)(countDownTime))*100;
 }
 
 void Power::advence()

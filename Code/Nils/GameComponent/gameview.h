@@ -76,7 +76,7 @@ private slots:
     void onDoAction(ACTIONS action);
     void onDoAction(ACTIONS action, Node *n);
     void onDoAction(ACTIONS action, Node *n1, Node *n2);
-    void onPowerPressed(POWER_NAME name);
+    void onPowerPressed( action);
 
     /*----------------------------------------------------*/
     /*RECEPTION ACTIONS SERVEUR*/

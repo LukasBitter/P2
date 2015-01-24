@@ -5,7 +5,7 @@
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-PowerArmore::PowerArmore() : Power(50,50), memory(0),
+PowerArmore::PowerArmore() : Power(5,5), memory(0),
     armorLvl(20)
 {
 }

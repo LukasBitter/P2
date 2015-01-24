@@ -6,7 +6,7 @@
 /*----------------------------------------------------*/
 
 PowerInvincibility::PowerInvincibility() :
-    Power(200,50), memory(0)
+    Power(20,5), memory(0)
 {
 }
 

@@ -18,60 +18,6 @@ ActionManager::~ActionManager()
 }
 
 /*----------------------------------------------------*/
-/*CONVERTION*/
-/*----------------------------------------------------*/
-
-ACTIONS ActionManager::powerToAction(POWER_NAME p)
-{
-    switch (p)
-    {
-    case P_DESTROY:
-    {
-        return GA_USEPOWER_DESTROY;
-    }
-    case P_INVINCIBILITY:
-    {
-        return GA_USEPOWER_INVINCIBILITY;
-    }
-    case P_TELEPORTATION:
-    {
-        return GA_USEPOWER_TELEPORTATION;
-    }
-    case P_ARMORE:
-    {
-        return GA_USEPOWER_ARMORE;
-    }
-    default:
-        return NO_ACTION;
-    }
-}
-
-POWER_NAME ActionManager::actionToPower(ACTIONS p)
-{
-    switch (p)
-    {
-    case GA_USEPOWER_DESTROY:
-    {
-        return P_DESTROY;
-    }
-    case GA_USEPOWER_INVINCIBILITY:
-    {
-        return P_INVINCIBILITY;
-    }
-    case GA_USEPOWER_TELEPORTATION:
-    {
-        return P_TELEPORTATION;
-    }
-    case GA_USEPOWER_ARMORE:
-    {
-        return P_ARMORE;
-    }
-    default:
-        return P_NONE;
-    }
-}
-
-/*----------------------------------------------------*/
 /*SIGNALS/SLOTS*/
 /*----------------------------------------------------*/
 

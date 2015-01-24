@@ -11,7 +11,7 @@
 GameClient::GameClient(QString host, QObject *parent) : QObject(parent),
     port(8000), gamerId(-1), map(0), client(0)
 {
-    client = new Client(port, host, 0);
+    client = new Client(port, host, this);
 
     connect(client, SIGNAL(messageReciveFromServeur(QString)),
             this, SLOT(onMessageRecive(QString)));
@@ -23,7 +23,6 @@ GameClient::~GameClient()
 {
     qDebug()<<"GameClient : destroy";
     if(map != 0) delete map;
-    if(client != 0) delete client;
 }
 
 /*----------------------------------------------------*/
@@ -204,6 +203,7 @@ void GameClient::receive_C_LAUNCH_GAME(const QString &msg)
 {
     if(gamerId != -1)
     {
+        if(map != 0) delete map;
         map = new GameView(msg, lstGamer, lstGamer.getGamer(gamerId));
         connect(map, SIGNAL(gamerAction(QString)),
                 this, SLOT(sendClientAction(QString)));

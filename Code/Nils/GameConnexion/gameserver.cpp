@@ -13,7 +13,7 @@
 GameServer::GameServer(int maxConnexion, QObject *parent) : QObject(parent),
     lockConnexion(false), refreshLoopMS(100), port(8000), map(0)
 {
-    server = new Server(port, maxConnexion, 0);
+    server = new Server(port, maxConnexion, this);
 
     connect(server, SIGNAL(messageReciveFromClient(QTcpSocket*,QString)),
             this, SLOT(onMessageRecive(QTcpSocket*,QString)));
@@ -24,9 +24,7 @@ GameServer::GameServer(int maxConnexion, QObject *parent) : QObject(parent),
 GameServer::~GameServer()
 {
     qDebug()<<"GameServer : destroy";
-
     if(map != 0) delete map;
-    if(server != 0) delete server;
 }
 
 /*----------------------------------------------------*/
@@ -227,6 +225,7 @@ void GameServer::receive_C_LAUNCH_GAME(QTcpSocket *t, const QString &msg)
 
     lockConnexion = true;
 
+    if(map != 0) delete map;
     map = new GameView(m.getCreationString(), lstGamer);
     map->updateFromString(m.getUpdateString());
     sendToAllGamer(QString("%1#%2").arg(C_LAUNCH_GAME).arg(m.getCreationString()));
