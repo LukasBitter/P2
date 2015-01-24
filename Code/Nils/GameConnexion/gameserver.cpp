@@ -17,7 +17,7 @@
 GameServer::GameServer(int maxConnexion, QObject *parent) : QObject(parent),
     lockConnexion(false), refreshLoopMS(100), port(8000), map(0)
 {
-    server = new Server(port, maxConnexion, this);
+    server = new Server(port, maxConnexion, 0);
 
     connect(server, SIGNAL(messageReciveFromClient(QTcpSocket*,QString)),
             this, SLOT(onMessageRecive(QTcpSocket*,QString)));
@@ -30,6 +30,7 @@ GameServer::~GameServer()
     qDebug()<<"GameServer : destroy";
 
     if(map != 0) delete map;
+    if(server != 0) delete server;
 }
 
 /*----------------------------------------------------*/

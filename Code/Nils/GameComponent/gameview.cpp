@@ -46,6 +46,7 @@ QString GameView::getUpdateString()
 void GameView::updateFromString(QString s)
 {
     scene->updateFromString(s);
+    powerUi->advence();
 }
 
 QString GameView::getCreationString()
@@ -74,7 +75,6 @@ void GameView::setUpUI()
     setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate );
     setRenderHint( QPainter::Antialiasing, true );
-
 
     setScene(scene);
     connect(scene,SIGNAL(selectionChanged()),this,SLOT(selectionChange()));

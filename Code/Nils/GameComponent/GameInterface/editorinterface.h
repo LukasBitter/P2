@@ -5,39 +5,44 @@
 #include "enumlibrary.h"
 
 class Node;
-class Button;
+class QPushButton;
 
 namespace GameInterface
 {
 class EditorInterface;
 }
 
-class EditorInterface : public QGraphicsWidget
+class EditorInterface : public QWidget
 {
+    Q_OBJECT
+
 public:
-    explicit EditorInterface(QGraphicsItem * parent = 0);
+    explicit EditorInterface(QWidget *parent = 0);
 
-    /*SURCHARGE*/
-    QRectF boundingRect() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
-
+    /*SIGNALS/SLOTS*/
 signals:
-    void btCreateNodePressed();
-    void btRemoveNodePressed();
-    void btConnectNodePressed();
-    void btDisconnectNodePressed();
+    void btActionPressed(ACTIONS);
+    void btReturnPressed();
+    void btSaveToFilePressed();
+    void btLoadFromFilePressed();
 private slots:
     void onBtCreateNodePressed();
     void onBtRemoveNodePressed();
     void onBtConnectNodePressed();
     void onBtDisconnectNodePressed();
+    void onBtSaveToFilePressed();
+    void onBtLoadFromFilePressed();
+    void onBtReturnPressed();
 
 private:
     /*INTERFACE*/
-    Button *btCreateNode;
-    Button *btRemoveNode;
-    Button *btConnectNode;
-    Button *btDisconnectNode;
+    QPushButton *btCreateNode;
+    QPushButton *btRemoveNode;
+    QPushButton *btConnectNode;
+    QPushButton *btDisconnectNode;
+    QPushButton *btSaveToFile;
+    QPushButton *btLoadFromFile;
+    QPushButton *btReturn;
 
     /*METHODE PRIVE*/
     void setUpUI();

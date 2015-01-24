@@ -28,7 +28,6 @@ HEADERS += \
     GameMenu/gamemenumanager.h \
     GameMenu/lobbymenu.h \
     GameMenu/welcomemenu.h \
-    GameMenu/gamecontext.h \
     gamerlist.h \
     gamer.h \
     enumlibrary.h \
@@ -60,7 +59,6 @@ SOURCES += \
     GameMenu/gamemenumanager.cpp \
     GameMenu/lobbymenu.cpp \
     GameMenu/welcomemenu.cpp \
-    GameMenu/gamecontext.cpp \
     gamerlist.cpp \
     gamer.cpp \
     main.cpp \

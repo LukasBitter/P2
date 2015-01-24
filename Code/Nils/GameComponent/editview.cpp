@@ -3,6 +3,9 @@
 #include "connexion.h"
 #include "gamer.h"
 #include "gamescene.h"
+#include "mapfile.h"
+#include "GameInterface/editorinterface.h"
+#include "GameInterface/powerinterface.h"
 #include "global.h"
 
 
@@ -10,9 +13,11 @@
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-EditView::EditView(QWidget *parent) : QGraphicsView(parent)
+EditView::EditView(QWidget *parent) : QGraphicsView(parent),
+    scene(0), editorUi(0), memory(0), a(NO_ACTION)
 {
     scene = new GameScene(lstGamer, 0, this);
+    setScene(scene);
     setUpUI();
 }
 
@@ -25,68 +30,67 @@ EditView::~EditView()
 /*SURCHARGE*/
 /*----------------------------------------------------*/
 
-void EditView::keyPressEvent(QKeyEvent *e)
-{
-    QGraphicsView::keyPressEvent(e);
-    switch (e->key())
-    {
-    case Qt::Key_1:
-        action = EA_ADD;
-        break;
-    case Qt::Key_2:
-        action = EA_REMOVE;
-        break;
-    default:
-        break;
-    }
-}
-
 void EditView::mousePressEvent(QMouseEvent *e)
 {
-    if(e->button()== Qt::RightButton)
-    {
-        switch (action)
-        {
-        case EA_ADD:
-        {
-            if(lastSelection != 0 && currentSelection != 0)
-            scene->addConnexion(*lastSelection, *currentSelection);
-            break;
-        }
-        case EA_REMOVE:
-        {
+    if(e->button()!= Qt::LeftButton) return;
 
-            break;
+    if(a == EA_ADD)
+    {
+        Node *n = new Node(e->x(), e->y(),30,0,lstGamer,0);
+        scene->addNode(*n);
+        a = NO_ACTION;
+    }
+    else if(a == EA_REMOVE)
+    {
+        Node *n = dynamic_cast <Node*>(itemAt(e->pos()));
+        if(n != 0) scene->removeNode(*n);
+        a = NO_ACTION;
+    }
+    else if(a == EA_CONNECT)
+    {
+        Node *n = dynamic_cast <Node*>(itemAt(e->pos()));
+        if(n != 0)
+        {
+            if(memory != 0)
+            {
+                scene->addConnexion(*memory,*n);
+                a = NO_ACTION;
+                memory = 0;
+            }
+            else
+            {
+                memory = n;
+            }
         }
-        default:
-            break;
+
+    }
+    else if(a == EA_DISCONNECT)
+    {
+        Node *n = dynamic_cast <Node*>(itemAt(e->pos()));
+        if(n != 0)
+        {
+            if(memory != 0)
+            {
+                scene->removeConnexion(*memory,*n);
+                a = NO_ACTION;
+                memory = 0;
+            }
+            else
+            {
+                memory = n;
+            }
         }
     }
-    else if(e->button()== Qt::LeftButton)
-    {
-        QGraphicsView::mousePressEvent(e);
-        switch (action)
-        {
-        case EA_ADD:
-        {
-            Node *n = new Node(e->x(), e->y(),30,0,lstGamer,0);
-            scene->addNode(*n);
-            break;
-        }
-        case EA_REMOVE:
-        {
-
-            break;
-        }
-        default:
-            break;
-        }
-    }
+    scene->update(scene->sceneRect());
 }
 
-void EditView::dropEvent(QDropEvent *event)
-{
+/*----------------------------------------------------*/
+/*ASSESSEUR / MUTATEUR*/
+/*----------------------------------------------------*/
 
+void EditView::clearMap()
+{
+    scene->clear();
 }
 
 /*----------------------------------------------------*/
@@ -95,43 +99,76 @@ void EditView::dropEvent(QDropEvent *event)
 
 void EditView::loadMapName(QString s)
 {
+    MapFile m;
+    m.loadFromFile(s);
+    QList<Gamer *> l = lstGamer.getLstGamer().values();
+    if(m.isValide() && m.getNumberOfSlot() <= l.size())
+    {
+        scene = new GameScene(m.getCreationString(),lstGamer, 0, this);
+        setScene(scene);
+        scene->updateFromString(m.getUpdateString());
 
+        for (int i = 0; i < m.getNumberOfSlot(); ++i)
+        {
+            m.getSlot(i,l.value(i,0));
+        }
+    }
 }
 
 void EditView::saveMapName(QString s)
 {
-
+    MapFile m;
+    m.setVersion(VERSION_MAP);
+    foreach (QString s, scene->normalizeSpawn())
+    {
+        m.addSlot(s);
+    }
+    m.setCreationString(scene->getCreationString());
+    m.setUpdateString(scene->getUpdateString());
+    m.saveToFile(s);
 }
 
-void EditView::selectionChange()
+/*----------------------------------------------------*/
+/*SIGNALS/SLOTS*/
+/*----------------------------------------------------*/
+
+void EditView::onBtActionPressed(ACTIONS a)
 {
-    QList<QGraphicsItem *> lst = scene->selectedItems();
-    if(!lst.isEmpty())
-    {
-        lastSelection = currentSelection;
-        currentSelection = dynamic_cast <Node*>(lst.first());
-    }
-    else
-    {
-        lastSelection = 0;
-        currentSelection = 0;
-    }
+    this->a = a;
 }
+
+void EditView::onBtSaveToFilePressed()
+{
+    MapFile m;
+}
+
+void EditView::onBtLoadFromFilePressed()
+{
+
+}
+
+void EditView::onBtReturnPressed()
+{
+
+}
+
+/*----------------------------------------------------*/
+/*METHODE PRIVE*/
+/*----------------------------------------------------*/
 
 void EditView::setUpUI()
 {
-    setScene(scene);
-    connect(scene,SIGNAL(selectionChanged()),this,SLOT(selectionChange()));
+    editorUi = new EditorInterface(this);
 
     // Désactivation des scrollbars
     setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate );
     setRenderHint( QPainter::Antialiasing, true );
+
+    connect(editorUi,SIGNAL(btActionPressed(ACTIONS)),this,SLOT(onBtActionPressed(ACTIONS)));
+    connect(editorUi,SIGNAL(btReturnPressed()),this,SLOT(onBtReturnPressed()));
+    connect(editorUi,SIGNAL(btLoadFromFilePressed()),this,SLOT(onBtLoadFromFilePressed()));
+    connect(editorUi,SIGNAL(btSaveToFilePressed()),this,SLOT(onBtSaveToFilePressed()));
 }
 
-
-void EditView::clearMap()
-{
-    scene->clear();
-}

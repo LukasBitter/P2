@@ -33,6 +33,8 @@ enum ACTIONS
     GA_USEPOWER_ARMORE,
     EA_ADD,
     EA_REMOVE,
+    EA_CONNECT,
+    EA_DISCONNECT,
 };
 
 enum NETWORK_INFORMATION
@@ -49,5 +51,6 @@ enum NETWORK_INFORMATION
 };
 
 #define MAX_GAMER 4
+#define VERSION_MAP 1
 
 #endif // ENUMLIB_H

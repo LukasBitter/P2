@@ -19,7 +19,7 @@ PowerInterface::PowerInterface(QGraphicsItem * parent) : QGraphicsWidget(parent)
 
 QRectF PowerInterface::boundingRect() const
 {
-    return QRectF(0, 0, 50, 185);
+    return QRectF(0, 0, 100, 185);
 }
 
 void PowerInterface::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -48,6 +48,19 @@ void PowerInterface::addMana(int mana)
 int PowerInterface::getMana() const
 {
     return mana;
+}
+
+void PowerInterface::advence()
+{
+    powerArmore.advence();
+    powerDestroy.advence();
+    powerInvincibility.advence();
+    powerTeleportation.advence();
+
+    txtCdPowerDestroy->setPlainText(QString("%1%").arg(powerDestroy.percentReload()));
+    txtCdPowerArmore->setPlainText(QString("%1%").arg(powerArmore.percentReload()));
+    txtCdPowerInvincibility->setPlainText(QString("%1%").arg(powerInvincibility.percentReload()));
+    txtCdPowerTeleportation->setPlainText(QString("%1%").arg(powerTeleportation.percentReload()));
 }
 
 /*----------------------------------------------------*/
@@ -180,6 +193,10 @@ void PowerInterface::setUpUI()
     btPowerInvincibility = new Button("Invincibility", this);
     btPowerTeleportation = new Button("Teleportation", this);
     btPowerArmore = new Button("Armor", this);
+    txtCdPowerDestroy = new QGraphicsTextItem("",this);
+    txtCdPowerInvincibility = new QGraphicsTextItem("",this);
+    txtCdPowerTeleportation = new QGraphicsTextItem("",this);
+    txtCdPowerArmore = new QGraphicsTextItem("",this);
 
     //CONNEXION
 
@@ -189,13 +206,22 @@ void PowerInterface::setUpUI()
     connect(btPowerArmore, SIGNAL(pressed()), this, SLOT(btPowerArmorePressed()));
 
     //POSITIONNEMENT
-
     btPowerDestroy->setX(25);
     btPowerInvincibility->setX(25);
     btPowerTeleportation->setX(25);
     btPowerArmore->setX(25);
+    txtCdPowerDestroy->setX(50);
+    txtCdPowerInvincibility->setX(50);
+    txtCdPowerTeleportation->setX(50);
+    txtCdPowerArmore->setX(50);
+
     btPowerDestroy->setY(25);
     btPowerInvincibility->setY(70);
     btPowerTeleportation->setY(115);
     btPowerArmore->setY(160);
+    txtCdPowerDestroy->setY(25);
+    txtCdPowerInvincibility->setY(70);
+    txtCdPowerTeleportation->setY(115);
+    txtCdPowerArmore->setY(160);
+
 }

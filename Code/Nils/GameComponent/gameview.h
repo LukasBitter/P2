@@ -9,7 +9,6 @@
 
 class GameScene;
 class Node;
-class Connexion;
 class QDropEvent;
 class PowerInterface;
 

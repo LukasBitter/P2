@@ -1,5 +1,5 @@
 #include "actionmanager.h"
-
+#include "global.h"
 
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
@@ -81,33 +81,32 @@ void ActionManager::selectionChanged(Node *n)
 
     if(n == 0)
     {
+        qDebug()<<"1-1";
         reset();
     }
     else
     {
+        qDebug()<<"1-2";
         lastSelection = currentSelection;
         currentSelection = n;
 
-        if(lastSelection != 0 && action != NO_ACTION)
+        if(action != NO_ACTION)
         {
-            emit doAction(action, lastSelection, currentSelection);
-            action = NO_ACTION;
+            emit doAction(action, currentSelection);
+            if(lastSelection != 0)
+            {
+                emit doAction(action, lastSelection, currentSelection);
+                action = NO_ACTION;
+            }
         }
     }
 }
 
 void ActionManager::actionChanged(ACTIONS a)
 {
-    qDebug()<<"ActionManager : enter 'actionChanged'";
+    qDebug()<<"ActionManager : enter 'actionChanged' : "<<a;
 
-    if(a != NO_ACTION)
-    {
-        action = a;
-        if(currentSelection != 0)
-        {
-            emit doAction(action, currentSelection);
-        }
-    }
+    action = a;
 }
 
 void ActionManager::clear()

@@ -73,6 +73,7 @@ void Node::paint(QPainter *painter,
         painter->setPen(pen);
         painter->drawEllipse(QPoint(0,0),radius+3,radius+3);
     }
+    if(invicible) painter->setPen(Qt::DotLine);
     painter->setPen(Qt::black);
     painter->drawEllipse(QPoint(0,0),radius,radius);
     if(armorLvl > 0)
@@ -169,6 +170,11 @@ bool Node::getInvicibility() const
 void Node::setInvicibility(bool b)
 {
     invicible = b;
+}
+
+void Node::setOwner(const Gamer *g)
+{
+    owner = g;
 }
 
 const Gamer* Node::getOwner() const
@@ -322,6 +328,16 @@ void Node::updateFromString(QString &s)
     }
     update();
 
+}
+
+QString Node::normalizeSpawn()
+{
+    qDebug()<<QString("%1,%2,%3,%4,%5").arg(nbRessources).
+              arg(ressourcesRate).arg("%1").arg(armorLvl).
+               arg(invicible);
+    return QString("%1,%2,%3,%4,%5").arg(nbRessources).
+           arg(ressourcesRate).arg("%1").arg(armorLvl).
+            arg(invicible);
 }
 
 /*----------------------------------------------------*/

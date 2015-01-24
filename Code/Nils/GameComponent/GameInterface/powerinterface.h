@@ -11,6 +11,7 @@
 class Node;
 class Power;
 class Button;
+class QGraphicsTextItem;
 
 namespace GameInterface
 {
@@ -39,6 +40,7 @@ public:
     void setMana(int mana);
     void addMana(int mana);
     int getMana()const;
+    void advence();
 
     /*SIGNALS/SLOTS*/
 signals:
@@ -63,6 +65,10 @@ private:
     Button *btPowerInvincibility;
     Button *btPowerTeleportation;
     Button *btPowerArmore;
+    QGraphicsTextItem *txtCdPowerDestroy;
+    QGraphicsTextItem *txtCdPowerInvincibility;
+    QGraphicsTextItem *txtCdPowerTeleportation;
+    QGraphicsTextItem *txtCdPowerArmore;
 
     /*OUTIL*/
     int mana; ///< Réservoir de ressources consomées par les pouvoirs

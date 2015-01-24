@@ -6,12 +6,11 @@
 #include "connexion.h"
 #include "enumlibrary.h"
 #include "gamerlist.h"
+#include "actionmanager.h"
 
 class GameScene;
-class Node;
-class Connexion;
-class QDropEvent;
 class PowerInterface;
+class EditorInterface;
 
 namespace GameComponent
 {
@@ -32,28 +31,35 @@ public:
     virtual ~EditView();
 
     /*SURCHARGE*/
-    void keyPressEvent(QKeyEvent *e);
     void mousePressEvent(QMouseEvent *e);
-    void dropEvent(QDropEvent *event);
+
+    /*ASSESSEUR / MUTATEUR*/
+    void clearMap();
 
     /*LECTURE-ECRITURE*/
     void loadMapName(QString s);
     void saveMapName(QString s);
 
+    /*SIGNALS/SLOTS*/
 private slots:
-    void selectionChange();
+    void onBtActionPressed(ACTIONS a);
+    void onBtSaveToFilePressed();
+    void onBtLoadFromFilePressed();
+    void onBtReturnPressed();
 
 private:
+    /*INTERFACE*/
+    EditorInterface *editorUi;
+
     /*OUTIL*/
     GameScene * scene; ///< Scene de jeu
     GamerList lstGamer;
-    ACTIONS action;
-    Node *currentSelection;
-    Node *lastSelection;
+    ACTIONS a;
+    Node *memory;
 
     /*METHODE PRIVE*/
     void setUpUI();
-    void clearMap();
+    QStringList normalizeNode();
 };
 
 #endif // EDITVIEW_H

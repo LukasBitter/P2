@@ -6,19 +6,48 @@
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-EditorInterface::EditorInterface(QGraphicsItem * parent) : QGraphicsWidget(parent)
+EditorInterface::EditorInterface(QWidget *parent) : QWidget(parent)
 {
     setUpUI();
 }
 
-QRectF EditorInterface::boundingRect() const
-{
+/*----------------------------------------------------*/
+/*SIGNALS/SLOTS*/
+/*----------------------------------------------------*/
 
+void EditorInterface::onBtCreateNodePressed()
+{
+    emit btActionPressed(EA_ADD);
 }
 
-void EditorInterface::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void EditorInterface::onBtRemoveNodePressed()
 {
+    emit btActionPressed(EA_REMOVE);
+}
 
+void EditorInterface::onBtConnectNodePressed()
+{
+    emit btActionPressed(EA_CONNECT);
+}
+
+void EditorInterface::onBtDisconnectNodePressed()
+{
+    emit btActionPressed(EA_DISCONNECT);
+}
+
+void EditorInterface::onBtSaveToFilePressed()
+{
+    emit btSaveToFilePressed();
+}
+
+void EditorInterface::onBtLoadFromFilePressed()
+{
+    emit btLoadFromFilePressed();
+}
+
+void EditorInterface::onBtReturnPressed()
+{
+    emit btReturnPressed();
 }
 
 /*----------------------------------------------------*/
@@ -29,10 +58,13 @@ void EditorInterface::setUpUI()
 {
     //INSTANTIATION
 
-    btCreateNode = new Button("Create node", this);
-    btRemoveNode = new Button("Delete node", this);
-    btConnectNode = new Button("Connect node", this);
-    btDisconnectNode = new Button("Disconnect node", this);
+    btCreateNode = new QPushButton("Create node", this);
+    btRemoveNode = new QPushButton("Delete node", this);
+    btConnectNode = new QPushButton("Connect node", this);
+    btDisconnectNode = new QPushButton("Disconnect node", this);
+    btReturn = new QPushButton("Retour", this);
+    btLoadFromFile = new QPushButton("Ouvrir", this);
+    btSaveToFile = new QPushButton("Sauver", this);
 
     //CONNEXION
 
@@ -40,15 +72,22 @@ void EditorInterface::setUpUI()
     connect(btRemoveNode, SIGNAL(pressed()), this, SLOT(onBtRemoveNodePressed()));
     connect(btConnectNode, SIGNAL(pressed()), this, SLOT(onBtConnectNodePressed()));
     connect(btDisconnectNode, SIGNAL(pressed()), this, SLOT(onBtDisconnectNodePressed()));
+    connect(btReturn, SIGNAL(pressed()), this, SLOT(onBtReturnPressed()));
+    connect(btLoadFromFile, SIGNAL(pressed()), this, SLOT(onBtLoadFromFilePressed()));
+    connect(btSaveToFile, SIGNAL(pressed()), this, SLOT(onBtSaveToFilePressed()));
 
-    //POSITIONNEMENT
+    //AJOUT AU LAYOUT
 
-    btCreateNode->setX(25);
-    btRemoveNode->setX(25);
-    btConnectNode->setX(25);
-    btDisconnectNode->setX(25);
-    btCreateNode->setY(25);
-    btRemoveNode->setY(70);
-    btConnectNode->setY(115);
-    btDisconnectNode->setY(160);
+    QGridLayout *layout = new QGridLayout(this);
+
+    layout->addWidget(btCreateNode, 0,0);
+    layout->addWidget(btRemoveNode, 1,0);
+    layout->addWidget(btConnectNode, 2,0);
+    layout->addWidget(btDisconnectNode, 3,0);
+    layout->addWidget(btLoadFromFile, 4,0);
+    layout->addWidget(btSaveToFile, 5,0);
+    layout->addWidget(btReturn, 6,0);
+
+    this->setLayout(layout);
+
 }

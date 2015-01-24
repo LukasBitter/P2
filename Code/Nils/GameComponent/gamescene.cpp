@@ -226,7 +226,21 @@ QString GameScene::getCreationString()
     return s;
 }
 
-void GameScene::updateFromString(QString &s)
+QStringList GameScene::normalizeSpawn()
+{
+    QStringList spawnList;
+    foreach (Node *n, lstNode)
+    {
+        if(n->getOwner() != 0)
+        {
+            spawnList.append(QString(".@%1.%2").arg(n->getId()).arg(n->normalizeSpawn()));
+            n->setOwner(0);
+        }
+    }
+    return spawnList;
+}
+
+void GameScene::updateFromString(QString s)
 {
     //qDebug()<<"GameScene : enter 'updateFromString'";
 

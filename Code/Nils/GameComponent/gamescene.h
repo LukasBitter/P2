@@ -45,8 +45,9 @@ public:
 
     /*MISE A JOUR*/
     QString getUpdateString();
-    void updateFromString(QString &s);
+    void updateFromString(QString s);
     QString getCreationString();
+    QStringList normalizeSpawn();
 
 private:
     /*ENTREE*/

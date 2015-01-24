@@ -36,6 +36,11 @@ public:
 
     /*ASSESSEUR / MUTATEUR*/
     bool isReady()const;
+    int getCountDownTime() const;
+    int getPowerTime() const;
+    int getReloadCD() const;
+    int getPowerCD() const;
+    float percentReload() const;
     void advence();
 
 private:

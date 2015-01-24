@@ -51,6 +51,7 @@ public:
     void setRessourcesRate(int r);
     void setArmorLvl(int a);
     void setInvicibility(bool b);
+    void setOwner(const Gamer* g);
 
     void connect(int nodeId, Connexion *c);
     void disconnect(int nodeId);
@@ -64,6 +65,7 @@ public:
     QString getUpdateString() const;
     QString getCreationString() const;
     void updateFromString(QString &s);
+    QString normalizeSpawn();
 
 private:
     /*ENTREE*/

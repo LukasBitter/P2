@@ -101,6 +101,16 @@ void MapFile::setVersion(int v)
     version = v;
 }
 
+void MapFile::setUpdateString(QString s)
+{
+    update = s;
+}
+
+void MapFile::setCreationString(QString s)
+{
+    creation = s;
+}
+
 /*----------------------------------------------------*/
 /*LECTURE-ECRITURE*/
 /*----------------------------------------------------*/

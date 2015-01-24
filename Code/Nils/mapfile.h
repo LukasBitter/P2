@@ -22,6 +22,7 @@ public:
 
     void setVersion(int v);
     void setUpdateString(QString s);
+    void setCreationString(QString s);
     void addSlot(QString gamerSlots);
 
     /*LECTURE-ECRITURE*/
