@@ -189,6 +189,7 @@ void GameServer::receive_C_REQUEST_SLOT(QTcpSocket *t, const QString &msg)
         }
 
         updateGamerList();
+        server->sendMessageToClient(t,QString("%1#%2").arg(C_INFORMATION).arg(I_CLIENT_PARAMETRED));
     }
     else
     {

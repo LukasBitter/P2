@@ -1,7 +1,6 @@
 
 vérifier pourquoi il ne faut pas appelker dragMoveEvent de la scene
 
-Possibiliter d arreter l'ecoute du serveur durant la connexion tout en gardant la communication -> close()
 SingleTon sur le game context, et securiset le vidage de la liste de gammer
 Break dans la boucle de reception du serveur
 Defin pournles valeur fixe
@@ -15,3 +14,5 @@ Doute:
 Généralisation possible pour:
 -Connexion et node
 -Client et serveur
+
+Demander autre relire initialisation variable

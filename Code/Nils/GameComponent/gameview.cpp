@@ -2,6 +2,7 @@
 #include "node.h"
 #include "connexion.h"
 #include "gamer.h"
+#include "squad.h"
 #include "gamerlist.h"
 #include "gamescene.h"
 #include "GameInterface/powerinterface.h"
@@ -12,18 +13,25 @@
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-GameView::GameView(GamerList &gl, Gamer *g, QWidget *parent) :
-    QGraphicsView(parent), owner(g), scene(0), powerUi(0),
-    percentToSend(100)
+void GameView::initialize()
 {
+    scene = 0;
+    powerUi = 0;
+    percentToSend = 50;
+}
+
+GameView::GameView(GamerList &gl, Gamer *g, QWidget *parent) :
+    QGraphicsView(parent), owner(g)
+{
+    initialize();
     scene = new GameScene(gl, g, 0);
     setUpUI();
 }
 
 GameView::GameView(QString create, GamerList &gl, Gamer *g, QWidget *parent):
-    QGraphicsView(parent), owner(g), scene(0), powerUi(0),
-    percentToSend(100)
+    QGraphicsView(parent), owner(g)
 {
+    initialize();
     scene = new GameScene(create, gl, g, 0);
     setUpUI();
 }
@@ -35,74 +43,6 @@ GameView::~GameView()
 }
 
 /*----------------------------------------------------*/
-/*DELEGUES*/
-/*----------------------------------------------------*/
-
-QString GameView::getUpdateString()
-{
-    return scene->getUpdateString();
-}
-
-void GameView::updateFromString(QString s)
-{
-    scene->updateFromString(s);
-    powerUi->advence();
-    scene->update(scene->sceneRect());
-}
-
-QString GameView::getCreationString()
-{
-    return scene->getCreationString();
-}
-
-void GameView::advance()
-{
-    scene->advance();
-}
-
-/*----------------------------------------------------*/
-/*METHODE PRIVE*/
-/*----------------------------------------------------*/
-
-void GameView::setUpUI()
-{
-    powerUi = new PowerInterface();
-    powerUi->setX(0);
-    powerUi->setY(0);
-    powerUi->setMana(1000);
-
-    // Désactivation des scrollbars
-    setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
-    setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
-    setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate );
-    setRenderHint( QPainter::Antialiasing, true );
-
-    setScene(scene);
-    connect(scene,SIGNAL(selectionChanged()),this,SLOT(selectionChange()));
-    connect(&actionManager,SIGNAL(doAction(ACTIONS)),this,SLOT(onDoAction(ACTIONS)));
-    connect(&actionManager,SIGNAL(doAction(ACTIONS,Node*)),this,SLOT(onDoAction(ACTIONS,Node*)));
-    connect(&actionManager,SIGNAL(doAction(ACTIONS,Node*,Node*)),this,SLOT(onDoAction(ACTIONS,Node*,Node*)));
-    connect(powerUi,SIGNAL(powerPressed(POWER_NAME)),this,SLOT(onPowerPressed(POWER_NAME)));
-
-
-    scene->addItem(powerUi);
-}
-
-
-//if(e->button()== Qt::LeftButton)
-//{
-//    Node *nodeTo = dynamic_cast <Node*>(itemAt(e->pos()));
-//    action.selectionChanged(nodeTo);
-//}
-
-/*====================================================*/
-
-/*CAPTURE ACTIONS CLIENT*/
-
-/*====================================================*/
-
-
-/*----------------------------------------------------*/
 /*SURCHARGE*/
 /*----------------------------------------------------*/
 
@@ -110,45 +50,52 @@ void GameView::keyPressEvent(QKeyEvent *e)
 {
     switch (e->key())
     {
+    case Qt::Key_Escape:
+        emit returnToMenu();
+        break;
     case Qt::Key_Q:
-    {
         setPercentToSend(25);
-        actionManager.actionChanged(GA_SEND);
-
+        am.actionChanged(GA_SEND);
         break;
-    }
     case Qt::Key_W:
-    {
         setPercentToSend(50);
-        actionManager.actionChanged(GA_SEND);
-
+        am.actionChanged(GA_SEND);
         break;
-    }
     case Qt::Key_E:
-    {
         setPercentToSend(75);
-        actionManager.actionChanged(GA_SEND);
-
+        am.actionChanged(GA_SEND);
         break;
-    }
     case Qt::Key_R:
-    {
         setPercentToSend(100);
-        actionManager.actionChanged(GA_SEND);
-
+        am.actionChanged(GA_SEND);
         break;
-    }
     default:
+        am.actionChanged(NO_ACTION);
         powerUi->shortCutPressed(e);
         break;
     }
+}
 
-    QGraphicsView::keyPressEvent(e);
+void GameView::mousePressEvent(QMouseEvent *e)
+{
+    if(e->button()!= Qt::LeftButton) return;
+
+    Node *n = dynamic_cast <Node*>(itemAt(e->pos()));
+
+    if(n == 0)
+    {
+        am.reset();
+    }
+    else
+    {
+        am.selectionChanged(n);
+    }
+
+    QGraphicsView::mousePressEvent(e);
 }
 
 void GameView::dropEvent(QDropEvent *event)
 {
-    actionManager.actionChanged(NO_ACTION);
     if(event->mimeData()->hasText())
     {
         //Ordre déplacement via drag&drop
@@ -170,53 +117,70 @@ void GameView::setPercentToSend(int percent)
 }
 
 /*----------------------------------------------------*/
+/*DELEGUES*/
+/*----------------------------------------------------*/
+
+QString GameView::getUpdateString()
+{
+    return scene->getUpdateString();
+}
+
+void GameView::updateFromString(QString s)
+{
+    scene->updateFromString(s);
+    scene->update(scene->sceneRect());
+}
+
+QString GameView::getCreationString()
+{
+    return scene->getCreationString();
+}
+
+void GameView::advance()
+{
+    scene->advance();
+}
+
+/*----------------------------------------------------*/
 /*SIGNALS/SLOTS*/
 /*----------------------------------------------------*/
 
-void GameView::selectionChange()
+void GameView::onPowerPressed(ACTIONS action)
 {
-    QList<QGraphicsItem *> lst = scene->selectedItems();
-
-    Node *nodeTo = 0;
-
-    if(!lst.isEmpty())
-    {
-        nodeTo = dynamic_cast <Node*>(lst.first());
-    }
-    actionManager.selectionChanged(nodeTo);
+    qDebug()<<action;
+    am.actionChanged(action);
 }
 
-void GameView::onDoAction(ACTIONS action)
+void GameView::onPowerStarting(ACTIONS a, Node *n1,Node *n2)
 {
-    qDebug()<<"GameView : enter 'onDoAction' do "<<action;
-}
+    qDebug()<<"GameView : enter 'onPowerStarting'";
 
-void GameView::onDoAction(ACTIONS action, Node *n)
-{
-    qDebug()<<"GameView : enter 'onDoAction' do "<<action;
-
-    usePower(n->getId(),0, ActionManager::actionToPower(action));
-}
-
-void GameView::onDoAction(ACTIONS action, Node *n1, Node *n2)
-{
-    qDebug()<<"GameView : enter 'onDoAction' do "<<action;
-
-    switch (action)
+    switch (a)
     {
-    case GA_SEND:
+    case GA_USEPOWER_TELEPORTATION:
     {
-        sendSquad(n1, n2);
-        scene->clearSelection();
-        actionManager.clear();
+        if(n1 != 0 && n2 != 0)
+        {
+            sendAction(a, n1->getId(), n2->getId(), 0);
+        }
         break;
     }
     case GA_USEPOWER_DESTROY:
-    case GA_USEPOWER_INVINCIBILITY:
-    case GA_USEPOWER_ARMORE:
-    case GA_USEPOWER_TELEPORTATION:
     {
-        usePower(n1->getId(),n2->getId(),ActionManager::actionToPower(action));
+        if(n1 != 0)
+            sendAction(a, n1->getId(), -1, 0);
+        break;
+    }
+    case GA_USEPOWER_ARMORE:
+    {
+        if(n1 != 0)
+            sendAction(a, n1->getId(), -1, 20);
+        break;
+    }
+    case GA_USEPOWER_INVINCIBILITY:
+    {
+        if(n1 != 0)
+            sendAction(a, n1->getId(), -1, 1);
         break;
     }
     default:
@@ -224,24 +188,78 @@ void GameView::onDoAction(ACTIONS action, Node *n1, Node *n2)
     }
 }
 
-void GameView::onPowerPressed(POWER_NAME name)
+void GameView::onPowerFinishing(ACTIONS a, Node *n1,Node *n2)
 {
-    qDebug()<<"GameView : enter 'onPowerPressed'";
+    qDebug()<<"GameView : enter 'onPowerFinishing'";
 
-    actionManager.actionChanged(ActionManager::powerToAction(name));
+    switch (a)
+    {
+    case GA_USEPOWER_ARMORE:
+    {
+        if(n1 != 0)
+            sendAction(a, n1->getId(), -1, 0);
+        break;
+    }
+    case GA_USEPOWER_INVINCIBILITY:
+    {
+        if(n1 != 0)
+            sendAction(a, n1->getId(), -1, 0);
+        break;
+    }
+    default:
+        break;
+    }
 }
 
+void GameView::onDoAction(ACTIONS action, Node *n)
+{
+    qDebug()<<"GameView : enter 'onDoAction'";
 
-/*====================================================*/
+    switch (action)
+    {
+    case GA_USEPOWER_DESTROY:
+        if(n != 0 && (n->getOwner() == 0 || n->getOwner()->getId() != owner->getId()))
+        {
+            powerUi->usePower(action,n,0);
+            am.reset();
+        }
+        break;
+    case GA_USEPOWER_ARMORE:
+    case GA_USEPOWER_INVINCIBILITY:
+        if(n != 0 && n->getOwner() != 0 && n->getOwner()->getId() == owner->getId())
+        {
+            powerUi->usePower(action,n,0);
+            am.reset();
+        }
+        break;
+    default:
+        break;
+    }
+}
 
-/*RECEPTION ACTIONS SERVEUR*/
+void GameView::onDoAction(ACTIONS action, Node *n1, Node *n2)
+{
+    qDebug()<<"GameView : enter 'onDoAction'";
+    qDebug()<<action;
 
-/*====================================================*/
-
-
-/*----------------------------------------------------*/
-/*SIGNALS/SLOTS*/
-/*----------------------------------------------------*/
+    switch (action)
+    {
+    case GA_SEND:
+        sendSquad(n1, n2);
+        am.reset();
+        break;
+    case GA_USEPOWER_TELEPORTATION:
+        if(n1 != 0 && n2 != 0 && n1->getOwner() != 0 &&
+                n1->getOwner()->getId() == owner->getId())
+        {
+            powerUi->usePower(action,n1,n2);
+            am.reset();
+        }
+        break;
+    default:
+        break;
+    }
+}
 
 void GameView::applyGamerAction(QString s)
 {
@@ -263,20 +281,61 @@ void GameView::applyGamerAction(QString s)
     {
         qDebug()<<"GameView : in 'applyGamerAction' recive GA_SEND";
 
-        if(nodeFrom != 0 && nodeTo != 0 && nodeFrom->getOwner()->getId() == gamerId)
+        if(nodeFrom != 0 && nodeTo != 0 && nodeFrom->getOwner() != 0 &&
+                nodeFrom->getOwner()->getId() == gamerId)
         {
             nodeFrom->sendSquad(param, nodeTo->getId());
         }
         break;
     }
     case GA_USEPOWER_DESTROY:
+    {
+        qDebug()<<"GameView : in 'applyGamerAction' recive GA_USEPOWER_DESTROY";
+
+        if(nodeFrom != 0)
+        {
+            if(nodeFrom->getOwner() == 0 || nodeFrom->getOwner()->getId() != gamerId)
+            {
+                nodeFrom->setRessources(0);
+            }
+        }
+        break;
+    }
     case GA_USEPOWER_INVINCIBILITY:
+    {
+        qDebug()<<"GameView : in 'applyGamerAction' recive GA_USEPOWER_INVINCIBILITY";
+
+        if(nodeFrom != 0 && nodeFrom->getOwner() != 0 &&
+                nodeFrom->getOwner()->getId() == gamerId)
+        {
+            nodeFrom->setInvicibility(param);
+        }
+        break;
+    }
     case GA_USEPOWER_ARMORE:
+    {
+        qDebug()<<"GameView : in 'applyGamerAction' recive GA_USEPOWER_ARMORE";
+
+        if(nodeFrom != 0 && nodeFrom->getOwner() != 0 &&
+                nodeFrom->getOwner()->getId() == gamerId)
+        {
+            nodeFrom->setArmorLvl(param);
+        }
+        break;
+    }
     case GA_USEPOWER_TELEPORTATION:
     {
-        qDebug()<<"GameView : in 'applyGamerAction' recive GA_USEPOWER";
+        qDebug()<<"GameView : in 'applyGamerAction' recive GA_USEPOWER_TELEPORTATION";
 
-        powerUi->usePower(ActionManager::actionToPower(cmd),nodeFrom, nodeTo);
+        if(nodeFrom != 0 && nodeTo != 0 && nodeFrom->getOwner() != 0 &&
+                nodeFrom->getOwner()->getId() == gamerId)
+        {
+            int ressources = nodeFrom->getRessources()/2;
+            nodeFrom->setRessources(nodeFrom->getRessources() - ressources);
+            Squad s(*nodeFrom->getOwner());
+            s.setNbRessources(ressources);
+            nodeTo->incoming(s);
+        }
         break;
     }
     default:
@@ -290,19 +349,44 @@ void GameView::applyGamerAction(QString s)
 /*METHODE PRIVE*/
 /*----------------------------------------------------*/
 
-void GameView::sendSquad(Node *from, Node *to)
+void GameView::setUpUI()
 {
-    if(from == 0 || to == 0 || from->getOwner() != owner) return;
+    powerUi = new PowerInterface();
+    powerUi->setX(0);
+    powerUi->setY(0);
+    powerUi->setMana(1000);
 
-    emit gamerAction(QString("%1.%2.%3.%4.%5").arg(GA_SEND).
-                     arg(owner->getId()).arg(from->getId()).
-                     arg(to->getId()).
-                     arg((int)(from->getRessources()*(percentToSend/100))));
+    const PowerCountDown &pcd = powerUi->getCountDownManager();
+    connect(powerUi,SIGNAL(powerPressed(ACTIONS)),this,SLOT(onPowerPressed(ACTIONS)));
+    connect(&pcd,SIGNAL(powerFinishing(ACTIONS,Node*,Node*)),this,SLOT(onPowerFinishing(ACTIONS,Node*,Node*)));
+    connect(&pcd,SIGNAL(powerStarting(ACTIONS,Node*,Node*)),this,SLOT(onPowerStarting(ACTIONS,Node*,Node*)));  
+    connect(&am,SIGNAL(doAction(ACTIONS,Node*)),this,SLOT(onDoAction(ACTIONS,Node*)));
+    connect(&am,SIGNAL(doAction(ACTIONS,Node*,Node*)),this,SLOT(onDoAction(ACTIONS,Node*,Node*)));
+
+    // Désactivation des scrollbars
+    setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
+    setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
+    setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate );
+    setRenderHint( QPainter::Antialiasing, true );
+
+    setScene(scene);
+
+    scene->addItem(powerUi);
 }
 
-void GameView::usePower(int nodeFromId, int nodeToId, POWER_NAME p)
+void GameView::sendSquad(Node *from, Node *to)
 {
-    emit gamerAction(QString("%1.%2.%3.%4.%5").arg(ActionManager::powerToAction(p)).
+    if(from != 0 && to != 0)
+    {
+        sendAction(GA_SEND, from->getId(), to->getId(),
+                   (int)(from->getRessources()*(percentToSend/100)));
+    }
+}
+
+
+void GameView::sendAction(ACTIONS a, int nodeFromId, int nodeToId, int param)
+{
+    emit gamerAction(QString("%1.%2.%3.%4.%5").arg(a).
                      arg(owner->getId()).arg(nodeFromId).
-                     arg(nodeToId).arg(p));
+                     arg(nodeToId).arg(param));
 }

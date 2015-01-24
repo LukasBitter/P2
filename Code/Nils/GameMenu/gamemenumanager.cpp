@@ -42,6 +42,7 @@ void GameMenuManager::goToLobbyAsClient()
 void GameMenuManager::goToGame(GameView *w)
 {
     qDebug()<<"GameMenuManager : want switch to game";
+    connect(w,SIGNAL(returnToMenu()),this,SLOT(returnToMenu()));
     layout->addWidget(w);
     layout->setCurrentWidget(w);
 }

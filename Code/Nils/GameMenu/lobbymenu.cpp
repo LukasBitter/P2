@@ -199,6 +199,8 @@ void LobbyMenu::onSuccessfulConnexion()
 {
     qDebug()<<"LobbyMenu : successfull connexion to server";
     txtConnected->setText("Connecté");
+    client->setColor(QColor(cbbColor->currentText()));
+    client->setSlot(cbbSlot->currentText().toInt());
 }
 
 void LobbyMenu::onAddMap(QString s)

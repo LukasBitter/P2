@@ -6,7 +6,6 @@
 #include "connexion.h"
 #include "enumlibrary.h"
 #include "gamerlist.h"
-#include "actionmanager.h"
 
 class GameScene;
 class EditorInterface;

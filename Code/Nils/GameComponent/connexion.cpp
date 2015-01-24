@@ -21,7 +21,7 @@
  * A la création un identifiant unique est défini.
  */
 Connexion::Connexion(Node &n1, Node &n2, const GamerList &gl)
-    : QGraphicsItem(0), n1(n1), n2(n2), lstGamer(gl)
+    : QGraphicsItem(0), n1(n1), n2(n2), lstGamer(gl), counterAdvance(0)
 {
     setNextId();
     setX(n1.x());

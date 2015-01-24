@@ -1,7 +1,6 @@
 #include "powerinterface.h"
 #include "GameComponent/node.h"
 #include "GameComponent/GameInterface/button.h"
-#include "GameComponent/GameInterface/Powers/power.h"
 
 
 /*----------------------------------------------------*/
@@ -10,7 +9,10 @@
 
 PowerInterface::PowerInterface(QGraphicsItem * parent) : QGraphicsWidget(parent),mana(0)
 {
+    setAcceptHoverEvents(true);
+    setCacheMode(DeviceCoordinateCache);
     setUpUI();
+    startTimer(1000);
 }
 
 /*----------------------------------------------------*/
@@ -19,7 +21,7 @@ PowerInterface::PowerInterface(QGraphicsItem * parent) : QGraphicsWidget(parent)
 
 QRectF PowerInterface::boundingRect() const
 {
-    return QRectF(0, 0, 100, 195);
+    return QRectF(0, 0, 90, 210);
 }
 
 void PowerInterface::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -33,10 +35,10 @@ void PowerInterface::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 
 void PowerInterface::timerEvent(QTimerEvent *event)
 {
-    powerDestroy.advence();
-    powerInvincibility.advence();
-    powerTeleportation.advence();
-    powerArmore.advence();
+    Q_UNUSED(event);
+
+    pcd.advence();
+    updateCD();
 }
 
 /*----------------------------------------------------*/
@@ -56,6 +58,11 @@ void PowerInterface::addMana(int mana)
 int PowerInterface::getMana() const
 {
     return mana;
+}
+
+const PowerCountDown &PowerInterface::getCountDownManager() const
+{
+    return pcd;
 }
 
 /*----------------------------------------------------*/
@@ -93,22 +100,50 @@ void PowerInterface::shortCutPressed(QKeyEvent *e)
 
 void PowerInterface::usePower(ACTIONS a, Node *n1, Node *n2)
 {
+    if(!pcd.isReady(a)) return;
+
+    int cost = 0;
+    int countDownTime = 0;
+    int powerDuration = 0;
+
     switch (a)
     {
     case GA_USEPOWER_DESTROY:
-        if(n1 != 0)usePowerDestroy(n1);
+    {
+        cost = 80;
+        countDownTime = 30;
+        powerDuration = 0;
         break;
+    }
     case GA_USEPOWER_INVINCIBILITY:
-        if(n1 != 0)usePowerInvincibility(n1);
+    {
+        cost = 50;
+        countDownTime = 30;
+        powerDuration = 5;
         break;
+    }
     case GA_USEPOWER_TELEPORTATION:
-        if(n1 != 0 && n2 != 0)usePowerTeleportation(n1, n2);
+    {
+        cost = 40;
+        countDownTime = 20;
+        powerDuration = 0;
         break;
+    }
     case GA_USEPOWER_ARMORE:
-        if(n1 != 0)usePowerArmore(n1);
+    {
+        countDownTime = 5;
+        powerDuration = 5;
+        cost = 10;
         break;
+    }
     default:
         break;
+    }
+
+    if(mana >= cost)
+    {
+        mana -= cost;
+        pcd.addCountDown(countDownTime, powerDuration, a, n1, n2);
     }
 }
 
@@ -131,6 +166,10 @@ void PowerInterface::btPowerArmorePressed()
 {
     emit powerPressed(GA_USEPOWER_ARMORE);
 }
+
+/*----------------------------------------------------*/
+/*METHODE PRIVE*/
+/*----------------------------------------------------*/
 
 void PowerInterface::setUpUI()
 {
@@ -167,58 +206,20 @@ void PowerInterface::setUpUI()
     btPowerInvincibility->setY(70);
     btPowerTeleportation->setY(115);
     btPowerArmore->setY(160);
-    txtCdPowerDestroy->setY(25);
-    txtCdPowerInvincibility->setY(70);
-    txtCdPowerTeleportation->setY(115);
-    txtCdPowerArmore->setY(160);
-    txtMana->setY(190);
+    txtCdPowerDestroy->setY(17);
+    txtCdPowerInvincibility->setY(62);
+    txtCdPowerTeleportation->setY(107);
+    txtCdPowerArmore->setY(152);
+    txtMana->setY(185);
 
 }
 
-void PowerInterface::usePowerDestroy(Node *n)
+void PowerInterface::updateCD()
 {
-    qDebug()<<"PowerInterface : enter 'usePowerDestroy'";
+    txtCdPowerDestroy->setPlainText(QString("%1 %").arg((int)pcd.percentReload(GA_USEPOWER_DESTROY)));
+    txtCdPowerInvincibility->setPlainText(QString("%1 %").arg((int)pcd.percentReload(GA_USEPOWER_INVINCIBILITY)));
+    txtCdPowerTeleportation->setPlainText(QString("%1 %").arg((int)pcd.percentReload(GA_USEPOWER_TELEPORTATION)));
+    txtCdPowerArmore->setPlainText(QString("%1 %").arg((int)pcd.percentReload(GA_USEPOWER_ARMORE)));
 
-    const int cost = 80;
-    if(mana >= cost)
-    {
-        mana -= cost;
-        powerDestroy.enablePower(n);
-    }
-}
-
-void PowerInterface::usePowerInvincibility(Node *n)
-{
-    qDebug()<<"PowerInterface : enter 'usePowerInvincibility'";
-
-    const int cost = 50;
-    if(mana >= cost)
-    {
-        mana -= cost;
-        powerInvincibility.enablePower(n);
-    }
-}
-
-void PowerInterface::usePowerTeleportation(Node *from, Node *to)
-{
-    qDebug()<<"PowerInterface : enter 'usePowerTeleportation'";
-
-    const int cost = 40;
-    if(mana >= cost)
-    {
-        mana -= cost;
-        powerTeleportation.enablePower(from, to);
-    }
-}
-
-void PowerInterface::usePowerArmore(Node *n)
-{
-    qDebug()<<"PowerInterface : enter 'usePowerArmore'";
-
-    const int cost = 10;
-    if(mana >= cost)
-    {
-        mana -= cost;
-        powerArmore.enablePower(n);
-    }
+    txtMana->setPlainText(QString("Mana : %1").arg(mana));
 }

@@ -16,11 +16,6 @@ HEADERS += \
     GameComponent/GameInterface/button.h \
     GameComponent/GameInterface/progressbar.h \
     GameComponent/GameInterface/powerinterface.h \
-    GameComponent/GameInterface/Powers/power.h \
-    GameComponent/GameInterface/Powers/powerarmore.h \
-    GameComponent/GameInterface/Powers/powerdestroy.h \
-    GameComponent/GameInterface/Powers/powerinvincibility.h \
-    GameComponent/GameInterface/Powers/powerteleportation.h \
     GameConnexion/client.h \
     GameConnexion/server.h \
     GameConnexion/gameserver.h \
@@ -34,8 +29,9 @@ HEADERS += \
     GameComponent/gameview.h \
     mapfile.h \
     GameComponent/editview.h \
-    GameComponent/actionmanager.h \
-    GameComponent/GameInterface/editorinterface.h
+    GameComponent/GameInterface/editorinterface.h \
+    GameComponent/GameInterface/Powers/powercountdown.h \
+    GameComponent/actionmanager.h
 
 SOURCES += \
     GameComponent/connexion.cpp \
@@ -46,11 +42,6 @@ SOURCES += \
     GameComponent/GameInterface/button.cpp \
     GameComponent/GameInterface/progressbar.cpp \
     GameComponent/GameInterface/powerinterface.cpp \
-    GameComponent/GameInterface/Powers/power.cpp \
-    GameComponent/GameInterface/Powers/powerarmore.cpp \
-    GameComponent/GameInterface/Powers/powerdestroy.cpp \
-    GameComponent/GameInterface/Powers/powerinvincibility.cpp \
-    GameComponent/GameInterface/Powers/powerteleportation.cpp \
     GameConnexion/client.cpp \
     GameConnexion/server.cpp \
     GameConnexion/gameserver.cpp \
@@ -64,8 +55,9 @@ SOURCES += \
     GameComponent/gameview.cpp \
     mapfile.cpp \
     GameComponent/editview.cpp \
-    GameComponent/actionmanager.cpp \
-    GameComponent/GameInterface/editorinterface.cpp
+    GameComponent/GameInterface/editorinterface.cpp \
+    GameComponent/GameInterface/Powers/powercountdown.cpp \
+    GameComponent/actionmanager.cpp
 
 OTHER_FILES += \
     Notes.txt

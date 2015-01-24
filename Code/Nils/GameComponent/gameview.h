@@ -27,19 +27,38 @@ class GameView: public QGraphicsView
 
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
+    void initialize();
     explicit GameView(GamerList &gl, Gamer *g = 0, QWidget *parent=0);
     explicit GameView(QString create, GamerList &gl, Gamer *g=0, QWidget *parent=0);
     virtual ~GameView();
+
+    /*SURCHARGE*/
+    void keyPressEvent(QKeyEvent *e);
+    void mousePressEvent(QMouseEvent *e);
+    void dropEvent(QDropEvent *event);
+
+    /*ASSESSEUR / MUTATEUR*/
+    void setPercentToSend(int percent);
+
     /*DELEGUES*/
     QString getUpdateString();
     void updateFromString(QString s);
     QString getCreationString();
-
-signals:
-    void returnToMenu();
-
 public slots:
     void advance();
+
+    /*SIGNALS/SLOTS*/
+signals:
+    void gamerAction(QString action);
+    void returnToMenu();
+public slots:
+    void applyGamerAction(QString action);
+private slots:
+    void onPowerPressed(ACTIONS action);
+    void onPowerStarting(ACTIONS a, Node *n1,Node *n2);
+    void onPowerFinishing(ACTIONS a, Node *n1,Node *n2);
+    void onDoAction(ACTIONS action, Node *n);
+    void onDoAction(ACTIONS action, Node *n1, Node *n2);
 private:
     /*INTERFACE*/
     PowerInterface *powerUi; ///< Interface utilisateur de gestion des pouvoirs
@@ -49,47 +68,14 @@ private:
 
     /*OUTIL*/
     GameScene * scene; ///< Scene de jeu
-    ActionManager actionManager;
-    float percentToSend; ///< Pourcentage du noeud à envoyer lors d'un envoi
+    ActionManager am;
+    double percentToSend; ///< Pourcentage du noeud à envoyer lors d'un envoi
 
     /*METHODE PRIVE*/
     void setUpUI();
-
-
-    /*----------------------------------------------------*/
-    /*CAPTURE ACTIONS CLIENT*/
-    /*----------------------------------------------------*/
-
-public:
-    /*SURCHARGE*/
-    void keyPressEvent(QKeyEvent *e);
-    void dropEvent(QDropEvent *event);
-
-    /*ASSESSEUR / MUTATEUR*/
-    void setPercentToSend(int percent);
-
-    /*SIGNALS/SLOTS*/
-signals:
-    void gamerAction(QString action);
-private slots:
-    void selectionChange();
-    void onDoAction(ACTIONS action);
-    void onDoAction(ACTIONS action, Node *n);
-    void onDoAction(ACTIONS action, Node *n1, Node *n2);
-    void onPowerPressed( action);
-
-    /*----------------------------------------------------*/
-    /*RECEPTION ACTIONS SERVEUR*/
-    /*----------------------------------------------------*/
-
-public slots:
-    void applyGamerAction(QString action);
-
-private:
-    /*METHODE PRIVE*/
     void sendSquad(Node *from, Node *to);
-    void usePower(int nodeFromId, int nodeToId, POWER_NAME p);
-
- };
+    void teleportSquad(Node *from, Node *to);
+    void sendAction(ACTIONS a, int nodeFromId, int nodeToId, int param);
+};
 
 #endif // GAMEVIEW_H

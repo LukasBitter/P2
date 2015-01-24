@@ -18,17 +18,16 @@ class ActionManager : public QObject
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     ActionManager(QObject *parent = 0);
-    virtual ~ActionManager();
+
 
     /*SIGNALS/SLOTS*/
 signals:
-    void doAction(ACTIONS action);
     void doAction(ACTIONS action, Node *n);
     void doAction(ACTIONS action, Node *n1, Node *n2);
 public slots:
     void selectionChanged(Node *n);
     void actionChanged(ACTIONS action);
-    void clear();
+    void reset();
 
 private:
     /*OUTIL*/
@@ -37,7 +36,6 @@ private:
     ACTIONS action;
 
     /*METHODE PRIVE*/
-    void reset();
 };
 
 #endif // ACTIONMANAGER_H

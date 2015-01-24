@@ -157,8 +157,6 @@ void GameClient::onClientConnected()
 
     QString message = QString("%1#").arg(C_REQUEST_SLOT);
     client->sendMessageToServer(message);
-
-    emit connexionOk();
 }
 
 void GameClient::sendClientAction(QString actionString)
@@ -196,7 +194,14 @@ void GameClient::receive_C_INFORMATION(const QString &msg)
 {
     NETWORK_INFORMATION info = (NETWORK_INFORMATION)msg.toInt();
 
-    emit errorOccured(info);
+    if(info == I_CLIENT_PARAMETRED)
+    {
+        emit connexionOk();
+    }
+    else
+    {
+        emit errorOccured(info);
+    }
 }
 
 void GameClient::receive_C_LAUNCH_GAME(const QString &msg)

@@ -37,7 +37,9 @@ void EditView::mousePressEvent(QMouseEvent *e)
 {
     if(e->button()!= Qt::LeftButton) return;
 
-    if(a == EA_ADD)
+    switch (a)
+    {
+    case EA_ADD:
     {
         Gamer *g = editorUi->isSpawnNodeChecked() ? spawnGamer : 0;
         Node *n = new Node(e->x(), e->y(),20*editorUi->getNodeSize(),
@@ -46,14 +48,16 @@ void EditView::mousePressEvent(QMouseEvent *e)
         n->setRessources(editorUi->getNodeRessource());
         scene->addNode(*n);
         a = NO_ACTION;
+        break;
     }
-    else if(a == EA_REMOVE)
+    case EA_REMOVE:
     {
         Node *n = dynamic_cast <Node*>(itemAt(e->pos()));
         if(n != 0) scene->removeNode(*n);
         a = NO_ACTION;
+        break;
     }
-    else if(a == EA_CONNECT)
+    case EA_CONNECT:
     {
         Node *n = dynamic_cast <Node*>(itemAt(e->pos()));
         if(n != 0)
@@ -69,9 +73,9 @@ void EditView::mousePressEvent(QMouseEvent *e)
                 memory = n;
             }
         }
-
+        break;
     }
-    else if(a == EA_DISCONNECT)
+    case EA_DISCONNECT:
     {
         Node *n = dynamic_cast <Node*>(itemAt(e->pos()));
         if(n != 0)
@@ -87,8 +91,14 @@ void EditView::mousePressEvent(QMouseEvent *e)
                 memory = n;
             }
         }
+        break;
     }
+    default:
+        break;
+    }
+
     scene->update(scene->sceneRect());
+    QGraphicsView::mousePressEvent(e);
 }
 
 /*----------------------------------------------------*/

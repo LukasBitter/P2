@@ -3,13 +3,9 @@
 
 #include "global.h"
 #include "enumlibrary.h"
-#include "GameComponent/GameInterface/Powers/powerarmore.h"
-#include "GameComponent/GameInterface/Powers/powerdestroy.h"
-#include "GameComponent/GameInterface/Powers/powerinvincibility.h"
-#include "GameComponent/GameInterface/Powers/powerteleportation.h"
+#include "GameComponent/GameInterface/Powers/powercountdown.h"
 
 class Node;
-class Power;
 class Button;
 class QGraphicsTextItem;
 
@@ -41,18 +37,20 @@ public:
     void setMana(int mana);
     void addMana(int mana);
     int getMana()const;
+    const PowerCountDown &getCountDownManager()const;
 
     /*SIGNALS/SLOTS*/
 signals:
     void powerPressed(ACTIONS a);
 public slots:
     void shortCutPressed(QKeyEvent *e);
-    void usePower(ACTIONS a, Node *n1, Node *n2);
+    void usePower(ACTIONS a, Node* n1, Node* n2);
 private slots:
     void btPowerDestroyPressed();
     void btPowerInvincibilityPressed();
     void btPowerTeleportationPressed();
     void btPowerArmorePressed();
+
 
 private:
     /*INTERFACE*/
@@ -68,17 +66,11 @@ private:
 
     /*OUTIL*/
     int mana; ///< Réservoir de ressources consomées par les pouvoirs
-    PowerDestroy powerDestroy;
-    PowerInvincibility powerInvincibility;
-    PowerTeleportation powerTeleportation;
-    PowerArmore powerArmore;
+    PowerCountDown pcd;
 
     /*METHODE PRIVE*/
     void setUpUI();
-    void usePowerDestroy(Node *n);
-    void usePowerInvincibility(Node *n);
-    void usePowerTeleportation(Node *from, Node *to);
-    void usePowerArmore(Node *n);
+    void updateCD();
 };
 
 #endif // POWERINTERFACE_H

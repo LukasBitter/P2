@@ -1,5 +1,5 @@
 #include "actionmanager.h"
-#include "global.h"
+
 
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
@@ -8,11 +8,6 @@
 ActionManager::ActionManager(QObject *parent) :
     QObject(parent), currentSelection(0), lastSelection(0),
     action(NO_ACTION)
-{
-
-}
-
-ActionManager::~ActionManager()
 {
 
 }
@@ -27,37 +22,37 @@ void ActionManager::selectionChanged(Node *n)
 
     if(n == 0)
     {
-        qDebug()<<"1-1";
         reset();
     }
     else
     {
-        qDebug()<<"1-2";
-        lastSelection = currentSelection;
-        currentSelection = n;
-
-        if(action != NO_ACTION)
+        if(currentSelection == 0)
         {
+            currentSelection = n;
             emit doAction(action, currentSelection);
-            if(lastSelection != 0)
-            {
-                emit doAction(action, lastSelection, currentSelection);
-                action = NO_ACTION;
-            }
+        }
+        else
+        {
+            lastSelection = currentSelection;
+            currentSelection = n;
+
+            emit doAction(action, lastSelection, currentSelection);
         }
     }
 }
 
 void ActionManager::actionChanged(ACTIONS a)
 {
-    qDebug()<<"ActionManager : enter 'actionChanged' : "<<a;
+    qDebug()<<"ActionManager : enter 'actionChanged'";
 
     action = a;
-}
+    currentSelection = 0;
+    lastSelection = 0;
 
-void ActionManager::clear()
-{
-    reset();
+    if(a == NO_ACTION)
+    {
+        reset();
+    }
 }
 
 /*----------------------------------------------------*/
