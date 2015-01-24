@@ -1,9 +1,9 @@
 #include "gamemenumanager.h"
 #include "lobbymenu.h"
 #include "welcomemenu.h"
-#include "gamecontext.h"
-#include "editormenu.h"
 #include "global.h"
+#include "GameComponent/gameview.h"
+#include "GameComponent/editview.h"
 
 
 /*----------------------------------------------------*/
@@ -39,17 +39,16 @@ void GameMenuManager::goToLobbyAsClient()
     layout->setCurrentWidget(lobbymenu);
 }
 
-void GameMenuManager::goToGame(GameContext *gc)
+void GameMenuManager::goToGame(GameView *w)
 {
     qDebug()<<"GameMenuManager : want switch to game";
-    layout->addWidget(gc);
-    layout->setCurrentWidget(gc);
+    layout->addWidget(w);
+    layout->setCurrentWidget(w);
 }
 
 void GameMenuManager::goToEditor()
 {
     qDebug()<<"GameMenuManager : want switch to editor";
-    editormenu->newView();
     layout->setCurrentWidget(editormenu);
 }
 
@@ -69,7 +68,7 @@ void GameMenuManager::setUpUI()
     //INSTANTIATION
 
     welcomemenu = new WelcomeMenu(this);
-    editormenu = new EditorMenu(this);
+    editormenu = new EditView(this);
     lobbymenu = new LobbyMenu(this);
 
     //CONNEXION
@@ -79,7 +78,8 @@ void GameMenuManager::setUpUI()
     connect(welcomemenu,SIGNAL(btEditorPressed()),this,SLOT(goToEditor()));
     connect(welcomemenu,SIGNAL(btQuitPressed()),this,SLOT(close()));
     connect(lobbymenu,SIGNAL(returnToMenu()),this,SLOT(returnToMenu()));
-    connect(lobbymenu,SIGNAL(play(GameContext*)),this,SLOT(goToGame(GameContext*)));
+    connect(editormenu,SIGNAL(returnToMenu()),this,SLOT(returnToMenu()));
+    connect(lobbymenu,SIGNAL(play(GameView*)),this,SLOT(goToGame(GameView*)));
 
     //AJOUT LAYOUT
 

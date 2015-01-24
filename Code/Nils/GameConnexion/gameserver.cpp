@@ -6,10 +6,6 @@
 #include "mapfile.h"
 
 
-#define MAP_FILE "./maps"
-#define MAP_EXTENSION "*.rtsmap"
-
-
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
@@ -129,7 +125,7 @@ void GameServer::loadMapsFromFile()
     }
 
     QStringList filter;
-    filter << MAP_EXTENSION;
+    filter << MAP_EXTENSION_FILTER;
     lstMapName = d.entryList(filter);
 }
 

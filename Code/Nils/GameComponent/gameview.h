@@ -30,11 +30,14 @@ public:
     explicit GameView(GamerList &gl, Gamer *g = 0, QWidget *parent=0);
     explicit GameView(QString create, GamerList &gl, Gamer *g=0, QWidget *parent=0);
     virtual ~GameView();
-
     /*DELEGUES*/
     QString getUpdateString();
     void updateFromString(QString s);
     QString getCreationString();
+
+signals:
+    void returnToMenu();
+
 public slots:
     void advance();
 private:

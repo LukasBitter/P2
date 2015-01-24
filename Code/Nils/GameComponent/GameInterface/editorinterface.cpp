@@ -11,6 +11,21 @@ EditorInterface::EditorInterface(QWidget *parent) : QWidget(parent)
     setUpUI();
 }
 
+bool EditorInterface::isSpawnNodeChecked() const
+{
+    return cbtIsSpawn->isChecked();
+}
+
+int EditorInterface::getNodeSize() const
+{
+    return spSize->value();
+}
+
+int EditorInterface::getNodeRessource() const
+{
+    return spRessource->value();
+}
+
 /*----------------------------------------------------*/
 /*SIGNALS/SLOTS*/
 /*----------------------------------------------------*/
@@ -58,6 +73,9 @@ void EditorInterface::setUpUI()
 {
     //INSTANTIATION
 
+    spRessource = new QSpinBox(this);
+    spSize = new QSpinBox(this);
+    cbtIsSpawn = new QCheckBox("Spawn node", this);
     btCreateNode = new QPushButton("Create node", this);
     btRemoveNode = new QPushButton("Delete node", this);
     btConnectNode = new QPushButton("Connect node", this);
@@ -65,6 +83,13 @@ void EditorInterface::setUpUI()
     btReturn = new QPushButton("Retour", this);
     btLoadFromFile = new QPushButton("Ouvrir", this);
     btSaveToFile = new QPushButton("Sauver", this);
+
+    //PARAMETRAGE
+
+    spRessource->setMaximum(150);
+    spRessource->setMinimum(0);
+    spSize->setMaximum(3);
+    spSize->setMinimum(1);
 
     //CONNEXION
 
@@ -80,13 +105,19 @@ void EditorInterface::setUpUI()
 
     QGridLayout *layout = new QGridLayout(this);
 
-    layout->addWidget(btCreateNode, 0,0);
-    layout->addWidget(btRemoveNode, 1,0);
-    layout->addWidget(btConnectNode, 2,0);
-    layout->addWidget(btDisconnectNode, 3,0);
-    layout->addWidget(btLoadFromFile, 4,0);
-    layout->addWidget(btSaveToFile, 5,0);
-    layout->addWidget(btReturn, 6,0);
+    layout->addWidget(new QLabel("Node size", this), 0,0);
+    layout->addWidget(spSize, 1,0);
+    layout->addWidget(new QLabel("Initial ressource", this), 2,0);
+    layout->addWidget(spRessource, 3,0);
+    layout->addWidget(cbtIsSpawn, 4,0);
+    layout->addWidget(btCreateNode, 10,0);
+    layout->addWidget(btRemoveNode, 11,0);
+    layout->addWidget(btConnectNode, 12,0);
+    layout->addWidget(btDisconnectNode, 13,0);
+    layout->addWidget(new QLabel("Open / save", this), 20,0);
+    layout->addWidget(btLoadFromFile, 21,0);
+    layout->addWidget(btSaveToFile, 22,0);
+    layout->addWidget(btReturn, 23,0);
 
     this->setLayout(layout);
 

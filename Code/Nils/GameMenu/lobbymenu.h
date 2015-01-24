@@ -14,7 +14,7 @@ class QTextEdit;
 class QLineEdit;
 class GameClient;
 class GameServer;
-class GameContext;
+class GameView;
 class QLabel;
 
 namespace GameMenu
@@ -32,7 +32,7 @@ public:
     /*SIGNALS/SLOTS*/
 signals:
     void returnToMenu();
-    void play(GameContext *gc);
+    void play(GameView *gc);
     void mapSelectionUpdate();
 
 public slots:

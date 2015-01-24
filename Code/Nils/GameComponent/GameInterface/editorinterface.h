@@ -19,6 +19,10 @@ class EditorInterface : public QWidget
 public:
     explicit EditorInterface(QWidget *parent = 0);
 
+    bool isSpawnNodeChecked()const;
+    int getNodeSize()const;
+    int getNodeRessource()const;
+
     /*SIGNALS/SLOTS*/
 signals:
     void btActionPressed(ACTIONS);
@@ -36,6 +40,9 @@ private slots:
 
 private:
     /*INTERFACE*/
+    QSpinBox *spRessource;
+    QSpinBox *spSize;
+    QCheckBox *cbtIsSpawn;
     QPushButton *btCreateNode;
     QPushButton *btRemoveNode;
     QPushButton *btConnectNode;

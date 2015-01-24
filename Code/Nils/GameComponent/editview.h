@@ -9,8 +9,9 @@
 #include "actionmanager.h"
 
 class GameScene;
-class PowerInterface;
 class EditorInterface;
+class Node;
+class Gamer;
 
 namespace GameComponent
 {
@@ -41,6 +42,8 @@ public:
     void saveMapName(QString s);
 
     /*SIGNALS/SLOTS*/
+signals:
+    void returnToMenu();
 private slots:
     void onBtActionPressed(ACTIONS a);
     void onBtSaveToFilePressed();
@@ -54,12 +57,12 @@ private:
     /*OUTIL*/
     GameScene * scene; ///< Scene de jeu
     GamerList lstGamer;
+    Gamer *spawnGamer;
     ACTIONS a;
     Node *memory;
 
     /*METHODE PRIVE*/
     void setUpUI();
-    QStringList normalizeNode();
 };
 
 #endif // EDITVIEW_H

@@ -16,7 +16,10 @@
 EditView::EditView(QWidget *parent) : QGraphicsView(parent),
     scene(0), editorUi(0), memory(0), a(NO_ACTION)
 {
-    scene = new GameScene(lstGamer, 0, this);
+    spawnGamer = new Gamer();
+    spawnGamer->setColor(Qt::gray);
+    lstGamer.addGamer(spawnGamer);
+    scene = new GameScene(lstGamer, 0, 0);
     setScene(scene);
     setUpUI();
 }
@@ -36,7 +39,11 @@ void EditView::mousePressEvent(QMouseEvent *e)
 
     if(a == EA_ADD)
     {
-        Node *n = new Node(e->x(), e->y(),30,0,lstGamer,0);
+        Gamer *g = editorUi->isSpawnNodeChecked() ? spawnGamer : 0;
+        Node *n = new Node(e->x(), e->y(),20*editorUi->getNodeSize(),
+                           50*editorUi->getNodeSize(),lstGamer,g);
+        n->setRessourcesRate(editorUi->getNodeSize());
+        n->setRessources(editorUi->getNodeRessource());
         scene->addNode(*n);
         a = NO_ACTION;
     }
@@ -101,17 +108,18 @@ void EditView::loadMapName(QString s)
 {
     MapFile m;
     m.loadFromFile(s);
-    QList<Gamer *> l = lstGamer.getLstGamer().values();
-    if(m.isValide() && m.getNumberOfSlot() <= l.size())
+    if(m.isValide() && m.getNumberOfSlot() <= MAX_GAMER)
     {
+        delete scene;
         scene = new GameScene(m.getCreationString(),lstGamer, 0, this);
         setScene(scene);
         scene->updateFromString(m.getUpdateString());
 
         for (int i = 0; i < m.getNumberOfSlot(); ++i)
         {
-            m.getSlot(i,l.value(i,0));
+            scene->updateFromString(m.getSlot(i,spawnGamer));
         }
+        scene->update(scene->sceneRect());
     }
 }
 
@@ -126,6 +134,7 @@ void EditView::saveMapName(QString s)
     m.setCreationString(scene->getCreationString());
     m.setUpdateString(scene->getUpdateString());
     m.saveToFile(s);
+    loadMapName(s);
 }
 
 /*----------------------------------------------------*/
@@ -139,17 +148,57 @@ void EditView::onBtActionPressed(ACTIONS a)
 
 void EditView::onBtSaveToFilePressed()
 {
-    MapFile m;
+    bool ok;
+    QString text;
+    text = QInputDialog::getText(this, tr("Sauver la map")
+                                         ,tr("Nom :"), QLineEdit::Normal,
+                                         "", &ok);
+    if(ok)
+    {
+        QString path = QString("%1/%2.%3").arg(MAP_FILE).arg(text).arg(MAP_EXTENSION);
+        qDebug()<< path;
+        if(QFile(path).exists())
+        {
+            QMessageBox msgBox;
+            msgBox.setText("La map existe déjà !");
+            msgBox.exec();
+        }
+        else
+        {
+            saveMapName(path);
+        }
+    }
 }
 
 void EditView::onBtLoadFromFilePressed()
 {
 
+    bool ok;
+    QString text;
+    text = QInputDialog::getText(this, tr("Ouvrir la map")
+                                         ,tr("Nom :"), QLineEdit::Normal,
+                                         "", &ok);
+    if(ok)
+    {
+        QString path = QString("%1/%2.%3").arg(MAP_FILE).arg(text).arg(MAP_EXTENSION);
+        qDebug()<< path;
+        if(!QFile(path).exists())
+        {
+            QMessageBox msgBox;
+            msgBox.setText("La map n'existe pas !");
+            msgBox.exec();
+        }
+        else
+        {
+            loadMapName(path);
+        }
+    }
 }
 
 void EditView::onBtReturnPressed()
 {
-
+    qDebug()<<"EditView : want switch to menu";
+    emit returnToMenu();
 }
 
 /*----------------------------------------------------*/

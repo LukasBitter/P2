@@ -97,7 +97,6 @@ void Node::advance(int step)
 {
     if(step == 0) return;
 
-    update();
     //Wait number of tic
     if(counterAdvance < 10)
     {
@@ -263,8 +262,6 @@ void Node::incoming(Squad s)
             setRessources(nbRessources-ressource);
         }
     }
-
-    update();
 }
 
 void Node::sendSquad(int ressource, int nodeId)
@@ -280,8 +277,6 @@ void Node::sendSquad(int ressource, int nodeId)
             mapConnexion.value(nodeId)->sendSquad(s, getId());
         }
     }
-
-    update();
 }
 
 /*----------------------------------------------------*/
@@ -326,18 +321,15 @@ void Node::updateFromString(QString &s)
     {
         qCritical()<<"Node : unexpected case in 'updateFromString'";
     }
-    update();
-
 }
 
 QString Node::normalizeSpawn()
 {
-    qDebug()<<QString("%1,%2,%3,%4,%5").arg(nbRessources).
-              arg(ressourcesRate).arg("%1").arg(armorLvl).
-               arg(invicible);
-    return QString("%1,%2,%3,%4,%5").arg(nbRessources).
-           arg(ressourcesRate).arg("%1").arg(armorLvl).
-            arg(invicible);
+    QString s = QString("%1,%2,%3,%4,%5").arg(nbRessources).
+               arg(ressourcesRate).arg("@").arg(armorLvl).
+                arg(invicible);
+    s.replace(s.indexOf("@"),1,"%1");
+    return s;
 }
 
 /*----------------------------------------------------*/

@@ -52,5 +52,8 @@ enum NETWORK_INFORMATION
 
 #define MAX_GAMER 4
 #define VERSION_MAP 1
+#define MAP_FILE "./maps"
+#define MAP_EXTENSION "rtsmap"
+#define MAP_EXTENSION_FILTER "*.rtsmap"
 
 #endif // ENUMLIB_H

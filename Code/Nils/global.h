@@ -33,5 +33,6 @@
 #include <QtMath>
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsWidget>
+#include <QSpinBox>
 
 #endif // GLOBAL_H

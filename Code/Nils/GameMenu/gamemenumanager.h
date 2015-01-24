@@ -5,10 +5,10 @@
 
 class WelcomeMenu;
 class LobbyMenu;
-class EditorMenu;
+class EditView;
 class QWidget;
 class QStackedLayout;
-class GameContext;
+class GameView;
 
 namespace GameMenu
 {
@@ -30,7 +30,7 @@ public slots:
 private slots:
     void goToLobbyAsHost();
     void goToLobbyAsClient();
-    void goToGame(GameContext *gc);
+    void goToGame(GameView *w);
     void goToEditor();
 
 private:
@@ -39,7 +39,7 @@ private:
     QStackedLayout *layout;
     WelcomeMenu *welcomemenu;
     LobbyMenu *lobbymenu;
-    EditorMenu *editormenu;
+    EditView *editormenu;
 
     /*METHODE PRIVE*/
     void setUpUI();

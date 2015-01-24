@@ -1,7 +1,6 @@
 #include "lobbymenu.h"
 #include "GameConnexion/gameclient.h"
 #include "GameConnexion/gameserver.h"
-#include "gamecontext.h"
 #include "gamerlist.h"
 #include "gamer.h"
 #include "global.h"
@@ -81,32 +80,14 @@ void LobbyMenu::updateUI()
 void LobbyMenu::launchGame()
 {
     qDebug()<<"LobbyMenu : enter 'launchGame'";
-    GameContext *gc = 0;
-    if( host && client != 0 && server != 0)
+
+    if(client != 0)
     {
-        qDebug()<<"LobbyMenu : launch game as host";
-        gc = new GameContext(client, server);
-    }
-    else if(!host && client != 0)
-    {
-        qDebug()<<"LobbyMenu : launch game as client";
-        gc = new GameContext(client);
+        emit play(client->getMap());
     }
     else
     {
         qCritical()<<"LobbyMenu : unexpected case in 'launchGame' no server and no client";
-    }
-
-    if(gc != 0)
-    {
-        //Perte volontaire des pinteur
-        client = 0;
-        server = 0;
-        emit play(gc);
-    }
-    else
-    {
-        qCritical()<<"LobbyMenu : unexpected case in 'launchGame' gamecontext no created";
     }
 }
 

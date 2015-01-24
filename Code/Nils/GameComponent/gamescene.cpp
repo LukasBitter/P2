@@ -171,8 +171,10 @@ void GameScene::removeNode(Node &n)
 
     foreach (Connexion *c, n.getConnexions())
     {
+        lstConnexion.remove(c->getId());
         removeItem(c);
     }
+    lstNode.remove(n.getId());
     removeItem(&n);
 }
 
@@ -181,6 +183,7 @@ void GameScene::removeConnexion(Node &n1, Node &n2)
     qDebug()<<"GameScene : enter 'removeConnexion'";
 
     Connexion *c = n1.getConnexion(n2.getId());
+    lstConnexion.remove(c->getId());
     removeItem(c);
 }
 

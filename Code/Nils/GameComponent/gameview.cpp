@@ -47,6 +47,7 @@ void GameView::updateFromString(QString s)
 {
     scene->updateFromString(s);
     powerUi->advence();
+    scene->update(scene->sceneRect());
 }
 
 QString GameView::getCreationString()

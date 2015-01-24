@@ -208,9 +208,9 @@ void MapFile::saveFileLine(const QString &file, const QStringList &line)const
 
     QFile f(file);
 
-    if(!f.exists())
+    if(f.exists())
     {
-        qWarning()<<"MapFile : the file dosen't exist";
+        qWarning()<<"MapFile : the file already exist";
     }
     else
     {
