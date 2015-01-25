@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>.DS_Store</file>
-        <file>Background-01.jpg</file>
+        <file>Background.jpg</file>
         <file>Button1Click.png</file>
         <file>Button1Hover.png</file>
         <file>Button1Normal.png</file>
