@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>.DS_Store</file>
+        <file>Background-01.jpg</file>
         <file>Button1Click.png</file>
         <file>Button1Hover.png</file>
         <file>Button1Normal.png</file>
@@ -41,5 +42,6 @@
         <file>NodeYellowC.png</file>
         <file>NodeYellowN.png</file>
         <file>SpriteSheet-01.png</file>
+        <file>Thumbs.db</file>
     </qresource>
 </RCC>
