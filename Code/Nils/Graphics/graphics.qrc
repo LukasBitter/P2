@@ -1,2 +1,45 @@
-<RCC/>
-
+<RCC>
+    <qresource prefix="/">
+        <file>.DS_Store</file>
+        <file>Button1Click.png</file>
+        <file>Button1Hover.png</file>
+        <file>Button1Normal.png</file>
+        <file>Button2Click.png</file>
+        <file>Button2Hover.png</file>
+        <file>Button2Normal.png</file>
+        <file>Button3Click.png</file>
+        <file>Button3Hover.png</file>
+        <file>Button3Normal.png</file>
+        <file>Button4Click.png</file>
+        <file>Button4Hover.png</file>
+        <file>Button4Normal.png</file>
+        <file>ButtonBackground.png</file>
+        <file>ButtonMain.png</file>
+        <file>graphics.qrc</file>
+        <file>LineGreen.png</file>
+        <file>LineRed.png</file>
+        <file>NodeGreenC.png</file>
+        <file>NodeGreenN.png</file>
+        <file>NodeOrangeC.png</file>
+        <file>NodeOrangeN.png</file>
+        <file>NodeRedC.png</file>
+        <file>NodeRedN.png</file>
+        <file>NodeRingGreenH.png</file>
+        <file>NodeRingGreenN.png</file>
+        <file>NodeRingOrangeH.png</file>
+        <file>NodeRingOrangeN.png</file>
+        <file>NodeRingRedH.png</file>
+        <file>NodeRingRedN.png</file>
+        <file>NodeRingWhiteH.png</file>
+        <file>NodeRingWhiteN.png</file>
+        <file>NodeRingYellowH.png</file>
+        <file>NodeRingYellowN.png</file>
+        <file>NodeSpclC.png</file>
+        <file>NodeSpclN.png</file>
+        <file>NodeWhiteC.png</file>
+        <file>NodeWhiteN.png</file>
+        <file>NodeYellowC.png</file>
+        <file>NodeYellowN.png</file>
+        <file>SpriteSheet-01.png</file>
+    </qresource>
+</RCC>
