@@ -1,12 +1,11 @@
 #include "editview.h"
-#include "nodecombat.h"
-#include "nodemana.h"
-#include "connexion.h"
+#include "GameComponent/Logic/nodecombat.h"
+#include "GameComponent/Logic/nodemana.h"
+#include "GameComponent/Logic/connexion.h"
+#include "GameComponent/Logic/gamescene.h"
 #include "gamer.h"
-#include "gamescene.h"
 #include "mapfile.h"
-#include "GameInterface/editorinterface.h"
-#include "GameInterface/powerinterface.h"
+#include "editorinterface.h"
 #include "global.h"
 
 

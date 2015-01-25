@@ -1,6 +1,6 @@
 #include "mapfile.h"
+#include "GameComponent/Logic/node.h"
 #include "gamer.h"
-#include "GameComponent/node.h"
 #include "global.h"
 
 

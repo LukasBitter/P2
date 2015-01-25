@@ -8,10 +8,10 @@ TEMPLATE = app
 PRECOMPILED_HEADER = global.h
 
 HEADERS += \
-    GameComponent/connexion.h \
-    GameComponent/squad.h \
-    GameComponent/identitytoken.h \
-    GameComponent/gamescene.h \
+    GameComponent/Logic/connexion.h \
+    GameComponent/Logic/squad.h \
+    GameComponent/Logic/identitytoken.h \
+    GameComponent/Logic/gamescene.h \
     GameComponent/GameInterface/button.h \
     GameComponent/GameInterface/progressbar.h \
     GameComponent/GameInterface/powerinterface.h \
@@ -25,22 +25,22 @@ HEADERS += \
     gamerlist.h \
     gamer.h \
     enumlibrary.h \
-    GameComponent/gameview.h \
+    GameComponent/GameInterface/gameview.h \
     mapfile.h \
-    GameComponent/editview.h \
-    GameComponent/GameInterface/editorinterface.h \
+    GameComponent/EditorInterface/editview.h \
+    GameComponent/EditorInterface/editorinterface.h \
     GameComponent/GameInterface/powercountdown.h \
-    GameComponent/actionmanager.h \
+    GameComponent/GameInterface/actionmanager.h \
     GameMenu/endgamemenu.h \
-    GameComponent/nodecombat.h \
-    GameComponent/nodemana.h \
-    GameComponent/node.h
+    GameComponent/Logic/nodecombat.h \
+    GameComponent/Logic/nodemana.h \
+    GameComponent/Logic/node.h
 
 SOURCES += \
-    GameComponent/connexion.cpp \
-    GameComponent/squad.cpp \
-    GameComponent/identitytoken.cpp \
-    GameComponent/gamescene.cpp \
+    GameComponent/Logic/connexion.cpp \
+    GameComponent/Logic/squad.cpp \
+    GameComponent/Logic/identitytoken.cpp \
+    GameComponent/Logic/gamescene.cpp \
     GameComponent/GameInterface/button.cpp \
     GameComponent/GameInterface/progressbar.cpp \
     GameComponent/GameInterface/powerinterface.cpp \
@@ -54,16 +54,16 @@ SOURCES += \
     gamerlist.cpp \
     gamer.cpp \
     main.cpp \
-    GameComponent/gameview.cpp \
+    GameComponent/GameInterface/gameview.cpp \
     mapfile.cpp \
-    GameComponent/editview.cpp \
-    GameComponent/GameInterface/editorinterface.cpp \
+    GameComponent/EditorInterface/editview.cpp \
+    GameComponent/EditorInterface/editorinterface.cpp \
     GameComponent/GameInterface/powercountdown.cpp \
-    GameComponent/actionmanager.cpp \
+    GameComponent/GameInterface/actionmanager.cpp \
     GameMenu/endgamemenu.cpp \
-    GameComponent/nodecombat.cpp \
-    GameComponent/nodemana.cpp \
-    GameComponent/node.cpp
+    GameComponent/Logic/nodecombat.cpp \
+    GameComponent/Logic/nodemana.cpp \
+    GameComponent/Logic/node.cpp
 
 OTHER_FILES += \
     Notes.txt

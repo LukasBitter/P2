@@ -3,8 +3,8 @@
 #include "welcomemenu.h"
 #include "endgamemenu.h"
 #include "global.h"
-#include "GameComponent/gameview.h"
-#include "GameComponent/editview.h"
+#include "GameComponent/GameInterface/gameview.h"
+#include "GameComponent/EditorInterface/editview.h"
 
 
 /*----------------------------------------------------*/

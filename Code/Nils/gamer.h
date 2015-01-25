@@ -3,7 +3,7 @@
 
 #include <QColor>
 #include <QObject>
-#include "GameComponent/identitytoken.h"
+#include "GameComponent/Logic/identitytoken.h"
 
 class QTcpSocket;
 

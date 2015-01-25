@@ -1,12 +1,12 @@
 #include "gameview.h"
-#include "nodecombat.h"
-#include "nodemana.h"
-#include "connexion.h"
+#include "GameComponent/Logic/nodecombat.h"
+#include "GameComponent/Logic/nodemana.h"
+#include "GameComponent/Logic/connexion.h"
+#include "GameComponent/Logic/gamescene.h"
+#include "GameComponent/Logic/squad.h"
 #include "gamer.h"
-#include "squad.h"
 #include "gamerlist.h"
-#include "gamescene.h"
-#include "GameInterface/powerinterface.h"
+#include "powerinterface.h"
 #include "global.h"
 
 

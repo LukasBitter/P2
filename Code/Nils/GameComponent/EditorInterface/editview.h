@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QGraphicsView>
-#include "connexion.h"
+#include "GameComponent/Logic/connexion.h"
 #include "enumlibrary.h"
 #include "gamerlist.h"
 

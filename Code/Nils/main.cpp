@@ -1,12 +1,6 @@
 #include <QApplication>
 #include "GameMenu/gamemenumanager.h"
-#include "GameComponent/gameview.h"
-#include "gamerlist.h"
-#include "global.h"
-#include <QtGlobal>
 
-#include "GameComponent/gamescene.h"
-#include "GameComponent/nodecombat.h"
 
 //void logOutput(QtMsgType type, const QMessageLogContext &, const QString & str)
 //{

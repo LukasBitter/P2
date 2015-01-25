@@ -1,5 +1,5 @@
 #include "powerinterface.h"
-#include "GameComponent/node.h"
+#include "GameComponent/Logic/node.h"
 #include "GameComponent/GameInterface/button.h"
 
 
