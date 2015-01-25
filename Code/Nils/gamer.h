@@ -9,7 +9,7 @@ class QTcpSocket;
 
 /**
  * @class Gamer
- * @brief Représente un joueur de la partie
+ * @brief Représente un joueur
  */
 class Gamer : public QObject, public IdentityToken
 {
