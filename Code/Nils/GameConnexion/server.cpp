@@ -1,7 +1,4 @@
-#include "global.h"
-#include <stdlib.h>
-#include <process.h>
-#include "GameConnexion/server.h"
+#include "server.h"
 #include "gamer.h"
 
 

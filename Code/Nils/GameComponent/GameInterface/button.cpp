@@ -1,5 +1,4 @@
 #include "button.h"
-#include "global.h"
 
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/

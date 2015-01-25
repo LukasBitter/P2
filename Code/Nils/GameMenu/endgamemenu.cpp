@@ -1,5 +1,9 @@
 #include "endgamemenu.h"
-#include "global.h"
+
+
+/*----------------------------------------------------*/
+/*CONSTRUCTEUR / DESTRUCTEUR*/
+/*----------------------------------------------------*/
 
 EndGameMenu::EndGameMenu(QWidget *parent) :
     QWidget(parent)

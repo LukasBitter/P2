@@ -1,13 +1,7 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-#include <QObject>
-#include <QAbstractSocket>
-#include <QHash>
-#include <QtNetwork>
-
-class QTcpServer;
-class QTcpSocket;
+#include "global.h"
 
 namespace GameConnexion
 {

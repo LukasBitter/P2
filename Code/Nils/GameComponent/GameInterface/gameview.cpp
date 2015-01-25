@@ -7,7 +7,6 @@
 #include "gamer.h"
 #include "gamerlist.h"
 #include "powerinterface.h"
-#include "global.h"
 
 
 /*----------------------------------------------------*/

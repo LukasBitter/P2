@@ -1,7 +1,7 @@
 #ifndef ACTIONMANAGER_H
 #define ACTIONMANAGER_H
 
-#include <QObject>
+#include "global.h"
 #include "enumlibrary.h"
 
 class Node;

@@ -1,15 +1,13 @@
 #ifndef EDITVIEW_H
 #define EDITVIEW_H
 
-#include <QWidget>
-#include <QGraphicsView>
+#include "global.h"
 #include "GameComponent/Logic/connexion.h"
 #include "enumlibrary.h"
 #include "gamerlist.h"
 
 class GameScene;
 class EditorInterface;
-class NodeCombat;
 class Gamer;
 
 namespace GameComponent

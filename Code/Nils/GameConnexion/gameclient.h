@@ -1,16 +1,12 @@
 #ifndef GAMECLIENT_H
 #define GAMECLIENT_H
 
-#include <QObject>
-#include <QAbstractSocket>
+#include "global.h"
 #include "enumlibrary.h"
 #include "gamerlist.h"
-#include <QColor>
 
 class Client;
-class QTcpSocket;
 class GameView;
-class GamerList;
 class Gamer;
 
 namespace GameConnexion

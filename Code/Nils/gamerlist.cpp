@@ -1,6 +1,5 @@
 #include "gamerlist.h"
 #include "gamer.h"
-#include "global.h"
 
 
 /*----------------------------------------------------*/

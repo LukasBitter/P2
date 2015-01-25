@@ -3,7 +3,7 @@
 
 #include "global.h"
 #include "enumlibrary.h"
-#include "GameComponent/GameInterface/powercountdown.h"
+#include "powercountdown.h"
 
 class Node;
 class Button;

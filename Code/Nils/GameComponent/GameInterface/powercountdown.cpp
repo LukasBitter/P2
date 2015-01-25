@@ -1,5 +1,4 @@
 #include "powercountdown.h"
-#include "global.h"
 
 
 /*----------------------------------------------------*/

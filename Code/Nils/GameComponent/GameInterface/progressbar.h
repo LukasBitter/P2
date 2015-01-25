@@ -1,7 +1,7 @@
 #ifndef PROGRESSBAR_H
 #define PROGRESSBAR_H
 
-#include <QGraphicsItem>
+#include "global.h"
 
 namespace GameInterface
 {

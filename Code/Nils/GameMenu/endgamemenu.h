@@ -1,10 +1,7 @@
 #ifndef ENDGAMEMENU_H
 #define ENDGAMEMENU_H
 
-#include <QWidget>
-
-class QPushButton;
-class QLabel;
+#include "global.h"
 
 namespace GameMenu
 {

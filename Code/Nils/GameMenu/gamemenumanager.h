@@ -1,14 +1,12 @@
 #ifndef GAMEMENUMANAGER_H
 #define GAMEMENUMANAGER_H
 
-#include <QMainWindow>
+#include "global.h"
 
 class WelcomeMenu;
 class EndGameMenu;
 class LobbyMenu;
 class EditView;
-class QWidget;
-class QStackedLayout;
 class GameView;
 
 namespace GameMenu

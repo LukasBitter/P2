@@ -1,11 +1,8 @@
 #ifndef GAMER_H
 #define GAMER_H
 
-#include <QColor>
-#include <QObject>
 #include "GameComponent/Logic/identitytoken.h"
-
-class QTcpSocket;
+#include "global.h"
 
 /**
  * @class Gamer

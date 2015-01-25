@@ -2,7 +2,7 @@
 #define POWER_H
 
 #include "enumlibrary.h"
-#include <QObject>
+#include "global.h"
 
 class Node;
 

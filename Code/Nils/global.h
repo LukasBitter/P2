@@ -2,6 +2,11 @@
 #define GLOBAL_H
 
 
+#include <QMainWindow>
+#include <QWidget>
+#include <QHash>
+#include <QColor>
+#include <QObject>
 #include <QDebug>
 #include <QFile>
 #include <QTextStream>
@@ -34,5 +39,8 @@
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsWidget>
 #include <QSpinBox>
+#include <QAbstractSocket>
+#include <QTcpServer>
+#include <QGraphicsView>
 
 #endif // GLOBAL_H

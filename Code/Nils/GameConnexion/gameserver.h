@@ -1,9 +1,7 @@
 #ifndef GAMESERVER_H
 #define GAMESERVER_H
 
-#include <QObject>
-#include <QAbstractSocket>
-#include <QStringList>
+#include "global.h"
 #include "enumlibrary.h"
 #include "gamerlist.h"
 

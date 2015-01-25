@@ -1,21 +1,12 @@
 #ifndef LOBBYMENU_H
 #define LOBBYMENU_H
 
-#include <QWidget>
-#include "GameConnexion/client.h"
-#include "GameConnexion/server.h"
+#include "global.h"
 #include "enumlibrary.h"
 
-class QPushButton;
-class QTableWidget;
-class QCheckBox;
-class QComboBox;
-class QTextEdit;
-class QLineEdit;
-class GameClient;
 class GameServer;
+class GameClient;
 class GameView;
-class QLabel;
 
 namespace GameMenu
 {

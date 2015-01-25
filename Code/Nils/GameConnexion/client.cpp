@@ -1,5 +1,4 @@
-#include "global.h"
-#include "GameConnexion/client.h"
+#include "client.h"
 #include "gamer.h"
 
 

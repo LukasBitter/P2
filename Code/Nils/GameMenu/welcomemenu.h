@@ -1,9 +1,7 @@
 #ifndef WELCOMEMENU_H
 #define WELCOMEMENU_H
 
-#include <QWidget>
-
-class QPushButton;
+#include "global.h"
 
 namespace GameMenu
 {

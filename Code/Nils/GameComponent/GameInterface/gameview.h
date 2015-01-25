@@ -1,16 +1,16 @@
 #ifndef GAMEVIEW_H
 #define GAMEVIEW_H
 
-#include <QWidget>
-#include <QGraphicsView>
-#include "GameComponent/Logic/connexion.h"
+#include "global.h"
 #include "enumlibrary.h"
 #include "actionmanager.h"
 
 class GameScene;
+class GamerList;
 class NodeCombat;
 class QDropEvent;
 class PowerInterface;
+class Gamer;
 
 namespace GameComponent
 {

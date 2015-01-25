@@ -2,7 +2,6 @@
 #include "lobbymenu.h"
 #include "welcomemenu.h"
 #include "endgamemenu.h"
-#include "global.h"
 #include "GameComponent/GameInterface/gameview.h"
 #include "GameComponent/EditorInterface/editview.h"
 

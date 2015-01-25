@@ -1,12 +1,9 @@
 #ifndef GAMERLIST_H
 #define GAMERLIST_H
 
-#include <QHash>
+#include "global.h"
 
 class Gamer;
-class QString;
-class QTcpSocket;
-class QColor;
 
 /**
  * @class GamerList

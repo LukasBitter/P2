@@ -1,9 +1,8 @@
 #include "gameserver.h"
 #include "server.h"
-#include "GameComponent/GameInterface/gameview.h"
 #include "gamer.h"
-#include "global.h"
 #include "mapfile.h"
+#include "GameComponent/GameInterface/gameview.h"
 
 
 /*----------------------------------------------------*/

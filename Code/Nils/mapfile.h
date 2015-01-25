@@ -1,10 +1,14 @@
 #ifndef MAPFILE_H
 #define MAPFILE_H
 
-#include <QString>
+#include "global.h"
 
 class Gamer;
 
+/**
+ * @class MapFile
+ * @brief Liste des joueur présent dans la partie
+ */
 class MapFile
 {
 public:

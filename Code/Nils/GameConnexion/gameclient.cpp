@@ -1,7 +1,7 @@
 #include "gameclient.h"
 #include "client.h"
-#include "GameComponent/GameInterface/gameview.h"
 #include "gamer.h"
+#include "GameComponent/GameInterface/gameview.h"
 
 
 /*----------------------------------------------------*/

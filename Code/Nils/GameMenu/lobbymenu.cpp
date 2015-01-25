@@ -1,9 +1,7 @@
 #include "lobbymenu.h"
+#include "gamer.h"
 #include "GameConnexion/gameclient.h"
 #include "GameConnexion/gameserver.h"
-#include "gamerlist.h"
-#include "gamer.h"
-#include "global.h"
 
 
 /*----------------------------------------------------*/

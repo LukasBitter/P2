@@ -1,7 +1,7 @@
 #ifndef BUTTON_H
 #define BUTTON_H
 
-#include <QGraphicsWidget>
+#include "global.h"
 
 namespace GameInterface
 {
