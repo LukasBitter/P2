@@ -58,7 +58,7 @@ private:
     GamerList lstGamer;
     Gamer *spawnGamer;
     ACTIONS a;
-    NodeCombat *memory;
+    Node *memory;
 
     /*METHODE PRIVE*/
     void setUpUI();

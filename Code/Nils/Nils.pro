@@ -33,6 +33,7 @@ HEADERS += \
     GameComponent/actionmanager.h \
     GameMenu/endgamemenu.h \
     GameComponent/nodecombat.h \
+    GameComponent/nodemana.h \
     GameComponent/node.h
 
 SOURCES += \
@@ -61,6 +62,7 @@ SOURCES += \
     GameComponent/actionmanager.cpp \
     GameMenu/endgamemenu.cpp \
     GameComponent/nodecombat.cpp \
+    GameComponent/nodemana.cpp \
     GameComponent/node.cpp
 
 OTHER_FILES += \

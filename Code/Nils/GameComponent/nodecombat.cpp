@@ -10,7 +10,7 @@
 /*----------------------------------------------------*/
 
 NodeCombat::NodeCombat(int x, int y, int radius, int ressourcesMax, const GamerList &gl, Gamer *g)
-    : QGraphicsItem(0), radius(radius), owner(g), invicible(false), ressourcesRate(0),
+    : Node(x,y,radius), owner(g), invicible(false), ressourcesRate(0),
       ressourcesMax(ressourcesMax), nbRessources(0), counterAdvance(0),
       armorLvl(0), lstGamer(gl)
 {
@@ -25,8 +25,9 @@ NodeCombat::NodeCombat(int x, int y, int radius, int ressourcesMax, const GamerL
 NodeCombat::NodeCombat(QString &create, GamerList &gl) : NodeCombat(0,0,0,0,gl,0)
 {
     QStringList nodeStr = create.split(",");
-    if(nodeStr.size() == 6)
+    if(nodeStr.size() == 7)
     {
+        nodeStr.pop_front();
         setId(nodeStr.first().toInt());
         nodeStr.pop_front();
         setX(nodeStr.first().toInt());
@@ -41,7 +42,7 @@ NodeCombat::NodeCombat(QString &create, GamerList &gl) : NodeCombat(0,0,0,0,gl,0
     }
     else
     {
-        qCritical()<<"Node : unexpected case in 'Node'";
+        qCritical()<<"NodeCombat : unexpected case in 'NodeCombat'";
     }
 }
 
@@ -174,7 +175,6 @@ bool NodeCombat::getInvicibility() const
 
 void NodeCombat::setInvicibility(bool b)
 {
-    qDebug()<<"invinci"<<b;
     invicible = b;
 }
 
@@ -210,35 +210,6 @@ void NodeCombat::setRessources(int r)
     {
         nbRessources = ressourcesMax;
     }
-}
-
-void NodeCombat::connect(int nodeId, Connexion *c)
-{
-    if(!mapConnexion.contains(nodeId) && nodeId != getId() &&
-            (&c->getNode1() == this || &c->getNode2() == this))
-    {
-        mapConnexion.insert(nodeId, c);
-    }
-}
-
-void NodeCombat::disconnect(int nodeId)
-{
-    mapConnexion.remove(nodeId);
-}
-
-Connexion *NodeCombat::getConnexion(int nodeId) const
-{
-    return mapConnexion.value(nodeId, 0);
-}
-
-QMap<int, Connexion *> NodeCombat::getConnexions() const
-{
-    return mapConnexion;
-}
-
-bool NodeCombat::isConnected(int nodeId) const
-{
-    return mapConnexion.contains(nodeId);
 }
 
 void NodeCombat::incoming(Squad s)
@@ -304,7 +275,7 @@ QString NodeCombat::getCreationString() const
     int idGamer  = -1;
     if(owner != 0)idGamer = owner->getId();
 
-    return QString("%1,%2,%3,%4,%5,%6").arg(getId()).arg(x()).arg(y()).
+    return QString("C,%1,%2,%3,%4,%5,%6").arg(getId()).arg(x()).arg(y()).
            arg(radius).arg(ressourcesMax).arg(idGamer);
 }
 
@@ -325,7 +296,7 @@ void NodeCombat::updateFromString(QString &s)
     }
     else
     {
-        qCritical()<<"Node : unexpected case in 'updateFromString'";
+        qCritical()<<"NodeCombat : unexpected case in 'updateFromString'";
     }
 }
 

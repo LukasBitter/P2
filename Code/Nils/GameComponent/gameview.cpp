@@ -1,5 +1,6 @@
 #include "gameview.h"
 #include "nodecombat.h"
+#include "nodemana.h"
 #include "connexion.h"
 #include "gamer.h"
 #include "squad.h"
@@ -81,7 +82,7 @@ void GameView::mousePressEvent(QMouseEvent *e)
 {
     if(e->button()!= Qt::LeftButton) return;
 
-    NodeCombat *n = dynamic_cast <NodeCombat*>(itemAt(e->pos()));
+    Node *n = dynamic_cast <Node*>(itemAt(e->pos()));
 
     if(n == 0)
     {
@@ -101,8 +102,8 @@ void GameView::dropEvent(QDropEvent *event)
     {
         //Ordre déplacement via drag&drop
         event->accept();
-        NodeCombat *nodeFrom = scene->getNode(qvariant_cast<QString>(event->mimeData()->text()).toInt());
-        NodeCombat *nodeTo = dynamic_cast <NodeCombat*>(this->itemAt(event->pos()));
+        Node *nodeFrom = scene->getNode(qvariant_cast<QString>(event->mimeData()->text()).toInt());
+        Node *nodeTo = dynamic_cast <Node*>(this->itemAt(event->pos()));
         sendSquad(nodeFrom, nodeTo);
     }
     QGraphicsView::dropEvent(event);
@@ -120,7 +121,7 @@ void GameView::setPercentToSend(int percent)
 bool GameView::isContainsPrivateChar(QString &s)
 {
     return NodeCombat::isContainsPrivateChar(s) || Connexion::isContainsPrivateChar(s) ||
-            GameScene::isContainsPrivateChar(s);
+            GameScene::isContainsPrivateChar(s) || NodeMana::isContainsPrivateChar(s);
 }
 
 /*----------------------------------------------------*/
@@ -163,11 +164,10 @@ void GameView::advance()
 
 void GameView::onPowerPressed(ACTIONS action)
 {
-    qDebug()<<action;
     am.actionChanged(action);
 }
 
-void GameView::onPowerStarting(ACTIONS a, NodeCombat *n1,NodeCombat *n2)
+void GameView::onPowerStarting(ACTIONS a, Node *n1,Node *n2)
 {
     qDebug()<<"GameView : enter 'onPowerStarting'";
 
@@ -204,8 +204,9 @@ void GameView::onPowerStarting(ACTIONS a, NodeCombat *n1,NodeCombat *n2)
     }
 }
 
-void GameView::onPowerFinishing(ACTIONS a, NodeCombat *n1,NodeCombat *n2)
+void GameView::onPowerFinishing(ACTIONS a, Node *n1,Node *n2)
 {
+    Q_UNUSED(n2);
     qDebug()<<"GameView : enter 'onPowerFinishing'";
 
     switch (a)
@@ -227,7 +228,7 @@ void GameView::onPowerFinishing(ACTIONS a, NodeCombat *n1,NodeCombat *n2)
     }
 }
 
-void GameView::onDoAction(ACTIONS action, NodeCombat *n)
+void GameView::onDoAction(ACTIONS action, Node *n)
 {
     qDebug()<<"GameView : enter 'onDoAction'";
 
@@ -253,10 +254,9 @@ void GameView::onDoAction(ACTIONS action, NodeCombat *n)
     }
 }
 
-void GameView::onDoAction(ACTIONS action, NodeCombat *n1, NodeCombat *n2)
+void GameView::onDoAction(ACTIONS action, Node *n1, Node *n2)
 {
     qDebug()<<"GameView : enter 'onDoAction'";
-    qDebug()<<action;
 
     switch (action)
     {
@@ -277,6 +277,12 @@ void GameView::onDoAction(ACTIONS action, NodeCombat *n1, NodeCombat *n2)
     }
 }
 
+void GameView::onManaReception(int gamerId, int mana)
+{
+    emit gamerAction(QString("%1.%2.-1.-1.%3").arg(GA_MANA_EMISSION).
+                     arg(gamerId).arg(mana));
+}
+
 void GameView::applyGamerAction(QString s)
 {
     QStringList msgStr = s.split(".");
@@ -285,9 +291,9 @@ void GameView::applyGamerAction(QString s)
     msgStr.pop_front();
     int gamerId = msgStr.first().toInt(); //Identifiant du joueur
     msgStr.pop_front();
-    NodeCombat *nodeFrom = scene->getNode(msgStr.first().toInt()); //noeud source
+    Node *nodeFrom = scene->getNode(msgStr.first().toInt()); //noeud source
     msgStr.pop_front();
-    NodeCombat *nodeTo = scene->getNode(msgStr.first().toInt()); //noeud cible
+    Node *nodeTo = scene->getNode(msgStr.first().toInt()); //noeud cible
     msgStr.pop_front();
     int param = msgStr.first().toInt(); //Parametre de l'action (nb ressource / pouvoir id)
 
@@ -296,69 +302,43 @@ void GameView::applyGamerAction(QString s)
     case GA_SEND:
     {
         qDebug()<<"GameView : in 'applyGamerAction' recive GA_SEND";
-
-        if(nodeFrom != 0 && nodeTo != 0 && nodeFrom->getOwner() != 0 &&
-                nodeFrom->getOwner()->getId() == gamerId)
-        {
-            nodeFrom->sendSquad(param, nodeTo->getId());
-        }
+        receive_GA_SEND(gamerId, nodeFrom, nodeTo, param);
         break;
     }
     case GA_USEPOWER_DESTROY:
     {
         qDebug()<<"GameView : in 'applyGamerAction' recive GA_USEPOWER_DESTROY";
-
-        if(nodeFrom != 0)
-        {
-            if(nodeFrom->getOwner() == 0 || nodeFrom->getOwner()->getId() != gamerId)
-            {
-                nodeFrom->setRessources(0);
-            }
-        }
+        receive_GA_USEPOWER_DESTROY(gamerId, nodeFrom, nodeTo, param);
         break;
     }
     case GA_USEPOWER_INVINCIBILITY:
     {
         qDebug()<<"GameView : in 'applyGamerAction' recive GA_USEPOWER_INVINCIBILITY";
-
-        if(nodeFrom != 0 && nodeFrom->getOwner() != 0 &&
-                nodeFrom->getOwner()->getId() == gamerId)
-        {
-            nodeFrom->setInvicibility(param);
-        }
+        receive_GA_USEPOWER_INVINCIBILITY(gamerId, nodeFrom, nodeTo, param);
         break;
     }
     case GA_USEPOWER_ARMORE:
     {
         qDebug()<<"GameView : in 'applyGamerAction' recive GA_USEPOWER_ARMORE";
-
-        if(nodeFrom != 0 && nodeFrom->getOwner() != 0 &&
-                nodeFrom->getOwner()->getId() == gamerId)
-        {
-            nodeFrom->setArmorLvl(param);
-        }
+        receive_GA_USEPOWER_ARMORE(gamerId, nodeFrom, nodeTo, param);
         break;
     }
     case GA_USEPOWER_TELEPORTATION:
     {
         qDebug()<<"GameView : in 'applyGamerAction' recive GA_USEPOWER_TELEPORTATION";
-
-        if(nodeFrom != 0 && nodeTo != 0 && nodeFrom->getOwner() != 0 &&
-                nodeFrom->getOwner()->getId() == gamerId)
-        {
-            int ressources = nodeFrom->getRessources()/2;
-            nodeFrom->setRessources(nodeFrom->getRessources() - ressources);
-            Squad s(*nodeFrom->getOwner());
-            s.setNbRessources(ressources);
-            nodeTo->incoming(s);
-        }
+        receive_GA_USEPOWER_TELEPORTATION(gamerId, nodeFrom, nodeTo, param);
         break;
     }
     case GA_GAME_FINISHED:
     {
         qDebug()<<"GameView : in 'applyGamerAction' recive GA_GAME_FINISHED";
-        qDebug()<<owner->getId()<<" - "<< param;
-        emit gameFinish(param == owner->getId());
+        receive_GA_GAME_FINISHED(gamerId, nodeFrom, nodeTo, param);
+        break;
+    }
+    case GA_MANA_EMISSION:
+    {
+        qDebug()<<"GameView : in 'applyGamerAction' recive GA_GAME_FINISHED";
+        receive_GA_MANA_EMISSION(gamerId, nodeFrom, nodeTo, param);
         break;
     }
     default:
@@ -377,14 +357,14 @@ void GameView::setUpUI()
     powerUi = new PowerInterface();
     powerUi->setX(0);
     powerUi->setY(0);
-    powerUi->setMana(1000);
+    powerUi->setMana(P_INITIAL_MANA);
 
     const PowerCountDown &pcd = powerUi->getCountDownManager();
     connect(powerUi,SIGNAL(powerPressed(ACTIONS)),this,SLOT(onPowerPressed(ACTIONS)));
-    connect(&pcd,SIGNAL(powerFinishing(ACTIONS,NodeCombat*,NodeCombat*)),this,SLOT(onPowerFinishing(ACTIONS,NodeCombat*,NodeCombat*)));
-    connect(&pcd,SIGNAL(powerStarting(ACTIONS,NodeCombat*,NodeCombat*)),this,SLOT(onPowerStarting(ACTIONS,NodeCombat*,NodeCombat*)));
-    connect(&am,SIGNAL(doAction(ACTIONS,NodeCombat*)),this,SLOT(onDoAction(ACTIONS,NodeCombat*)));
-    connect(&am,SIGNAL(doAction(ACTIONS,NodeCombat*,NodeCombat*)),this,SLOT(onDoAction(ACTIONS,NodeCombat*,NodeCombat*)));
+    connect(&pcd,SIGNAL(powerFinishing(ACTIONS,Node*,Node*)),this,SLOT(onPowerFinishing(ACTIONS,Node*,Node*)));
+    connect(&pcd,SIGNAL(powerStarting(ACTIONS,Node*,Node*)),this,SLOT(onPowerStarting(ACTIONS,Node*,Node*)));
+    connect(&am,SIGNAL(doAction(ACTIONS,Node*)),this,SLOT(onDoAction(ACTIONS,Node*)));
+    connect(&am,SIGNAL(doAction(ACTIONS,Node*,Node*)),this,SLOT(onDoAction(ACTIONS,Node*,Node*)));
 
     // Désactivation des scrollbars
     setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
@@ -393,19 +373,24 @@ void GameView::setUpUI()
     setRenderHint( QPainter::Antialiasing, true );
 
     setScene(scene);
+    connect(scene, SIGNAL(manaEmission(int,int)), this, SLOT(onManaReception(int,int)));
 
     scene->addItem(powerUi);
 }
 
-void GameView::sendSquad(NodeCombat *from, NodeCombat *to)
+/*----------------------------------------------------*/
+/*ENVOIS*/
+/*----------------------------------------------------*/
+
+void GameView::sendSquad(Node *from, Node *to)
 {
-    if(from != 0 && to != 0)
+    NodeCombat *nodeFromTmp = dynamic_cast <NodeCombat*>(from);
+    if(nodeFromTmp != 0 && to != 0)
     {
-        sendAction(GA_SEND, from->getId(), to->getId(),
-                   (int)(from->getRessources()*(percentToSend/100)));
+        sendAction(GA_SEND, nodeFromTmp->getId(), to->getId(),
+                   (int)(nodeFromTmp->getRessources()*(percentToSend/100)));
     }
 }
-
 
 void GameView::sendAction(ACTIONS a, int nodeFromId, int nodeToId, int param)
 {
@@ -413,4 +398,90 @@ void GameView::sendAction(ACTIONS a, int nodeFromId, int nodeToId, int param)
     emit gamerAction(QString("%1.%2.%3.%4.%5").arg(a).
                      arg(ownerId).arg(nodeFromId).
                      arg(nodeToId).arg(param));
+}
+
+/*----------------------------------------------------*/
+/*RECEPTION*/
+/*----------------------------------------------------*/
+
+void GameView::receive_GA_SEND(int gamerId, Node *nodeFrom, Node *nodeTo, int param)
+{
+
+    if(nodeFrom != 0 && nodeTo != 0 && nodeFrom->getOwner() != 0 &&
+            nodeFrom->getOwner()->getId() == gamerId)
+    {
+        nodeFrom->sendSquad(param, nodeTo->getId());
+    }
+}
+
+void GameView::receive_GA_USEPOWER_DESTROY(int gamerId, Node *nodeFrom, Node *nodeTo, int param)
+{
+    Q_UNUSED(nodeTo);
+    Q_UNUSED(param);
+
+    NodeCombat *nodeFromTmp = dynamic_cast <NodeCombat*>(nodeFrom);
+    if(nodeFromTmp != 0)
+    {
+        if(nodeFromTmp->getOwner() == 0 || nodeFromTmp->getOwner()->getId() != gamerId)
+        {
+            nodeFromTmp->setRessources(0);
+        }
+    }
+}
+
+void GameView::receive_GA_USEPOWER_INVINCIBILITY(int gamerId, Node *nodeFrom, Node *nodeTo, int param)
+{
+    Q_UNUSED(nodeTo);
+
+    NodeCombat *nodeFromTmp = dynamic_cast <NodeCombat*>(nodeFrom);
+    if(nodeFromTmp != 0 && nodeFromTmp->getOwner() != 0 &&
+            nodeFromTmp->getOwner()->getId() == gamerId)
+    {
+        nodeFromTmp->setInvicibility(param);
+    }
+}
+
+void GameView::receive_GA_USEPOWER_ARMORE(int gamerId, Node *nodeFrom, Node *nodeTo, int param)
+{
+    Q_UNUSED(nodeTo);
+
+    NodeCombat *nodeFromTmp = dynamic_cast <NodeCombat*>(nodeFrom);
+    if(nodeFromTmp != 0 && nodeFromTmp->getOwner() != 0 &&
+            nodeFromTmp->getOwner()->getId() == gamerId)
+    {
+        nodeFromTmp->setArmorLvl(param);
+    }
+}
+
+void GameView::receive_GA_USEPOWER_TELEPORTATION(int gamerId, Node *nodeFrom, Node *nodeTo, int param)
+{
+    Q_UNUSED(param);
+
+    NodeCombat *nodeFromTmp = dynamic_cast <NodeCombat*>(nodeFrom);
+    if(nodeFromTmp != 0 && nodeTo != 0 && nodeFromTmp->getOwner() != 0 &&
+            nodeFromTmp->getOwner()->getId() == gamerId)
+    {
+        int ressources = nodeFromTmp->getRessources()/2;
+        nodeFromTmp->setRessources(nodeFromTmp->getRessources() - ressources);
+        Squad s(*nodeFromTmp->getOwner());
+        s.setNbRessources(ressources);
+        nodeTo->incoming(s);
+    }
+}
+
+void GameView::receive_GA_GAME_FINISHED(int gamerId, Node *nodeFrom, Node *nodeTo, int param)
+{
+    Q_UNUSED(gamerId);
+    Q_UNUSED(nodeTo);
+    Q_UNUSED(nodeFrom);
+
+    emit gameFinish(param == owner->getId());
+}
+
+void GameView::receive_GA_MANA_EMISSION(int gamerId, Node *nodeFrom, Node *nodeTo, int param)
+{
+    Q_UNUSED(nodeFrom);
+    Q_UNUSED(nodeTo);
+
+    if(gamerId == owner->getId()) powerUi->addMana(param);
 }

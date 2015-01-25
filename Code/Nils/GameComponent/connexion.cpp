@@ -1,5 +1,5 @@
 #include "connexion.h"
-#include "nodecombat.h"
+#include "node.h"
 #include "gamer.h"
 #include "squad.h"
 #include "gamerlist.h"
@@ -20,7 +20,7 @@
  *
  * A la création un identifiant unique est défini.
  */
-Connexion::Connexion(NodeCombat &n1, NodeCombat &n2, const GamerList &gl)
+Connexion::Connexion(Node &n1, Node &n2, const GamerList &gl)
     : QGraphicsItem(0), n1(n1), n2(n2), lstGamer(gl), counterAdvance(0)
 {
     setNextId();
@@ -121,17 +121,17 @@ void Connexion::advance(int step)
 /*ASSESSEUR / MUTATEUR*/
 /*----------------------------------------------------*/
 
-NodeCombat & Connexion::getNode1()const
+Node & Connexion::getNode1()const
 {
     return n1;
 }
 
-NodeCombat & Connexion::getNode2()const
+Node & Connexion::getNode2()const
 {
     return n2;
 }
 
-bool Connexion::isConnextedTo(NodeCombat &n) const
+bool Connexion::isConnextedTo(Node &n) const
 {
     return &n == &n1 || &n == &n2;
 }

@@ -1,5 +1,6 @@
 #include "editview.h"
 #include "nodecombat.h"
+#include "nodemana.h"
 #include "connexion.h"
 #include "gamer.h"
 #include "gamescene.h"
@@ -41,25 +42,33 @@ void EditView::mousePressEvent(QMouseEvent *e)
     {
     case EA_ADD:
     {
-        Gamer *g = editorUi->isSpawnNodeChecked() ? spawnGamer : 0;
-        NodeCombat *n = new NodeCombat(e->x(), e->y(),20*editorUi->getNodeSize(),
-                           50*editorUi->getNodeSize(),lstGamer,g);
-        n->setRessourcesRate(editorUi->getNodeSize());
-        n->setRessources(editorUi->getNodeRessource());
-        scene->addNode(*n);
+        if(!editorUi->isManaNodeChecked())
+        {
+            Gamer *g = editorUi->isSpawnNodeChecked() ? spawnGamer : 0;
+            NodeCombat *n = new NodeCombat(e->x(), e->y(),20*editorUi->getNodeSize(),
+                                           50*editorUi->getNodeSize(),lstGamer,g);
+            n->setRessourcesRate(editorUi->getNodeSize());
+            n->setRessources(editorUi->getNodeRessource());
+            scene->addNode(*n);
+        }
+        else
+        {
+            NodeMana *n = new NodeMana(e->x(), e->y(),20*editorUi->getNodeSize(),lstGamer);
+            scene->addNode(*n);
+        }
         a = NO_ACTION;
         break;
     }
     case EA_REMOVE:
     {
-        NodeCombat *n = dynamic_cast <NodeCombat*>(itemAt(e->pos()));
+        Node *n = dynamic_cast <Node*>(itemAt(e->pos()));
         if(n != 0) scene->removeNode(*n);
         a = NO_ACTION;
         break;
     }
     case EA_CONNECT:
     {
-        NodeCombat *n = dynamic_cast <NodeCombat*>(itemAt(e->pos()));
+        Node *n = dynamic_cast <Node*>(itemAt(e->pos()));
         if(n != 0)
         {
             if(memory != 0)
@@ -77,7 +86,7 @@ void EditView::mousePressEvent(QMouseEvent *e)
     }
     case EA_DISCONNECT:
     {
-        NodeCombat *n = dynamic_cast <NodeCombat*>(itemAt(e->pos()));
+        Node *n = dynamic_cast <Node*>(itemAt(e->pos()));
         if(n != 0)
         {
             if(memory != 0)

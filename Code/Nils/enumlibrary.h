@@ -37,16 +37,41 @@ enum ACTIONS
     GA_USEPOWER_TELEPORTATION,
     GA_USEPOWER_ARMORE,
     GA_GAME_FINISHED,
+    GA_MANA_EMISSION,
     EA_ADD,
     EA_REMOVE,
     EA_CONNECT,
     EA_DISCONNECT,
 };
 
+//Creation de map
 #define MAX_GAMER 4
 #define VERSION_MAP 1
 #define MAP_FILE "./maps"
 #define MAP_EXTENSION "rtsmap"
 #define MAP_EXTENSION_FILTER "*.rtsmap"
+
+/*----------------------------------------------------*/
+/*GAMEPLAY*/
+/*----------------------------------------------------*/
+
+//mana initiale
+#define P_INITIAL_MANA 0
+
+//cout des pouvoirs
+#define P_TELEPORTATION_COST 40
+#define P_ARMOR_COST 10
+#define P_DESTROY_COST 80
+#define P_INVINCIBILITY_COST 50
+
+//temps recharge des pouvoirs
+#define P_TELEPORTATION_CD 20
+#define P_ARMOR_CD 5
+#define P_DESTROY_CD 30
+#define P_INVINCIBILITY_CD 30
+
+//durée des pouvoirs
+#define P_ARMOR_DURATION 5
+#define P_INVINCIBILITY_DURATION 5
 
 #endif // ENUMLIB_H

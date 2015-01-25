@@ -58,10 +58,11 @@ public slots:
     void applyGamerAction(QString action);
 private slots:
     void onPowerPressed(ACTIONS action);
-    void onPowerStarting(ACTIONS a, NodeCombat *n1,NodeCombat *n2);
-    void onPowerFinishing(ACTIONS a, NodeCombat *n1,NodeCombat *n2);
-    void onDoAction(ACTIONS action, NodeCombat *n);
-    void onDoAction(ACTIONS action, NodeCombat *n1, NodeCombat *n2);
+    void onPowerStarting(ACTIONS a, Node *n1, Node *n2);
+    void onPowerFinishing(ACTIONS a, Node *n1, Node *n2);
+    void onDoAction(ACTIONS action, Node *n);
+    void onDoAction(ACTIONS action, Node *n1, Node *n2);
+    void onManaReception(int gamerId, int mana);
 private:
     /*INTERFACE*/
     PowerInterface *powerUi; ///< Interface utilisateur de gestion des pouvoirs
@@ -77,9 +78,19 @@ private:
 
     /*METHODE PRIVE*/
     void setUpUI();
-    void sendSquad(NodeCombat *from, NodeCombat *to);
-    void teleportSquad(NodeCombat *from, NodeCombat *to);
+
+    /*ENVOIS*/
+    void sendSquad(Node *from, Node *to);
     void sendAction(ACTIONS a, int nodeFromId, int nodeToId, int param);
+
+    /*RECEPTION*/
+    void receive_GA_SEND(int gamerId, Node *nodeFrom, Node *nodeTo, int param);
+    void receive_GA_USEPOWER_DESTROY(int gamerId, Node *nodeFrom, Node *nodeTo, int param);
+    void receive_GA_USEPOWER_INVINCIBILITY(int gamerId, Node *nodeFrom, Node *nodeTo, int param);
+    void receive_GA_USEPOWER_ARMORE(int gamerId, Node *nodeFrom, Node *nodeTo, int param);
+    void receive_GA_USEPOWER_TELEPORTATION(int gamerId, Node *nodeFrom, Node *nodeTo, int param);
+    void receive_GA_GAME_FINISHED(int gamerId, Node *nodeFrom, Node *nodeTo, int param);
+    void receive_GA_MANA_EMISSION(int gamerId, Node *nodeFrom, Node *nodeTo, int param);
 };
 
 #endif // GAMEVIEW_H

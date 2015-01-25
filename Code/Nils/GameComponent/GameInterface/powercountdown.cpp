@@ -14,13 +14,13 @@ PowerCountDown::PowerCountDown(QObject *parent): QObject(parent)
 /*ASSESSEUR / MUTATEUR*/
 /*----------------------------------------------------*/
 
-void PowerCountDown::addCountDown(int countDownTime, int powerDuration, ACTIONS powerName, NodeCombat *n1, NodeCombat *n2)
+void PowerCountDown::addCountDown(int countDownTime, int powerDuration, ACTIONS powerName, Node *n1, Node *n2)
 {
     if(!isReady(powerName)) return;
 
     if(powerDuration > countDownTime) powerDuration = countDownTime;
 
-    lstContext.insert(powerName, QPair <NodeCombat *, NodeCombat * >(n1,n2));
+    lstContext.insert(powerName, QPair <Node *, Node * >(n1,n2));
     lstCountDownTime.insert(powerName, countDownTime);
     lstPowerDuration.insert(powerName, powerDuration);
     lstPowerCurentTime.insert(powerName, countDownTime);
@@ -69,6 +69,6 @@ void PowerCountDown::deletePower(ACTIONS a)
 void PowerCountDown::signalPower(ACTIONS a)
 {
     lstPowerFinish.insert(a, true);
-    QPair<NodeCombat *, NodeCombat *> context = lstContext.value(a);
+    QPair<Node *, Node *> context = lstContext.value(a);
     emit powerFinishing(a, context.first, context.second);
 }

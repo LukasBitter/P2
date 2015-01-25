@@ -11,9 +11,19 @@ EditorInterface::EditorInterface(QWidget *parent) : QWidget(parent)
     setUpUI();
 }
 
+bool EditorInterface::isStandardNodeChecked() const
+{
+    return rbtStandard->isChecked();
+}
+
 bool EditorInterface::isSpawnNodeChecked() const
 {
-    return cbtIsSpawn->isChecked();
+    return rbtSpawn->isChecked();
+}
+
+bool EditorInterface::isManaNodeChecked() const
+{
+    return rbtMana->isChecked();
 }
 
 int EditorInterface::getNodeSize() const
@@ -75,7 +85,9 @@ void EditorInterface::setUpUI()
 
     spRessource = new QSpinBox(this);
     spSize = new QSpinBox(this);
-    cbtIsSpawn = new QCheckBox("Spawn node", this);
+    rbtStandard = new QRadioButton("Standard node", this);
+    rbtSpawn = new QRadioButton("Spawn node", this);
+    rbtMana = new QRadioButton("Mana node", this);
     btCreateNode = new QPushButton("Create node", this);
     btRemoveNode = new QPushButton("Delete node", this);
     btConnectNode = new QPushButton("Connect node", this);
@@ -90,6 +102,7 @@ void EditorInterface::setUpUI()
     spRessource->setMinimum(0);
     spSize->setMaximum(3);
     spSize->setMinimum(1);
+    rbtStandard->setChecked(true);
 
     //CONNEXION
 
@@ -109,7 +122,9 @@ void EditorInterface::setUpUI()
     layout->addWidget(spSize, 1,0);
     layout->addWidget(new QLabel("Initial ressource", this), 2,0);
     layout->addWidget(spRessource, 3,0);
-    layout->addWidget(cbtIsSpawn, 4,0);
+    layout->addWidget(rbtStandard, 4,0);
+    layout->addWidget(rbtSpawn, 5,0);
+    layout->addWidget(rbtMana, 6,0);
     layout->addWidget(btCreateNode, 10,0);
     layout->addWidget(btRemoveNode, 11,0);
     layout->addWidget(btConnectNode, 12,0);

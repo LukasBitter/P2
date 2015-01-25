@@ -1,5 +1,6 @@
 #include "gamescene.h"
-#include "nodecombat.h"
+#include "node.h"
+#include "nodemana.h"
 #include "connexion.h"
 #include "gamer.h"
 #include "gamerlist.h"
@@ -30,7 +31,8 @@ GameScene::GameScene(QString create, GamerList &gl, const Gamer *g, QObject *par
 
         foreach (QString s, allNodesStr)
         {
-            NodeCombat *n = new NodeCombat(s, lstGamer);
+            Node *n = Node::createNode(s, lstGamer);
+
             addNode(*n);
         }
 
@@ -41,8 +43,8 @@ GameScene::GameScene(QString create, GamerList &gl, const Gamer *g, QObject *par
             int idNode2;
             Connexion::getCreationValue(s,numberId,idNode1,idNode2);
 
-            NodeCombat *n1 = getNode(idNode1);
-            NodeCombat *n2 = getNode(idNode2);
+            Node *n1 = getNode(idNode1);
+            Node *n2 = getNode(idNode2);
             Connexion *c = new Connexion(*n1, *n2, lstGamer);
             c->setId(numberId);
             lstConnexion.insert(numberId, c);
@@ -80,57 +82,7 @@ void GameScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 /*ASSESSEUR / MUTATEUR*/
 /*----------------------------------------------------*/
 
-int GameScene::getTotalRessources(Gamer &g)
-{
-    qDebug()<<"GameScene : enter 'getTotalRessources'";
-
-    int total = 0;
-    foreach (NodeCombat *n, lstNode)
-    {
-        if(n->getOwner() == &g)total += n->getRessources();
-    }
-    return total;
-}
-
-int GameScene::getAvrageRessourcesRate(Gamer &g)
-{
-    qDebug()<<"GameScene : enter 'getAvrageRessourcesRate'";
-
-    int sum = 0;
-    int nb = 0;
-    foreach (NodeCombat *n, lstNode)
-    {
-        if(n->getOwner() == &g)sum += n->getRessourcesRate();
-        ++nb;
-    }
-    return sum / nb;
-}
-
-int GameScene::getTotalRessources()
-{
-    qDebug()<<"GameScene : enter 'getTotalRessources'";
-
-    int total = 0;
-    foreach (NodeCombat *n, lstNode)
-    {
-        total += n->getRessources();
-    }
-    return total;
-}
-
-int GameScene::getAvrageRessourcesRate()
-{
-    qDebug()<<"GameScene : enter 'getAvrageRessourcesRate'";
-
-    int sum = 0;
-    foreach (NodeCombat *n, lstNode)
-    {
-        sum += n->getRessourcesRate();
-    }
-    return sum / lstNode.size();
-}
-
-NodeCombat *GameScene::getNode(int idNode)
+Node *GameScene::getNode(int idNode)
 {
     //qDebug()<<"GameScene : enter 'getNode'";
 
@@ -147,7 +99,7 @@ Connexion *GameScene::getConnexion(int idConnexion)
 const Gamer *GameScene::isVictory()
 {
     const Gamer *g = 0;
-    foreach (NodeCombat *n, lstNode)
+    foreach (Node *n, lstNode)
     {
         if(n->getOwner() != 0)
         {
@@ -158,17 +110,26 @@ const Gamer *GameScene::isVictory()
     return g;
 }
 
-void GameScene::addNode(NodeCombat &n)
+void GameScene::addNode(Node &n)
 {
     qDebug()<<"GameScene : enter 'addNode'";
+
+    NodeMana *nm = dynamic_cast <NodeMana*>(&n);
+
+    if(nm != 0)
+    {
+        connect(nm, SIGNAL(manaEmission(int,int)), this, SLOT(onManaEmission(int,int)));
+    }
 
     lstNode.insert(n.getId(),&n);
     addItem(&n);
 }
 
-void GameScene::addConnexion(NodeCombat &n1, NodeCombat &n2)
+void GameScene::addConnexion(Node &n1, Node &n2)
 {
     qDebug()<<"GameScene : enter 'addConnexion'";
+
+    if(n1.getId() == n2.getId()) return;
 
     if(lstNode.contains(n1.getId()) &&
             lstNode.contains(n2.getId()))
@@ -179,7 +140,7 @@ void GameScene::addConnexion(NodeCombat &n1, NodeCombat &n2)
     }
 }
 
-void GameScene::removeNode(NodeCombat &n)
+void GameScene::removeNode(Node &n)
 {
     qDebug()<<"GameScene : enter 'removeNode'";
 
@@ -192,7 +153,7 @@ void GameScene::removeNode(NodeCombat &n)
     removeItem(&n);
 }
 
-void GameScene::removeConnexion(NodeCombat &n1, NodeCombat &n2)
+void GameScene::removeConnexion(Node &n1, Node &n2)
 {
     qDebug()<<"GameScene : enter 'removeConnexion'";
 
@@ -216,7 +177,7 @@ QString GameScene::getUpdateString()
     }
     s.resize(s.size()-1);
     s.append("@");
-    foreach (NodeCombat *n, lstNode)
+    foreach (Node *n, lstNode)
     {
         s.append(QString("%1.%2/").arg(n->getId()).arg(n->getUpdateString()));
     }
@@ -235,7 +196,7 @@ QString GameScene::getCreationString()
     }
     s.resize(s.size()-1);
     s.append("@");
-    foreach (NodeCombat *n, lstNode)
+    foreach (Node *n, lstNode)
     {
         s.append(QString("%1/").arg(n->getCreationString()));
     }
@@ -246,7 +207,7 @@ QString GameScene::getCreationString()
 QStringList GameScene::normalizeSpawn()
 {
     QStringList spawnList;
-    foreach (NodeCombat *n, lstNode)
+    foreach (Node *n, lstNode)
     {
         if(n->getOwner() != 0)
         {
@@ -260,6 +221,11 @@ QStringList GameScene::normalizeSpawn()
 bool GameScene::isContainsPrivateChar(QString &s)
 {
     return s.contains("@") || s.contains(".") || s.contains("/");
+}
+
+void GameScene::onManaEmission(int gamerId, int mana)
+{
+    emit manaEmission(gamerId, mana);
 }
 
 void GameScene::updateFromString(QString s)
@@ -301,7 +267,7 @@ void GameScene::updateFromString(QString s)
                 int numberId = nodeStr.first().toInt();
                 nodeStr.pop_front();
                 QString &data = nodeStr.first();
-                NodeCombat *n = getNode(numberId);
+                Node *n = getNode(numberId);
                 if(n != 0) n->updateFromString(data);
                 else qCritical()<<"GameScene : unexpected case in 'updateFromString' (4)";
             }

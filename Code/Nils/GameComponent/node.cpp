@@ -4,13 +4,15 @@
 #include "gamer.h"
 #include "gamerlist.h"
 #include "global.h"
+#include "nodecombat.h"
+#include "nodemana.h"
 
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
 Node::Node(int x, int y, int radius): QGraphicsItem(0),
-    radius(radius), counterAdvance(0)
+    radius(radius)
 {
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setAcceptHoverEvents(true);
@@ -18,6 +20,28 @@ Node::Node(int x, int y, int radius): QGraphicsItem(0),
     setX(x);
     setY(y);
     setZValue(10);
+}
+
+/*----------------------------------------------------*/
+/*FABRIQUE*/
+/*----------------------------------------------------*/
+
+Node *Node::createNode(QString &create, GamerList &gl)
+{
+    if(create.size() > 0)
+    {
+        if(create.at(0) == 'C')
+        {
+            return new NodeCombat(create,gl);
+        }
+        else if(create.at(0) == 'M')
+        {
+            return new NodeMana(create,gl);
+        }
+    }
+    qCritical()<<"Node : unexpected case in 'createNode'";
+
+    return 0;
 }
 
 /*----------------------------------------------------*/
@@ -36,10 +60,8 @@ void Node::paint(QPainter *painter,
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    if(owner != 0)
-    {
-        painter->setBrush(owner->getColor());
-    }
+    painter->setBrush(Qt::black);
+
     if(isSelected() || isUnderMouse())
     {
         QPen pen(Qt::gray);
@@ -52,117 +74,13 @@ void Node::paint(QPainter *painter,
     painter->drawEllipse(QPoint(0,0),radius,radius);
 }
 
-void Node::advance(int step)
-{
-    if(step == 0) return;
-
-    //Wait number of tic
-    if(counterAdvance < 10)
-    {
-        ++counterAdvance;
-        return;
-    }
-    counterAdvance = 0;
-
-    if(owner != 0)
-    {
-        nbRessources += ressourcesRate;
-    }
-    if(nbRessources > ressourcesMax && ressourcesMax > 0)
-    {
-        nbRessources = ressourcesMax;
-    }
-
-}
-
-void Node::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
-{
-    if (QLineF(event->screenPos(), event->buttonDownScreenPos(Qt::LeftButton))
-            .length() < QApplication::startDragDistance()) {
-        return;
-    }
-
-    QDrag *drag = new QDrag(event->widget());
-    QMimeData *mime = new QMimeData;
-    drag->setMimeData(mime);
-
-    mime->setText(QString("%1").arg(getId()));
-
-    drag->exec();
-}
-
 /*----------------------------------------------------*/
 /*ASSESSEUR / MUTATEUR*/
 /*----------------------------------------------------*/
 
-int Node::getRessources() const
-{
-    return nbRessources;
-}
-
-int Node::getRessourcesRate() const
-{
-    return ressourcesRate;
-}
-
 int Node::getRadius() const
 {
     return radius;
-}
-
-int Node::getArmorLvl() const
-{
-    return armorLvl;
-}
-
-void Node::setArmorLvl(int a)
-{
-    armorLvl = a;
-}
-
-bool Node::getInvicibility() const
-{
-    return invicible;
-}
-
-void Node::setInvicibility(bool b)
-{
-    qDebug()<<"invinci"<<b;
-    invicible = b;
-}
-
-void Node::setOwner(const Gamer *g)
-{
-    owner = g;
-}
-
-const Gamer* Node::getOwner() const
-{
-    return owner;
-}
-
-void Node::setRessourcesRate(int r)
-{
-    ressourcesRate = r;
-}
-
-int Node::getRessourcesMax() const
-{
-    return ressourcesMax;
-}
-
-void Node::setRessources(int r)
-{
-    nbRessources = r;
-
-    if(nbRessources < 0)
-    {
-        nbRessources = 0;
-    }
-    if(nbRessources > ressourcesMax)
-    {
-        nbRessources = ressourcesMax;
-    }
 }
 
 void Node::connect(int nodeId, Connexion *c)
@@ -192,125 +110,4 @@ QMap<int, Connexion *> Node::getConnexions() const
 bool Node::isConnected(int nodeId) const
 {
     return mapConnexion.contains(nodeId);
-}
-
-void Node::incoming(Squad s)
-{
-    const Gamer &g = s.getOwner();
-    int ressource = s.getNbRessources();
-
-    if(&g == owner)
-    {
-        //Entrée d'allier
-        setRessources(nbRessources+ressource);
-    }
-    else
-    {
-        //Entrée d'ennemis
-        if(invicible) ressource = 0;
-        ressource = dealDamageOnArmor(ressource);
-        if (nbRessources < ressource)
-        {
-            //Changement de propriétaire
-            ressource -= nbRessources;
-            setRessources(ressource);
-            owner = &g;
-        }
-        else
-        {
-            setRessources(nbRessources-ressource);
-        }
-    }
-}
-
-void Node::sendSquad(int ressource, int nodeId)
-{
-    if(nodeId != getId() && mapConnexion.contains(nodeId))
-    {
-        int nbToSend = ressource > nbRessources ? nbRessources : ressource;
-        if(nbToSend > 0)
-        {
-            nbRessources -= nbToSend;
-            Squad s = Squad(*owner);
-            s.setNbRessources(nbToSend);
-            mapConnexion.value(nodeId)->sendSquad(s, getId());
-        }
-    }
-}
-
-/*----------------------------------------------------*/
-/*MISE A JOUR*/
-/*----------------------------------------------------*/
-
-QString Node::getUpdateString() const
-{
-    int idGamer  = -1;
-    if(owner != 0)idGamer = owner->getId();
-
-    return QString("%1,%2,%3,%4,%5").arg(nbRessources).
-           arg(ressourcesRate).arg(idGamer).arg(armorLvl).
-            arg(invicible);
-}
-
-QString Node::getCreationString() const
-{
-    int idGamer  = -1;
-    if(owner != 0)idGamer = owner->getId();
-
-    return QString("%1,%2,%3,%4").arg(getId()).arg(x()).arg(y()).
-           arg(radius);
-}
-
-void Node::updateFromString(QString &s)
-{
-    QStringList nodeStr = s.split(",");
-    if(nodeStr.size() == 5)
-    {
-        nbRessources = nodeStr.first().toInt();
-        nodeStr.pop_front();
-        ressourcesRate = nodeStr.first().toInt();
-        nodeStr.pop_front();
-        owner = lstGamer.getGamer(nodeStr.first().toInt());
-        nodeStr.pop_front();
-        armorLvl = nodeStr.first().toInt();
-        nodeStr.pop_front();
-        invicible = nodeStr.first().toInt();
-    }
-    else
-    {
-        qCritical()<<"Node : unexpected case in 'updateFromString'";
-    }
-}
-
-QString Node::normalizeSpawn()
-{
-    QString s = QString("%1,%2,%3,%4,%5").arg(nbRessources).
-               arg(ressourcesRate).arg("@").arg(armorLvl).
-                arg(invicible);
-    s.replace(s.indexOf("@"),1,"%1");
-    return s;
-}
-
-bool Node::isContainsPrivateChar(QString &s)
-{
-    return s.contains(",");
-}
-
-/*----------------------------------------------------*/
-/*METHODE PRIVE*/
-/*----------------------------------------------------*/
-
-int Node::dealDamageOnArmor(int damage)
-{
-    if(damage <= armorLvl)
-    {
-        armorLvl -= damage;
-        return 0;
-    }
-    else
-    {
-        int tmp = damage - armorLvl;
-        armorLvl = 0;
-        return tmp;
-    }
 }

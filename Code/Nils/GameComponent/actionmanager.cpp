@@ -16,7 +16,7 @@ ActionManager::ActionManager(QObject *parent) :
 /*SIGNALS/SLOTS*/
 /*----------------------------------------------------*/
 
-void ActionManager::selectionChanged(NodeCombat *n)
+void ActionManager::selectionChanged(Node *n)
 {
     qDebug()<<"ActionManager : enter 'selectionChanged'";
 

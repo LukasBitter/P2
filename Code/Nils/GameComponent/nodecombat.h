@@ -1,9 +1,9 @@
-#ifndef NODE_H
-#define NODE_H
+#ifndef NODECOMBAT_H
+#define NODECOMBAT_H
 
 #include <QGraphicsItem>
 #include <QMap>
-#include "identitytoken.h"
+#include "node.h"
 
 class Gamer;
 class Connexion;
@@ -13,14 +13,14 @@ class GamerList;
 
 namespace GameComponent
 {
-class Node;
+class NodeCombat;
 }
 
 /**
- * @class Node
- * @brief Représente les noeuds
+ * @class NodeCombat
+ * @brief Représente les noeuds prenable par les joueur
  */
-class NodeCombat : public QGraphicsItem, public IdentityToken
+class NodeCombat : public Node
 {
 
 public:
@@ -45,18 +45,12 @@ public:
     int getRadius() const;
     bool getInvicibility() const;
     const Gamer* getOwner()const;
-    bool isConnected(int nodeId) const;
 
     void setRessources(int r);
     void setRessourcesRate(int r);
     void setArmorLvl(int a);
     void setInvicibility(bool b);
     void setOwner(const Gamer* g);
-
-    void connect(int nodeId, Connexion *c);
-    void disconnect(int nodeId);
-    Connexion *getConnexion(int nodeId) const;
-    QMap<int, Connexion *> getConnexions() const;
 
     void incoming(Squad s);
     void sendSquad(int ressource, int nodeId);
@@ -75,16 +69,14 @@ private:
     const GamerList &lstGamer; ///< Liste des joueurs
 
     /*TOOL*/
-    int radius; ///< Rayon du noeud
     int armorLvl; ///< Armure du noeud en nombre de ressources
     int ressourcesRate; ///< Taux de croissance des ressources par "tic"
     int nbRessources; ///< Nombre de ressources acctuellement dans le noeud
     bool invicible; ///< Indique si le noeud est invincible
     int counterAdvance; ///< Reducteur de "tic" pour le gain de ressource
-    QMap<int, Connexion *> mapConnexion; ///< Cle = id noeud distant, Valeur = pointeur sur sa connextion
 
     /*METHODE PRIVE*/
     int dealDamageOnArmor(int damage);
 };
 
-#endif // NODE_H
+#endif // NODECOMBAT_H

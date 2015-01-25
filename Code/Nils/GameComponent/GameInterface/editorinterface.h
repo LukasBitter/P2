@@ -5,7 +5,6 @@
 #include "enumlibrary.h"
 
 class NodeCombat;
-class QPushButton;
 
 namespace GameInterface
 {
@@ -19,7 +18,9 @@ class EditorInterface : public QWidget
 public:
     explicit EditorInterface(QWidget *parent = 0);
 
+    bool isStandardNodeChecked()const;
     bool isSpawnNodeChecked()const;
+    bool isManaNodeChecked()const;
     int getNodeSize()const;
     int getNodeRessource()const;
 
@@ -42,8 +43,11 @@ private:
     /*INTERFACE*/
     QSpinBox *spRessource;
     QSpinBox *spSize;
-    QCheckBox *cbtIsSpawn;
+    QRadioButton *rbtStandard;
+    QRadioButton *rbtSpawn;
+    QRadioButton *rbtMana;
     QPushButton *btCreateNode;
+    QPushButton *btCreateMana;
     QPushButton *btRemoveNode;
     QPushButton *btConnectNode;
     QPushButton *btDisconnectNode;

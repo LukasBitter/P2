@@ -1,5 +1,5 @@
 #include "powerinterface.h"
-#include "GameComponent/nodecombat.h"
+#include "GameComponent/node.h"
 #include "GameComponent/GameInterface/button.h"
 
 
@@ -98,7 +98,7 @@ void PowerInterface::shortCutPressed(QKeyEvent *e)
     }
 }
 
-void PowerInterface::usePower(ACTIONS a, NodeCombat *n1, NodeCombat *n2)
+void PowerInterface::usePower(ACTIONS a, Node *n1, Node *n2)
 {
     if(!pcd.isReady(a)) return;
 
@@ -110,30 +110,30 @@ void PowerInterface::usePower(ACTIONS a, NodeCombat *n1, NodeCombat *n2)
     {
     case GA_USEPOWER_DESTROY:
     {
-        cost = 80;
-        countDownTime = 30;
+        cost = P_DESTROY_COST;
+        countDownTime = P_DESTROY_CD;
         powerDuration = 0;
         break;
     }
     case GA_USEPOWER_INVINCIBILITY:
     {
-        cost = 50;
-        countDownTime = 30;
-        powerDuration = 5;
+        cost = P_INVINCIBILITY_COST;
+        countDownTime = P_INVINCIBILITY_CD;
+        powerDuration = P_INVINCIBILITY_DURATION;
         break;
     }
     case GA_USEPOWER_TELEPORTATION:
     {
-        cost = 40;
-        countDownTime = 20;
+        cost = P_TELEPORTATION_COST;
+        countDownTime = P_TELEPORTATION_CD;
         powerDuration = 0;
         break;
     }
     case GA_USEPOWER_ARMORE:
     {
-        countDownTime = 5;
-        powerDuration = 5;
-        cost = 10;
+        countDownTime = P_ARMOR_CD;
+        powerDuration = P_ARMOR_DURATION;
+        cost = P_ARMOR_COST;
         break;
     }
     default:

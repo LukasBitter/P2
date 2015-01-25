@@ -3,7 +3,7 @@
 
 #include <QGraphicsScene>
 
-class NodeCombat;
+class Node;
 class Connexion;
 class GamerList;
 class Gamer;
@@ -31,18 +31,14 @@ public:
     void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
 
     /*ASSESSEUR / MUTATEUR*/
-    int getTotalRessources(Gamer &g);
-    int getAvrageRessourcesRate(Gamer &g);
-    int getTotalRessources();
-    int getAvrageRessourcesRate();
-    NodeCombat *getNode(int idNode);
+    Node *getNode(int idNode);
     Connexion *getConnexion(int idConnexion);
     const Gamer *isVictory();
 
-    void addNode(NodeCombat &n);
-    void addConnexion(NodeCombat &n1, NodeCombat &n2);
-    void removeNode(NodeCombat &n);
-    void removeConnexion(NodeCombat &n1, NodeCombat &n2);
+    void addNode(Node &n);
+    void addConnexion(Node &n1, Node &n2);
+    void removeNode(Node &n);
+    void removeConnexion(Node &n1, Node &n2);
 
     /*MISE A JOUR*/
     QString getUpdateString();
@@ -51,13 +47,19 @@ public:
     QStringList normalizeSpawn();
     static bool isContainsPrivateChar(QString &s);
 
+    /*SIGNALS/SLOTS*/
+signals:
+    void manaEmission(int gamerId, int mana);
+private slots:
+    void onManaEmission(int gamerId, int mana);
+
 private:
     /*ENTREE*/
     const Gamer *owner; ///< Joueur actuellement au commande de la map
     GamerList &lstGamer; ///< Liste des joueurs
 
     /*OUTIL*/
-    QHash<int, NodeCombat *> lstNode; ///< Liste de tous les noeuds
+    QHash<int, Node *> lstNode; ///< Liste de tous les noeuds
     QHash<int, Connexion *> lstConnexion; ///< Liste de toutes les connexions
 };
 
