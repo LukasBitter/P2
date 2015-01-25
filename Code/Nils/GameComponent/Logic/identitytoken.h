@@ -17,11 +17,21 @@ public:
     IdentityToken();
 
     /*ASSESSEUR / MUTATEUR*/
-    ///@warning Utiliser UNIQUEMENT en cas de mise
-    /// à jour, préférer setNextId sinon
+    /**
+     * @brief setId Défini l'ID de l'objet
+     * @param i ID voulu
+     * @warning Utiliser UNIQUEMENT en cas de mise à jour, préférer setNextId sinon
+     */
     void setId(int i);
+
+    /**
+     * @brief getId Retourne l'ID de l'objet
+     */
     int getId() const;
-    ///@brief Prend comme ID l'ID libre suivant
+
+    /**
+     * @brief setNextId Prend comme ID l'ID libre suivant
+     */
     void setNextId();
 private:
     int id; ///< Identifiant unique de l'objet

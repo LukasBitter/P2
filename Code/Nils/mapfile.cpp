@@ -16,6 +16,13 @@ MapFile::MapFile()
 /*ASSESSEUR / MUTATEUR*/
 /*----------------------------------------------------*/
 
+/**
+ * @brief MapFile::isValide Indique si la map est utilisable ou non
+ * @return Vrais si la map est valide
+ *
+ * Une map est invalide si la lecture du fichier rencontre un problème
+ * et que certaine données n'ont pas forcement été lues correctement
+ */
 bool MapFile::isValide() const
 {
     return valide;

@@ -7,7 +7,8 @@ class Gamer;
 
 /**
  * @class MapFile
- * @brief Liste des joueur présent dans la partie
+ * @brief Permet de charger les données d'une map depuis
+ * le disque ou de les écrire dans un fichier
  */
 class MapFile
 {
