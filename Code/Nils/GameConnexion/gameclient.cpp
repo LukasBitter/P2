@@ -44,6 +44,11 @@ const Gamer *GameClient::getCurrentGamer() const
     return lstGamer.getGamer(gamerId);
 }
 
+bool GameClient::isContainsPrivateChar(QString &s)
+{
+    return s.contains("#");
+}
+
 /*----------------------------------------------------*/
 /*SIGNALS/SLOTS*/
 /*----------------------------------------------------*/
@@ -55,13 +60,17 @@ void GameClient::launchGame(QString mapName)
     client->sendMessageToServer(QString("%1#%2").arg(C_LAUNCH_GAME).arg(mapName));
 }
 
-void GameClient::setName(QString name)
+bool GameClient::setName(QString name)
 {
     qDebug()<<"GameClient : enter 'setName'";
+
+    if(GameView::isContainsPrivateChar(name) || isContainsPrivateChar(name)) return false;
 
     Gamer *g = lstGamer.getGamer(gamerId);
     g->setName(name);
     updateCurrentGamer();
+
+    return true;
 }
 
 void GameClient::setReady(bool r)
@@ -145,6 +154,12 @@ void GameClient::onMessageRecive(QString s)
         receive_C_ADD_MAP(msg);
         break;
     }
+    case C_GAMER_ACTION:
+    {
+        qDebug()<<"GameClient : in 'onMessageRecive' recive C_GAMER_ACTION";
+        map->applyGamerAction(msg);
+        break;
+    }
     default:
         qCritical()<<"GameClient : unexpected case in 'onMessageRecive'";
         break;
@@ -159,7 +174,7 @@ void GameClient::onClientConnected()
     client->sendMessageToServer(message);
 }
 
-void GameClient::sendClientAction(QString actionString)
+void GameClient::sendGamerAction(QString actionString)
 {
     qDebug()<<"GameClient : enter 'sendClientAction'";
 
@@ -211,7 +226,7 @@ void GameClient::receive_C_LAUNCH_GAME(const QString &msg)
         if(map != 0) delete map;
         map = new GameView(msg, lstGamer, lstGamer.getGamer(gamerId));
         connect(map, SIGNAL(gamerAction(QString)),
-                this, SLOT(sendClientAction(QString)));
+                this, SLOT(sendGamerAction(QString)));
 
         emit switchToGame();
     }

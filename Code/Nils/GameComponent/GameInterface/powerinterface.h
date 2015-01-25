@@ -3,9 +3,9 @@
 
 #include "global.h"
 #include "enumlibrary.h"
-#include "GameComponent/GameInterface/Powers/powercountdown.h"
+#include "GameComponent/GameInterface/powercountdown.h"
 
-class Node;
+class NodeCombat;
 class Button;
 class QGraphicsTextItem;
 
@@ -44,7 +44,7 @@ signals:
     void powerPressed(ACTIONS a);
 public slots:
     void shortCutPressed(QKeyEvent *e);
-    void usePower(ACTIONS a, Node* n1, Node* n2);
+    void usePower(ACTIONS a, NodeCombat* n1, NodeCombat* n2);
 private slots:
     void btPowerDestroyPressed();
     void btPowerInvincibilityPressed();

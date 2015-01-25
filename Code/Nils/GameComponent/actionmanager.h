@@ -4,7 +4,7 @@
 #include <QObject>
 #include "enumlibrary.h"
 
-class Node;
+class NodeCombat;
 
 namespace GameComponent
 {
@@ -22,17 +22,17 @@ public:
 
     /*SIGNALS/SLOTS*/
 signals:
-    void doAction(ACTIONS action, Node *n);
-    void doAction(ACTIONS action, Node *n1, Node *n2);
+    void doAction(ACTIONS action, NodeCombat *n);
+    void doAction(ACTIONS action, NodeCombat *n1, NodeCombat *n2);
 public slots:
-    void selectionChanged(Node *n);
+    void selectionChanged(NodeCombat *n);
     void actionChanged(ACTIONS action);
     void reset();
 
 private:
     /*OUTIL*/
-    Node *currentSelection;
-    Node *lastSelection;
+    NodeCombat *currentSelection;
+    NodeCombat *lastSelection;
     ACTIONS action;
 
     /*METHODE PRIVE*/

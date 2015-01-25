@@ -5,7 +5,7 @@
 #include <QQueue>
 #include "identitytoken.h"
 
-class Node;
+class NodeCombat;
 class QPainter;
 class Gamer;
 class QObject;
@@ -26,7 +26,7 @@ class Connexion : public QGraphicsItem, public IdentityToken
 
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    explicit Connexion(Node &n1, Node &n2, const GamerList &gl);
+    explicit Connexion(NodeCombat &n1, NodeCombat &n2, const GamerList &gl);
     virtual ~Connexion();
 
     /*SURCHARGE*/
@@ -37,9 +37,9 @@ public:
     void advance(int step);
 
     /*ASSESSEUR / MUTATEUR*/
-    Node &getNode1() const;
-    Node &getNode2() const;
-    bool isConnextedTo(Node &n) const;
+    NodeCombat &getNode1() const;
+    NodeCombat &getNode2() const;
+    bool isConnextedTo(NodeCombat &n) const;
 
     void sendSquad(Squad s, int nodeId);
 
@@ -48,11 +48,12 @@ public:
     QString getCreationString() const;
     void updateFromString(QString &s);
     static void getCreationValue(QString &s, int &connexionId, int &node1Id, int &node2Id);
+    static bool isContainsPrivateChar(QString &s);
 
 private:
     /*ENTREE*/
-    Node &n1; ///< Point d'ancrage de la connexion
-    Node &n2; ///< Point d'ancrage de la connexion
+    NodeCombat &n1; ///< Point d'ancrage de la connexion
+    NodeCombat &n2; ///< Point d'ancrage de la connexion
     const GamerList &lstGamer; ///< Liste des joueurs
 
     /*OUTIL*/

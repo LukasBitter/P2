@@ -93,6 +93,14 @@ void GameServer::sendToAllGamer(const QString s)
     }
 }
 
+void GameServer::sendGamerAction(QString actionString)
+{
+    qDebug()<<"GameServer : enter 'sendGamerAction'";
+
+    QString message = QString("%1#%2").arg(C_GAMER_ACTION).arg(actionString);
+    sendToAllGamer(message);
+}
+
 void GameServer::updateGamerList()
 {
     qDebug()<<"GameServer : enter 'updateGamerList'";
@@ -237,6 +245,9 @@ void GameServer::receive_C_LAUNCH_GAME(QTcpSocket *t, const QString &msg)
     {
         map->updateFromString(m.getSlot(g->getSlotNumber()-1, g));
     }
+
+    connect(map, SIGNAL(gamerAction(QString)),
+            this, SLOT(sendGamerAction(QString)));
 
     startTimer(100);
 }

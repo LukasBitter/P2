@@ -5,7 +5,7 @@
 #include "global.h"
 
 #include "GameComponent/gamescene.h"
-#include "GameComponent/node.h"
+#include "GameComponent/nodecombat.h"
 
 void createGame()
 {

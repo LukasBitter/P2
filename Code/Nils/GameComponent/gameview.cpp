@@ -1,5 +1,5 @@
 #include "gameview.h"
-#include "node.h"
+#include "nodecombat.h"
 #include "connexion.h"
 #include "gamer.h"
 #include "squad.h"
@@ -18,6 +18,7 @@ void GameView::initialize()
     scene = 0;
     powerUi = 0;
     percentToSend = 50;
+    gameFinished = false;
 }
 
 GameView::GameView(GamerList &gl, Gamer *g, QWidget *parent) :
@@ -80,7 +81,7 @@ void GameView::mousePressEvent(QMouseEvent *e)
 {
     if(e->button()!= Qt::LeftButton) return;
 
-    Node *n = dynamic_cast <Node*>(itemAt(e->pos()));
+    NodeCombat *n = dynamic_cast <NodeCombat*>(itemAt(e->pos()));
 
     if(n == 0)
     {
@@ -100,8 +101,8 @@ void GameView::dropEvent(QDropEvent *event)
     {
         //Ordre déplacement via drag&drop
         event->accept();
-        Node *nodeFrom = scene->getNode(qvariant_cast<QString>(event->mimeData()->text()).toInt());
-        Node *nodeTo = dynamic_cast <Node*>(this->itemAt(event->pos()));
+        NodeCombat *nodeFrom = scene->getNode(qvariant_cast<QString>(event->mimeData()->text()).toInt());
+        NodeCombat *nodeTo = dynamic_cast <NodeCombat*>(this->itemAt(event->pos()));
         sendSquad(nodeFrom, nodeTo);
     }
     QGraphicsView::dropEvent(event);
@@ -114,6 +115,12 @@ void GameView::dropEvent(QDropEvent *event)
 void GameView::setPercentToSend(int percent)
 {
     if(percent>=0 && percent<=100) percentToSend = percent;
+}
+
+bool GameView::isContainsPrivateChar(QString &s)
+{
+    return NodeCombat::isContainsPrivateChar(s) || Connexion::isContainsPrivateChar(s) ||
+            GameScene::isContainsPrivateChar(s);
 }
 
 /*----------------------------------------------------*/
@@ -139,6 +146,15 @@ QString GameView::getCreationString()
 void GameView::advance()
 {
     scene->advance();
+    if(!gameFinished)
+    {
+        const Gamer *g = scene->isVictory();
+        if(g != 0)
+        {
+            gameFinished = true;
+            sendAction(GA_GAME_FINISHED, -1,-1, g->getId());
+        }
+    }
 }
 
 /*----------------------------------------------------*/
@@ -151,7 +167,7 @@ void GameView::onPowerPressed(ACTIONS action)
     am.actionChanged(action);
 }
 
-void GameView::onPowerStarting(ACTIONS a, Node *n1,Node *n2)
+void GameView::onPowerStarting(ACTIONS a, NodeCombat *n1,NodeCombat *n2)
 {
     qDebug()<<"GameView : enter 'onPowerStarting'";
 
@@ -188,7 +204,7 @@ void GameView::onPowerStarting(ACTIONS a, Node *n1,Node *n2)
     }
 }
 
-void GameView::onPowerFinishing(ACTIONS a, Node *n1,Node *n2)
+void GameView::onPowerFinishing(ACTIONS a, NodeCombat *n1,NodeCombat *n2)
 {
     qDebug()<<"GameView : enter 'onPowerFinishing'";
 
@@ -211,7 +227,7 @@ void GameView::onPowerFinishing(ACTIONS a, Node *n1,Node *n2)
     }
 }
 
-void GameView::onDoAction(ACTIONS action, Node *n)
+void GameView::onDoAction(ACTIONS action, NodeCombat *n)
 {
     qDebug()<<"GameView : enter 'onDoAction'";
 
@@ -237,7 +253,7 @@ void GameView::onDoAction(ACTIONS action, Node *n)
     }
 }
 
-void GameView::onDoAction(ACTIONS action, Node *n1, Node *n2)
+void GameView::onDoAction(ACTIONS action, NodeCombat *n1, NodeCombat *n2)
 {
     qDebug()<<"GameView : enter 'onDoAction'";
     qDebug()<<action;
@@ -269,9 +285,9 @@ void GameView::applyGamerAction(QString s)
     msgStr.pop_front();
     int gamerId = msgStr.first().toInt(); //Identifiant du joueur
     msgStr.pop_front();
-    Node *nodeFrom = scene->getNode(msgStr.first().toInt()); //noeud source
+    NodeCombat *nodeFrom = scene->getNode(msgStr.first().toInt()); //noeud source
     msgStr.pop_front();
-    Node *nodeTo = scene->getNode(msgStr.first().toInt()); //noeud cible
+    NodeCombat *nodeTo = scene->getNode(msgStr.first().toInt()); //noeud cible
     msgStr.pop_front();
     int param = msgStr.first().toInt(); //Parametre de l'action (nb ressource / pouvoir id)
 
@@ -338,6 +354,13 @@ void GameView::applyGamerAction(QString s)
         }
         break;
     }
+    case GA_GAME_FINISHED:
+    {
+        qDebug()<<"GameView : in 'applyGamerAction' recive GA_GAME_FINISHED";
+        qDebug()<<owner->getId()<<" - "<< param;
+        emit gameFinish(param == owner->getId());
+        break;
+    }
     default:
         qCritical()<<"GameView : unexpected case in 'applyGamerAction'";
         break;
@@ -358,10 +381,10 @@ void GameView::setUpUI()
 
     const PowerCountDown &pcd = powerUi->getCountDownManager();
     connect(powerUi,SIGNAL(powerPressed(ACTIONS)),this,SLOT(onPowerPressed(ACTIONS)));
-    connect(&pcd,SIGNAL(powerFinishing(ACTIONS,Node*,Node*)),this,SLOT(onPowerFinishing(ACTIONS,Node*,Node*)));
-    connect(&pcd,SIGNAL(powerStarting(ACTIONS,Node*,Node*)),this,SLOT(onPowerStarting(ACTIONS,Node*,Node*)));  
-    connect(&am,SIGNAL(doAction(ACTIONS,Node*)),this,SLOT(onDoAction(ACTIONS,Node*)));
-    connect(&am,SIGNAL(doAction(ACTIONS,Node*,Node*)),this,SLOT(onDoAction(ACTIONS,Node*,Node*)));
+    connect(&pcd,SIGNAL(powerFinishing(ACTIONS,NodeCombat*,NodeCombat*)),this,SLOT(onPowerFinishing(ACTIONS,NodeCombat*,NodeCombat*)));
+    connect(&pcd,SIGNAL(powerStarting(ACTIONS,NodeCombat*,NodeCombat*)),this,SLOT(onPowerStarting(ACTIONS,NodeCombat*,NodeCombat*)));
+    connect(&am,SIGNAL(doAction(ACTIONS,NodeCombat*)),this,SLOT(onDoAction(ACTIONS,NodeCombat*)));
+    connect(&am,SIGNAL(doAction(ACTIONS,NodeCombat*,NodeCombat*)),this,SLOT(onDoAction(ACTIONS,NodeCombat*,NodeCombat*)));
 
     // Désactivation des scrollbars
     setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
@@ -374,7 +397,7 @@ void GameView::setUpUI()
     scene->addItem(powerUi);
 }
 
-void GameView::sendSquad(Node *from, Node *to)
+void GameView::sendSquad(NodeCombat *from, NodeCombat *to)
 {
     if(from != 0 && to != 0)
     {
@@ -386,7 +409,8 @@ void GameView::sendSquad(Node *from, Node *to)
 
 void GameView::sendAction(ACTIONS a, int nodeFromId, int nodeToId, int param)
 {
+    int ownerId = owner == 0 ? -1 : owner->getId();
     emit gamerAction(QString("%1.%2.%3.%4.%5").arg(a).
-                     arg(owner->getId()).arg(nodeFromId).
+                     arg(ownerId).arg(nodeFromId).
                      arg(nodeToId).arg(param));
 }

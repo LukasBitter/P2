@@ -242,16 +242,6 @@ void Node::sendSquad(int ressource, int nodeId)
 /*MISE A JOUR*/
 /*----------------------------------------------------*/
 
-QString Node::getUpdateString() const
-{
-    int idGamer  = -1;
-    if(owner != 0)idGamer = owner->getId();
-
-    return QString("%1,%2,%3,%4,%5").arg(nbRessources).
-           arg(ressourcesRate).arg(idGamer).arg(armorLvl).
-            arg(invicible);
-}
-
 QString Node::getCreationString() const
 {
     int idGamer  = -1;
@@ -259,36 +249,6 @@ QString Node::getCreationString() const
 
     return QString("%1,%2,%3,%4").arg(getId()).arg(x()).arg(y()).
            arg(radius);
-}
-
-void Node::updateFromString(QString &s)
-{
-    QStringList nodeStr = s.split(",");
-    if(nodeStr.size() == 5)
-    {
-        nbRessources = nodeStr.first().toInt();
-        nodeStr.pop_front();
-        ressourcesRate = nodeStr.first().toInt();
-        nodeStr.pop_front();
-        owner = lstGamer.getGamer(nodeStr.first().toInt());
-        nodeStr.pop_front();
-        armorLvl = nodeStr.first().toInt();
-        nodeStr.pop_front();
-        invicible = nodeStr.first().toInt();
-    }
-    else
-    {
-        qCritical()<<"Node : unexpected case in 'updateFromString'";
-    }
-}
-
-QString Node::normalizeSpawn()
-{
-    QString s = QString("%1,%2,%3,%4,%5").arg(nbRessources).
-               arg(ressourcesRate).arg("@").arg(armorLvl).
-                arg(invicible);
-    s.replace(s.indexOf("@"),1,"%1");
-    return s;
 }
 
 bool Node::isContainsPrivateChar(QString &s)

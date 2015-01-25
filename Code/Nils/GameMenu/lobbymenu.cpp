@@ -28,6 +28,7 @@ void LobbyMenu::enableClientUI()
     btConnect->setEnabled(true);
     txtAdressIP->setEnabled(true);
 
+
     host = false;
 }
 
@@ -47,9 +48,10 @@ void LobbyMenu::updateUI()
 {
     qDebug()<<"LobbyMenu : enter 'updateUI'";
 
+    tblStatus->clearContents(); //Detruit également les pointeurs
+
     if(client == 0)return;
 
-    tblStatus->clearContents(); //Detruit également les pointeurs
     int cpt = 0;
     foreach (Gamer *g, client->getListGamer())
     {
@@ -179,14 +181,31 @@ void LobbyMenu::onBtStartPressed()
 
 void LobbyMenu::onBtChangeNamePressed()
 {
-    bool ok;
-    QString text;
-    text = QInputDialog::getText(this, tr("Entrez votre pseudo")
-                                         ,tr("Pseudo :"), QLineEdit::Normal,
-                                         "", &ok);
-    if(ok)
+    bool stop = false;
+
+    while(!stop)
     {
-        client->setName(text);
+        QString previousName = client->getCurrentGamer()->getName();
+        bool ok = false;
+        QString currentName = QInputDialog::getText(this, tr("Entrez votre pseudo")
+                                                    ,tr("Pseudo :"), QLineEdit::Normal,
+                                                    "", &ok);
+
+        if(ok && !currentName.isEmpty())
+        {
+            stop = client->setName(currentName);
+
+            if(!stop)
+            {
+                QMessageBox msgBox;
+                msgBox.setText("Contient des caractaires interdits");
+                msgBox.exec();
+            }
+        }
+        else if(!ok && !previousName.isEmpty())
+        {
+            stop = true;
+        }
     }
 }
 
@@ -199,8 +218,9 @@ void LobbyMenu::onSuccessfulConnexion()
 {
     qDebug()<<"LobbyMenu : successfull connexion to server";
     txtConnected->setText("Connecté");
-    client->setColor(QColor(cbbColor->currentText()));
+    client->setColor(cbbColor->currentData().value<QColor>());
     client->setSlot(cbbSlot->currentText().toInt());
+    onBtChangeNamePressed();
 }
 
 void LobbyMenu::onAddMap(QString s)
@@ -211,7 +231,9 @@ void LobbyMenu::onAddMap(QString s)
 void LobbyMenu::onCbbColorChanged(int i)
 {
     if(client != 0)
-        client->setColor(QColor(cbbColor->itemText(i)));
+    {
+        client->setColor(cbbColor->itemData(i).value<QColor>());
+    }
 }
 
 void LobbyMenu::onCbbSlotChanged(int i)
@@ -251,7 +273,7 @@ void LobbyMenu::setUpUI()
     connect(cbbColor,SIGNAL(currentIndexChanged(int)),this,SLOT(onCbbColorChanged(int)));
     connect(cbbSlot,SIGNAL(currentIndexChanged(int)),this,SLOT(onCbbSlotChanged(int)));
 
-    //PEUPLEMENT
+    //PARAMETRAGE
 
     tblStatus->setRowCount(MAX_GAMER);
     tblStatus->setColumnCount(4);
@@ -259,19 +281,9 @@ void LobbyMenu::setUpUI()
     s<<"Nom joueur"<<"Couleur"<<"Slot spawn"<<"Pret";
     tblStatus->setHorizontalHeaderLabels(s);
 
-    for(int i = 1; i <= MAX_GAMER; ++i)
-    {
-        cbbSlot->addItem(QString("%1").arg(i));
-    }
+    //PEUPLEMENT
 
-    const QStringList colorNames = QColor::colorNames();
-    int index = 0;
-    foreach (const QString &colorName, colorNames) {
-        const QColor color(colorName);
-        cbbColor->addItem(colorName, color);
-        const QModelIndex idx = cbbColor->model()->index(index++, 0);
-        cbbColor->model()->setData(idx, color, Qt::BackgroundColorRole);
-    }
+    populate();
 
     //AJOUT AU LAYOUT
 
@@ -293,18 +305,39 @@ void LobbyMenu::setUpUI()
     this->setLayout(l);
 }
 
+void LobbyMenu::populate()
+{
+    //peuplement du combobox de selection de slot
+    for(int i = 1; i <= MAX_GAMER; ++i)
+    {
+        cbbSlot->addItem(QString("%1").arg(i));
+    }
+
+    //Peuplement du combobox de selection de la couleur
+    cbbColor->addItem("Rouge", QColor(Qt::red));
+    cbbColor->addItem("Bleu", QColor(Qt::blue));
+    cbbColor->addItem("Vert", QColor(Qt::green));
+    cbbColor->addItem("Jaune", QColor(Qt::yellow));
+    cbbColor->addItem("Magenta", QColor(Qt::magenta));
+    cbbColor->addItem("Cyan", QColor(Qt::cyan));
+}
+
 void LobbyMenu::disableUI()
 {
+    setClient(0);
+    setServer(0);
+
     cbbMap->setEnabled(false);
     btStart->setEnabled(false);
     cbtReady->setEnabled(false);
     btConnect->setEnabled(false);
     txtAdressIP->setEnabled(false);
     btChangeName->setEnabled(false);
-    updateUI();
 
-    setClient(0);
-    setServer(0);
+    txtAdressIP->setText("Entrez l'adresse IP");
+    txtName->setText("Votre pseudo : ");
+
+    updateUI();
 }
 
 void LobbyMenu::setClient(GameClient *c)

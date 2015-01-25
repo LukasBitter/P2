@@ -3,7 +3,7 @@
 
 #include <QGraphicsScene>
 
-class Node;
+class NodeCombat;
 class Connexion;
 class GamerList;
 class Gamer;
@@ -35,19 +35,21 @@ public:
     int getAvrageRessourcesRate(Gamer &g);
     int getTotalRessources();
     int getAvrageRessourcesRate();
-    Node *getNode(int idNode);
+    NodeCombat *getNode(int idNode);
     Connexion *getConnexion(int idConnexion);
+    const Gamer *isVictory();
 
-    void addNode(Node &n);
-    void addConnexion(Node &n1, Node &n2);
-    void removeNode(Node &n);
-    void removeConnexion(Node &n1, Node &n2);
+    void addNode(NodeCombat &n);
+    void addConnexion(NodeCombat &n1, NodeCombat &n2);
+    void removeNode(NodeCombat &n);
+    void removeConnexion(NodeCombat &n1, NodeCombat &n2);
 
     /*MISE A JOUR*/
     QString getUpdateString();
     void updateFromString(QString s);
     QString getCreationString();
     QStringList normalizeSpawn();
+    static bool isContainsPrivateChar(QString &s);
 
 private:
     /*ENTREE*/
@@ -55,7 +57,7 @@ private:
     GamerList &lstGamer; ///< Liste des joueurs
 
     /*OUTIL*/
-    QHash<int, Node *> lstNode; ///< Liste de tous les noeuds
+    QHash<int, NodeCombat *> lstNode; ///< Liste de tous les noeuds
     QHash<int, Connexion *> lstConnexion; ///< Liste de toutes les connexions
 };
 

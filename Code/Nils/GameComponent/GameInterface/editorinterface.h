@@ -4,7 +4,7 @@
 #include "global.h"
 #include "enumlibrary.h"
 
-class Node;
+class NodeCombat;
 class QPushButton;
 
 namespace GameInterface

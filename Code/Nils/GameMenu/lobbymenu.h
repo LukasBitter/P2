@@ -76,6 +76,7 @@ private:
 
     /*METHODE PRIVE*/
     void setUpUI();
+    void populate();
     void disableUI();
     void setClient(GameClient *c);
     void setServer(GameServer* s);

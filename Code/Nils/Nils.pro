@@ -9,7 +9,6 @@ PRECOMPILED_HEADER = global.h
 
 HEADERS += \
     GameComponent/connexion.h \
-    GameComponent/node.h \
     GameComponent/squad.h \
     GameComponent/identitytoken.h \
     GameComponent/gamescene.h \
@@ -30,12 +29,14 @@ HEADERS += \
     mapfile.h \
     GameComponent/editview.h \
     GameComponent/GameInterface/editorinterface.h \
-    GameComponent/GameInterface/Powers/powercountdown.h \
-    GameComponent/actionmanager.h
+    GameComponent/GameInterface/powercountdown.h \
+    GameComponent/actionmanager.h \
+    GameMenu/endgamemenu.h \
+    GameComponent/nodecombat.h \
+    GameComponent/node.h
 
 SOURCES += \
     GameComponent/connexion.cpp \
-    GameComponent/node.cpp \
     GameComponent/squad.cpp \
     GameComponent/identitytoken.cpp \
     GameComponent/gamescene.cpp \
@@ -56,8 +57,11 @@ SOURCES += \
     mapfile.cpp \
     GameComponent/editview.cpp \
     GameComponent/GameInterface/editorinterface.cpp \
-    GameComponent/GameInterface/Powers/powercountdown.cpp \
-    GameComponent/actionmanager.cpp
+    GameComponent/GameInterface/powercountdown.cpp \
+    GameComponent/actionmanager.cpp \
+    GameMenu/endgamemenu.cpp \
+    GameComponent/nodecombat.cpp \
+    GameComponent/node.cpp
 
 OTHER_FILES += \
     Notes.txt

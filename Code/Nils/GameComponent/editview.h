@@ -9,7 +9,7 @@
 
 class GameScene;
 class EditorInterface;
-class Node;
+class NodeCombat;
 class Gamer;
 
 namespace GameComponent
@@ -58,7 +58,7 @@ private:
     GamerList lstGamer;
     Gamer *spawnGamer;
     ACTIONS a;
-    Node *memory;
+    NodeCombat *memory;
 
     /*METHODE PRIVE*/
     void setUpUI();

@@ -20,13 +20,14 @@ class Node;
  * @class Node
  * @brief Représente les noeuds
  */
-class Node : public QGraphicsItem, public IdentityToken
+class NodeCombat : public QGraphicsItem, public IdentityToken
 {
 
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    explicit Node(int x, int y, int radius);
-    explicit Node(QString &create, GamerList &gl);
+    explicit NodeCombat(int x, int y, int radius, int ressourcesMax,
+                  const GamerList &gl, Gamer *g=0);
+    explicit NodeCombat(QString &create, GamerList &gl);
 
     /*SURCHARGE*/
     QRectF boundingRect() const;
@@ -59,11 +60,31 @@ public:
 
     void incoming(Squad s);
     void sendSquad(int ressource, int nodeId);
+
+    /*MISE A JOUR*/
+    QString getUpdateString() const;
+    QString getCreationString() const;
+    void updateFromString(QString &s);
+    QString normalizeSpawn();
+    static bool isContainsPrivateChar(QString &s);
+
 private:
+    /*ENTREE*/
+    int ressourcesMax; ///< Capacité maximale du noeud
+    const Gamer *owner; ///< Propriétaire acctuel du noeud
+    const GamerList &lstGamer; ///< Liste des joueurs
+
     /*TOOL*/
     int radius; ///< Rayon du noeud
+    int armorLvl; ///< Armure du noeud en nombre de ressources
+    int ressourcesRate; ///< Taux de croissance des ressources par "tic"
+    int nbRessources; ///< Nombre de ressources acctuellement dans le noeud
+    bool invicible; ///< Indique si le noeud est invincible
     int counterAdvance; ///< Reducteur de "tic" pour le gain de ressource
     QMap<int, Connexion *> mapConnexion; ///< Cle = id noeud distant, Valeur = pointeur sur sa connextion
+
+    /*METHODE PRIVE*/
+    int dealDamageOnArmor(int damage);
 };
 
 #endif // NODE_H

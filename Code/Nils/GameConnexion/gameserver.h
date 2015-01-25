@@ -32,6 +32,7 @@ signals:
 private slots:
     void onErrorOccured(QAbstractSocket::SocketError socketError);
     void onMessageRecive(QTcpSocket *t, QString msg);
+    void sendGamerAction(QString actionString);
 
 private:
     /*OUTIL*/

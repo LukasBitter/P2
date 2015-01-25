@@ -4,7 +4,7 @@
 #include "enumlibrary.h"
 #include <QObject>
 
-class Node;
+class NodeCombat;
 
 namespace GameInterface
 {
@@ -20,14 +20,14 @@ public:
     PowerCountDown(QObject * parent = 0);
 
     /*ASSESSEUR / MUTATEUR*/
-    void addCountDown(int countDownTime, int powerDuration, ACTIONS powerName, Node *n1, Node *n2);
+    void addCountDown(int countDownTime, int powerDuration, ACTIONS powerName, NodeCombat *n1, NodeCombat *n2);
     double percentReload(ACTIONS powerName) const;
     void advence();
     bool isReady(ACTIONS a) const;
 
 signals:
-    void powerFinishing(ACTIONS a, Node* n1, Node* n2);
-    void powerStarting(ACTIONS a, Node* n1, Node* n2);
+    void powerFinishing(ACTIONS a, NodeCombat* n1, NodeCombat* n2);
+    void powerStarting(ACTIONS a, NodeCombat* n1, NodeCombat* n2);
 
 private:
     /*OUTIL*/
@@ -35,7 +35,7 @@ private:
     QHash<ACTIONS, int> lstPowerDuration;
     QHash<ACTIONS, int> lstPowerCurentTime;
     QHash<ACTIONS, bool> lstPowerFinish;
-    QHash<ACTIONS, QPair<Node *, Node *> > lstContext;
+    QHash<ACTIONS, QPair<NodeCombat *, NodeCombat *> > lstContext;
 
     /*METHODE PRIVE*/
     void deletePower(ACTIONS a);

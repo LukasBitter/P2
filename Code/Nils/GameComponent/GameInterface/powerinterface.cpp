@@ -1,5 +1,5 @@
 #include "powerinterface.h"
-#include "GameComponent/node.h"
+#include "GameComponent/nodecombat.h"
 #include "GameComponent/GameInterface/button.h"
 
 
@@ -98,7 +98,7 @@ void PowerInterface::shortCutPressed(QKeyEvent *e)
     }
 }
 
-void PowerInterface::usePower(ACTIONS a, Node *n1, Node *n2)
+void PowerInterface::usePower(ACTIONS a, NodeCombat *n1, NodeCombat *n2)
 {
     if(!pcd.isReady(a)) return;
 

@@ -1,5 +1,5 @@
 #include "editview.h"
-#include "node.h"
+#include "nodecombat.h"
 #include "connexion.h"
 #include "gamer.h"
 #include "gamescene.h"
@@ -42,7 +42,7 @@ void EditView::mousePressEvent(QMouseEvent *e)
     case EA_ADD:
     {
         Gamer *g = editorUi->isSpawnNodeChecked() ? spawnGamer : 0;
-        Node *n = new Node(e->x(), e->y(),20*editorUi->getNodeSize(),
+        NodeCombat *n = new NodeCombat(e->x(), e->y(),20*editorUi->getNodeSize(),
                            50*editorUi->getNodeSize(),lstGamer,g);
         n->setRessourcesRate(editorUi->getNodeSize());
         n->setRessources(editorUi->getNodeRessource());
@@ -52,14 +52,14 @@ void EditView::mousePressEvent(QMouseEvent *e)
     }
     case EA_REMOVE:
     {
-        Node *n = dynamic_cast <Node*>(itemAt(e->pos()));
+        NodeCombat *n = dynamic_cast <NodeCombat*>(itemAt(e->pos()));
         if(n != 0) scene->removeNode(*n);
         a = NO_ACTION;
         break;
     }
     case EA_CONNECT:
     {
-        Node *n = dynamic_cast <Node*>(itemAt(e->pos()));
+        NodeCombat *n = dynamic_cast <NodeCombat*>(itemAt(e->pos()));
         if(n != 0)
         {
             if(memory != 0)
@@ -77,7 +77,7 @@ void EditView::mousePressEvent(QMouseEvent *e)
     }
     case EA_DISCONNECT:
     {
-        Node *n = dynamic_cast <Node*>(itemAt(e->pos()));
+        NodeCombat *n = dynamic_cast <NodeCombat*>(itemAt(e->pos()));
         if(n != 0)
         {
             if(memory != 0)

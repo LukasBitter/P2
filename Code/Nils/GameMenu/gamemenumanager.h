@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 class WelcomeMenu;
+class EndGameMenu;
 class LobbyMenu;
 class EditView;
 class QWidget;
@@ -32,12 +33,14 @@ private slots:
     void goToLobbyAsClient();
     void goToGame(GameView *w);
     void goToEditor();
+    void gameFinished(bool victory);
 
 private:
     /*INTERFACE*/
     QWidget *centralWidget;
     QStackedLayout *layout;
     WelcomeMenu *welcomemenu;
+    EndGameMenu *endgamemenu;
     LobbyMenu *lobbymenu;
     EditView *editormenu;
 

@@ -30,6 +30,7 @@ public:
     GameView *getMap()const;
     const QHash<int, Gamer *> &getListGamer();
     const Gamer *getCurrentGamer()const;
+    static bool isContainsPrivateChar(QString &s);
 
     /*SIGNALS/SLOTS*/
 signals:
@@ -41,7 +42,7 @@ signals:
     void switchToGame();
 public slots:
     void launchGame(QString mapName);
-    void setName(QString name);
+    bool setName(QString name);
     void setReady(bool r);
     void setColor(QColor c);
     void setSlot(int s);
@@ -50,7 +51,7 @@ private slots:
     void onErrorOccured(QAbstractSocket::SocketError socketError);
     void onMessageRecive(QString msg);
     void onClientConnected();
-    void sendClientAction(QString actionString);
+    void sendGamerAction(QString actionString);
 
 private:
     /*OUTIL*/

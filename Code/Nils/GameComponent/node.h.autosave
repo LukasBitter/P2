@@ -59,6 +59,11 @@ public:
 
     void incoming(Squad s);
     void sendSquad(int ressource, int nodeId);
+
+    /*MISE A JOUR*/
+    QString getCreationString() const;
+    static bool isContainsPrivateChar(QString &s);
+
 private:
     /*TOOL*/
     int radius; ///< Rayon du noeud
