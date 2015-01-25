@@ -8,6 +8,10 @@ class QString;
 class QTcpSocket;
 class QColor;
 
+/**
+ * @class GamerList
+ * @brief Liste des joueur présent dans la partie
+ */
 class GamerList
 {
 public:

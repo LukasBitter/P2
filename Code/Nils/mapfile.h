@@ -1,7 +1,6 @@
 #ifndef MAPFILE_H
 #define MAPFILE_H
 
-#include <QStringList>
 #include <QString>
 
 class Gamer;
