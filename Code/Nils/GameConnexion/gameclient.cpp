@@ -100,6 +100,16 @@ void GameClient::setSlot(int s)
     updateCurrentGamer();
 }
 
+void GameClient::sendChatMessage(QString msg)
+{
+    if(GameView::isContainsPrivateChar(msg) || isContainsPrivateChar(msg)) return;
+
+    QString name = lstGamer.getGamer(gamerId) == 0 ? "" : lstGamer.getGamer(gamerId)->getName();
+    QString message = QString("%1#%2 : %3").arg(C_SEND_CHAT_MESSAGE).
+            arg(name).arg(msg);
+    client->sendMessageToServer(message);
+}
+
 void GameClient::onErrorOccured(QAbstractSocket::SocketError socketError)
 {
     qWarning()<<"GameClient : enter 'onErrorOccured'"<<socketError;
@@ -158,6 +168,12 @@ void GameClient::onMessageRecive(QString s)
     {
         qDebug()<<"GameClient : in 'onMessageRecive' recive C_GAMER_ACTION";
         map->applyGamerAction(msg);
+        break;
+    }
+    case C_RECIVE_CHAT_MESSAGE:
+    {
+        qDebug()<<"GameClient : in 'onMessageRecive' recive C_RECIVE_CHAT_MESSAGE";
+        receive_C_RECIVE_CHAT_MESSAGE(msg);
         break;
     }
     default:
@@ -251,4 +267,9 @@ void GameClient::receive_C_MAP_UPDATE(const QString &msg)
 void GameClient::receive_C_ADD_MAP(const QString &msg)
 {
     emit addMapName(msg);
+}
+
+void GameClient::receive_C_RECIVE_CHAT_MESSAGE(const QString &msg)
+{
+    emit reciveChatMessage(msg);
 }

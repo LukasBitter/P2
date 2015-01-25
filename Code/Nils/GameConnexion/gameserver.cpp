@@ -73,6 +73,12 @@ void GameServer::onMessageRecive(QTcpSocket *t, QString s)
         receive_C_GAMER_ACTION(t, msg);
         break;
     }
+    case C_SEND_CHAT_MESSAGE:
+    {
+        qDebug()<<"GameServer : in 'onMessageRecive' recive C_GAMER_ACTION";
+        receive_C_SEND_CHAT_MESSAGE(t, msg);
+        break;
+    }
     default:
         qCritical()<<"GameServer : unexpected case in 'onMessageRecive'";
         break;
@@ -188,6 +194,7 @@ void GameServer::receive_C_REQUEST_SLOT(QTcpSocket *t, const QString &msg)
         Gamer *g = new Gamer();
         g->setSocket(t);
         lstGamer.addGamer(g);
+        g->setSlotNumber(lstGamer.getLstGamer().size());
         server->sendMessageToClient(t,QString("%1#%2").arg(C_GAMER_INFO).arg(g->getId()));
 
         foreach (QString s, lstMapName)
@@ -263,4 +270,11 @@ void GameServer::receive_C_GAMER_ACTION(QTcpSocket *t, const QString &msg)
     Q_UNUSED(t);
 
     map->applyGamerAction(msg);
+}
+
+void GameServer::receive_C_SEND_CHAT_MESSAGE(QTcpSocket *t, const QString &msg)
+{
+    Q_UNUSED(t);
+
+    sendToAllGamer(QString("%1#%2").arg(C_RECIVE_CHAT_MESSAGE).arg(msg));
 }

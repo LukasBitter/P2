@@ -61,11 +61,39 @@ void NodeCombat::paint(QPainter *painter,
 {
     Q_UNUSED(option);
     Q_UNUSED(widget);
+    painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
+    painter->setRenderHint(QPainter::SmoothPixmapTransform, true);
+
+    QColor ownerColor = QColor(Qt::white);
+    QPixmap nodeImg;
 
     if(owner != 0)
     {
-        painter->setBrush(owner->getColor());
+        //painter->setBrush(owner->getColor());
+        ownerColor = owner->getColor();
+
+        if(ownerColor == QColor(Qt::darkRed))
+        {
+            nodeImg = QPixmap(":/NodeRedN.png");
+        }
+        else if(ownerColor == QColor(Qt::green))
+        {
+            nodeImg = QPixmap(":/NodeGreenN.png");
+        }
+        else if(ownerColor == QColor(Qt::red))
+        {
+            nodeImg = QPixmap(":/NodeOrangeN.png");
+        }
+        else if(ownerColor == QColor(Qt::yellow))
+        {
+            nodeImg = QPixmap(":/NodeYellowN.png");
+        }
     }
+    else
+    {
+        nodeImg = QPixmap(":/NodeWhiteN.png");
+    }
+
     if(isSelected() || isUnderMouse())
     {
         QPen pen(Qt::gray);
@@ -74,8 +102,13 @@ void NodeCombat::paint(QPainter *painter,
         painter->setPen(pen);
         painter->drawEllipse(QPoint(0,0),radius+3,radius+3);
     }
-    painter->setPen(Qt::black);
-    painter->drawEllipse(QPoint(0,0),radius,radius);
+    //painter->setPen(Qt::black);
+    //painter->drawEllipse(QPoint(0,0),radius,radius);
+
+
+    //QRectF target(0, 0, radius, radius);
+    QRectF source(0.0, 0.0, 212.0, 212.0);
+    painter->drawPixmap(Node::boundingRect(), nodeImg, source);
 
     if(invicible)
     {

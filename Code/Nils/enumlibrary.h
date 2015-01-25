@@ -18,6 +18,8 @@ enum NETWORK_COMMANDE
     C_GAMER_ACTION,///< Serveur & Client : Message privés entre les GameView client et serveur
     C_ADD_MAP,///< Serveur->Client : Ajoute une map à la liste de choix de map
     C_UPDATE_CURRENT_GAMER,///< Client->Serveur : met à jour les données du joueur
+    C_SEND_CHAT_MESSAGE,///< Client->Serveur : envois d'un message au autres joueurs
+    C_RECIVE_CHAT_MESSAGE,///< Serveur->Client : réception d'un message des autres joueurs
 };
 
 ///Informations que le serveur envoi au client

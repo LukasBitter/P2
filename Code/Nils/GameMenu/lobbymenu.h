@@ -44,10 +44,12 @@ private slots:
     void onBtStartPressed();
     void onBtChangeNamePressed();
     void onBtReadyPressed();
+    void onBtSendPressed();
     void onSuccessfulConnexion();
     void onAddMap(QString s);
     void onCbbColorChanged(int i);
     void onCbbSlotChanged(int i);
+    void onReciveChatMessage(QString s);
 
 private:
     /*INTERFACE*/
@@ -63,6 +65,9 @@ private:
     QPushButton *btStart;
     QPushButton *btReturn;
     QLabel *txtConnected;
+    QTextEdit *txtChat;
+    QLineEdit *txtToSendChat;
+    QPushButton *btSend;
 
     /*OUTIL*/
     bool host; ///< Indique si le joueur est l'host

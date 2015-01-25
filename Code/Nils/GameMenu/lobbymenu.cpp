@@ -199,6 +199,10 @@ void LobbyMenu::onBtChangeNamePressed()
                 msgBox.setText("Contient des caractaires interdits");
                 msgBox.exec();
             }
+            else
+            {
+                client->sendChatMessage(previousName+" --> "+currentName);
+            }
         }
         else if(!ok && !previousName.isEmpty())
         {
@@ -210,6 +214,15 @@ void LobbyMenu::onBtChangeNamePressed()
 void LobbyMenu::onBtReadyPressed()
 {
     client->setReady(cbtReady->isChecked());
+}
+
+void LobbyMenu::onBtSendPressed()
+{
+    if(client != 0)
+    {
+        client->sendChatMessage(txtToSendChat->text());
+        txtToSendChat->setText("");
+    }
 }
 
 void LobbyMenu::onSuccessfulConnexion()
@@ -240,6 +253,11 @@ void LobbyMenu::onCbbSlotChanged(int i)
         client->setSlot(cbbSlot->itemText(i).toInt());
 }
 
+void LobbyMenu::onReciveChatMessage(QString s)
+{
+    txtChat->append(s);
+}
+
 /*----------------------------------------------------*/
 /*METHODE PRIVE*/
 /*----------------------------------------------------*/
@@ -260,9 +278,13 @@ void LobbyMenu::setUpUI()
     this->txtAdressIP = new QLineEdit("Entrez l'adresse IP",this);
     this->txtName = new QLabel("Votre pseudo : ",this);
     this->txtConnected = new QLabel("Non connecté",this);
+    this->txtChat = new QTextEdit(this);
+    this->txtToSendChat = new QLineEdit(this);
+    this->btSend = new QPushButton("Envoyer", this);
 
     //CONNEXION
 
+    connect(btSend,SIGNAL(clicked()),this,SLOT(onBtSendPressed()));
     connect(btReturn,SIGNAL(clicked()),this,SLOT(onBtReturnPressed()));
     connect(btConnect,SIGNAL(clicked()),this,SLOT(onBtConnectPressed()));
     connect(btStart,SIGNAL(clicked()),this,SLOT(onBtStartPressed()));
@@ -278,6 +300,8 @@ void LobbyMenu::setUpUI()
     QStringList &s = *new QStringList();
     s<<"Nom joueur"<<"Couleur"<<"Slot spawn"<<"Pret";
     tblStatus->setHorizontalHeaderLabels(s);
+    tblStatus->verticalHeader()->setVisible(false);
+    txtChat->setReadOnly(true);
 
     //PEUPLEMENT
 
@@ -286,19 +310,25 @@ void LobbyMenu::setUpUI()
     //AJOUT AU LAYOUT
 
     QGridLayout *l = new QGridLayout(this);
+    l->setColumnStretch(0, 1);
+    l->setColumnStretch(1, 1);
+    l->setColumnStretch(2, 1);
     l->addWidget(txtName, 0,0,1,2);
     l->addWidget(btChangeName, 0,2);
     l->addWidget(txtAdressIP, 1,0,1,2);
     l->addWidget(btConnect, 1,2);
-    l->addWidget(tblStatus, 2,0,1,3);
-    l->addWidget(cbbMap, 3,0,1,3);
-    l->addWidget(cbbColor, 4,0);
-    l->addWidget(cbbSlot, 4,1);
-    l->addWidget(cbtReady, 4,2);
+    l->addWidget(tblStatus, 10,0,3,2);
+    l->addWidget(txtChat, 10,2);
+    l->addWidget(txtToSendChat, 11,2);
+    l->addWidget(btSend, 12,2);
+    l->addWidget(cbbMap, 20,0,1,3);
+    l->addWidget(cbbColor, 21,0);
+    l->addWidget(cbbSlot, 21,1);
+    l->addWidget(cbtReady, 21,2);
 
-    l->addWidget(btReturn, 5,0);
-    l->addWidget(txtConnected, 5,1);
-    l->addWidget(btStart, 5,2);
+    l->addWidget(btReturn, 30,0);
+    l->addWidget(txtConnected, 30,1);
+    l->addWidget(btStart, 30,2);
 
     this->setLayout(l);
 }
@@ -312,12 +342,10 @@ void LobbyMenu::populate()
     }
 
     //Peuplement du combobox de selection de la couleur
-    cbbColor->addItem("Rouge", QColor(Qt::red));
-    cbbColor->addItem("Bleu", QColor(Qt::blue));
+    cbbColor->addItem("Rouge", QColor(Qt::darkRed));
     cbbColor->addItem("Vert", QColor(Qt::green));
+    cbbColor->addItem("Orange", QColor(Qt::red));
     cbbColor->addItem("Jaune", QColor(Qt::yellow));
-    cbbColor->addItem("Magenta", QColor(Qt::magenta));
-    cbbColor->addItem("Cyan", QColor(Qt::cyan));
 }
 
 void LobbyMenu::disableUI()
@@ -356,6 +384,7 @@ void LobbyMenu::setClient(GameClient *c)
         connect(client,SIGNAL(updateLobby()),this,SLOT(updateUI()));
         connect(client,SIGNAL(addMapName(QString)),this,SLOT(onAddMap(QString)));
         connect(client,SIGNAL(errorOccured(NETWORK_INFORMATION)),this,SLOT(showMessage(NETWORK_INFORMATION)));
+        connect(client,SIGNAL(reciveChatMessage(QString)),this,SLOT(onReciveChatMessage(QString)));
     }
 }
 

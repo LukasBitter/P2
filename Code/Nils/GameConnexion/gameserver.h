@@ -61,6 +61,7 @@ private:
     void receive_C_UPDATE_CURRENT_GAMER(QTcpSocket *t, const QString &msg);
     void receive_C_SET_NAME(QTcpSocket *t, const QString &msg);
     void receive_C_GAMER_ACTION(QTcpSocket *t, const QString &msg);
+    void receive_C_SEND_CHAT_MESSAGE(QTcpSocket *t, const QString &msg);
 };
 
 #endif // GAMESERVER_H
