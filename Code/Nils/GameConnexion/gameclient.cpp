@@ -9,7 +9,7 @@
 /*----------------------------------------------------*/
 
 GameClient::GameClient(QString host, QObject *parent) : QObject(parent),
-    port(8000), gamerId(-1), map(0), client(0)
+    port(PORT), gamerId(-1), map(0), client(0)
 {
     client = new Client(port, host, this);
 
@@ -131,10 +131,10 @@ void GameClient::onMessageRecive(QString s)
         receive_C_INFORMATION(msg);
         break;
     }
-    case C_LAUNCH_GAME:
+    case C_TRANSIT_GAME:
     {
-        qDebug()<<"GameClient : in 'onMessageRecive' recive C_LAUNCH_GAME";
-        receive_C_LAUNCH_GAME(msg);
+        qDebug()<<"GameClient : in 'onMessageRecive' recive C_TRANSIT_GAME";
+        receive_C_TRANSIT_GAME(msg);
         break;
     }
     case C_LOBBY_UPDATE:
@@ -219,7 +219,7 @@ void GameClient::receive_C_INFORMATION(const QString &msg)
     }
 }
 
-void GameClient::receive_C_LAUNCH_GAME(const QString &msg)
+void GameClient::receive_C_TRANSIT_GAME(const QString &msg)
 {
     if(gamerId != -1)
     {
@@ -232,7 +232,7 @@ void GameClient::receive_C_LAUNCH_GAME(const QString &msg)
     }
     else
     {
-        qCritical()<<"GameClient : unexpected case in 'onMessageRecive' recive C_LAUNCH_GAME";
+        qCritical()<<"GameClient : unexpected case in 'onMessageRecive' recive C_TRANSIT_GAME";
     }
 }
 

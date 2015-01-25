@@ -14,12 +14,15 @@ class GamerList;
 
 namespace GameComponent
 {
-class NodeMana;
+    class NodeMana;
 }
 
 /**
  * @class NodeMana
- * @brief Représente les noeuds augmantant le mana du joueur
+ * @brief Représente les noeuds de restauration du mana
+ * Les joueurs peuvent envoyer des ressources vers ces noeud afin de remonter leur mana.
+ * Les ressources sont imédiattement convertie, il est impossible de prendre ce noeud
+ * ou de passer au travers.
  */
 class NodeMana :  public QObject, public Node
 {
@@ -49,7 +52,7 @@ signals:
     void manaEmission(int gamerId, int mana);
 private:
     /*ENTREE*/
-    const GamerList &lstGamer; ///< Liste des joueurs
+    const GamerList &lstGamer; ///< Liste des joueurs présents
 };
 
 #endif // NODEMANA_H

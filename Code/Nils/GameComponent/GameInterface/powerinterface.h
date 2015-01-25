@@ -11,14 +11,15 @@ class QGraphicsTextItem;
 
 namespace GameInterface
 {
-class PowerInterface;
+    class PowerInterface;
 }
 
 /**
  * @class PowerInterface
- * @brief Interface utilisateur
+ * @brief Palette pour la gestion des pouvoirs (en jeu)
  *
- * Regroupe les boutons d'activation des pouvoir et gère le mana du joueur
+ * La classe affiche l'interface graphique d'activation des pouvoirs et
+ * s'occupe de gestion de temps de recharge
  */
 class PowerInterface : public QGraphicsWidget
 {
@@ -66,7 +67,7 @@ private:
 
     /*OUTIL*/
     int mana; ///< Réservoir de ressources consomées par les pouvoirs
-    PowerCountDown pcd;
+    PowerCountDown pcd; ///< Gestionnaire des temsp de recharge des pouvoirs
 
     /*METHODE PRIVE*/
     void setUpUI();

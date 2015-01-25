@@ -8,9 +8,13 @@ class NodeCombat;
 
 namespace GameInterface
 {
-class EditorInterface;
+    class EditorInterface;
 }
 
+/**
+ * @class EditorInterface
+ * @brief Palette d'outil pour l'edition de map
+ */
 class EditorInterface : public QWidget
 {
     Q_OBJECT
@@ -47,7 +51,6 @@ private:
     QRadioButton *rbtSpawn;
     QRadioButton *rbtMana;
     QPushButton *btCreateNode;
-    QPushButton *btCreateMana;
     QPushButton *btRemoveNode;
     QPushButton *btConnectNode;
     QPushButton *btDisconnectNode;

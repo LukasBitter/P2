@@ -30,11 +30,11 @@ public:
     void saveToFile(const QString &file)const;
 private:
     /*ENTREE-SORTIE*/
-    int version;
-    QString creation;
-    QString update;
-    QStringList gamerSlots;
-    bool valide;
+    int version;  ///< Version de la map
+    QString creation; ///< Chaine de création de la map
+    QString update; ///< Chaine de première mise a jour de la map
+    QStringList gamerSlots; ///< Liste des emplacement de spawn
+    bool valide; ///< Indique si la map est charger correctement
 
     /*METHODE PRIVE*/
     QStringList loadFileLine(const QString &file)const;

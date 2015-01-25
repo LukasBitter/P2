@@ -1,18 +1,11 @@
 
 vérifier pourquoi il ne faut pas appelker dragMoveEvent de la scene
-
-SingleTon sur le game context, et securiset le vidage de la liste de gammer
-Break dans la boucle de reception du serveur
-Defin pournles valeur fixe
-
+Demander autre relire initialisation variable
 
 Doute:
--Foreach sur autre chose qu'un pointeur, copie de l'objet?
--Référence empeche inline?
--Demander pour constructeur base
+-Demander pour constructeur base.
 
-Généralisation possible pour:
--Connexion et node
--Client et serveur
-
-Demander autre relire initialisation variable
+Ajout last-minute :
+- mise a jour de la map selectionné coté client
+- controle des version des map pour message explicite
+- numéro de spawn dans l'ordre d'arrivée

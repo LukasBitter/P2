@@ -14,12 +14,13 @@ class PowerInterface;
 
 namespace GameComponent
 {
-class GameView;
+    class GameView;
 }
 
 /**
- * @class Map
- * @brief Vue du jeu
+ * @class GameView
+ * @brief Affichage du jeu
+ * Affiche la partie en cour et permet récupère les actions du joueur
  */
 class GameView: public QGraphicsView
 {
@@ -65,16 +66,16 @@ private slots:
     void onManaReception(int gamerId, int mana);
 private:
     /*INTERFACE*/
-    PowerInterface *powerUi; ///< Interface utilisateur de gestion des pouvoirs
+    PowerInterface *powerUi; ///< Palette de gestion des pouvoirs
 
     /*ENTREE*/
     Gamer *owner; ///< Joueur actuellement au commande de la map
 
     /*OUTIL*/
     GameScene * scene; ///< Scene de jeu
-    ActionManager am;
+    ActionManager am; ///< Gestionnaire des actions du joueur
     double percentToSend; ///< Pourcentage du noeud à envoyer lors d'un envoi
-    bool gameFinished;
+    bool gameFinished; ///< Indique si le jeu est fini
 
     /*METHODE PRIVE*/
     void setUpUI();

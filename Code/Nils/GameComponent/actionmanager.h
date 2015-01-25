@@ -8,9 +8,14 @@ class Node;
 
 namespace GameComponent
 {
-class ActionManager;
+    class ActionManager;
 }
 
+/**
+ * @class ActionManager
+ * @brief Récupère les changements d'action et les selections du joueur pour déterminer
+ * l'action à appliquer
+ */
 class ActionManager : public QObject
 {
     Q_OBJECT
@@ -31,9 +36,9 @@ public slots:
 
 private:
     /*OUTIL*/
-    Node *currentSelection;
-    Node *lastSelection;
-    ACTIONS action;
+    Node *currentSelection; ///< Selection du noeud actuel
+    Node *lastSelection; ///< Selection du noeud précédent
+    ACTIONS action; ///< Action en cours
 
     /*METHODE PRIVE*/
 };

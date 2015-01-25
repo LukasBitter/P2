@@ -3,7 +3,7 @@
 
 namespace GameComponent
 {
-class IdentityToken;
+    class IdentityToken;
 }
 
 /**

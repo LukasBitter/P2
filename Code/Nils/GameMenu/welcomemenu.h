@@ -10,6 +10,10 @@ namespace GameMenu
     class WelcomeMenu;
 }
 
+/**
+ * @class WelcomeMenu
+ * @brief Menu principale de l'application
+ */
 class WelcomeMenu : public QWidget
 {
     Q_OBJECT

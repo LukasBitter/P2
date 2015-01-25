@@ -64,7 +64,7 @@ enum ACTIONS
 #define MAX_GAMER 4
 //Numéro de version des map supportées
 #define VERSION_MAP 1
-//Enregistrement et lecture des map
+//Enregistrement et lecture des maps
 #define MAP_FILE "./maps"
 #define MAP_EXTENSION "rtsmap"
 #define MAP_EXTENSION_FILTER "*.rtsmap"

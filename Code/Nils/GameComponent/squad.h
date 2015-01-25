@@ -5,7 +5,7 @@ class Gamer;
 
 namespace GameComponent
 {
-class Squad;
+    class Squad;
 }
 
 /**

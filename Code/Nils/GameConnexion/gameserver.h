@@ -13,10 +13,16 @@ class GameView;
 class GamerList;
 class MapFile;
 
-namespace GameConnexion {
+namespace GameConnexion
+{
     class GameServer;
 }
 
+
+/**
+ * @class GameServer
+ * @brief Gère le jeu coté serveur et les communications avec les clients de jeu
+ */
 class GameServer: public QObject
 {
     Q_OBJECT
@@ -36,13 +42,13 @@ private slots:
 
 private:
     /*OUTIL*/
-    Server *server;
-    GameView *map;
-    bool lockConnexion;
-    int const refreshLoopMS;
-    int const port;
-    GamerList lstGamer;
-    QStringList lstMapName;
+    Server *server; ///< Serveur de communication textuelle
+    GameView *map; ///< Map de déroulement du jeu coté serveur
+    bool lockConnexion; ///< Indique si les connexion sont refusées (partie commencée)
+    int const refreshLoopMS; ///< Temps de rafraichissement
+    int const port; ///< Port utilisé
+    GamerList lstGamer; ///< Liste des joueurs présents
+    QStringList lstMapName; ///< Liste des map présentes sur le serveur
 
     /*METHODE PRIVE*/
     void sendToAllGamer(const QString s);

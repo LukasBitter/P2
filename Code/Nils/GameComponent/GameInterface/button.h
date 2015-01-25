@@ -3,13 +3,14 @@
 
 #include <QGraphicsWidget>
 
-namespace GameInterface {
-class Button;
+namespace GameInterface
+{
+    class Button;
 }
 
 /**
  * @class Button
- * @brief Bouton poussoir utilisable avec le GraphicsViewFramwork
+ * @brief Bouton poussoir pour interface avec le GraphicsViewFramwork
  */
 class Button : public QGraphicsWidget
 {

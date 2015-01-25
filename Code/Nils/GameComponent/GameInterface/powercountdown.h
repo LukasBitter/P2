@@ -11,6 +11,13 @@ namespace GameInterface
     class PowerCountDown;
 }
 
+/**
+ * @class PowerCountDown
+ * @brief Gestionnaire de temps de recharge pour des actions du joueur
+ *
+ * Les actions doivent être de type ACTIONS, un signal est émit lorsque l'action
+ * débute et arrive à la fin de sont effet. Il n'est pas possible de lancer une action étant en cour de recharge
+ */
 class PowerCountDown : public QObject
 {
     Q_OBJECT
@@ -31,11 +38,11 @@ signals:
 
 private:
     /*OUTIL*/
-    QHash<ACTIONS, int> lstCountDownTime;
-    QHash<ACTIONS, int> lstPowerDuration;
-    QHash<ACTIONS, int> lstPowerCurentTime;
-    QHash<ACTIONS, bool> lstPowerFinish;
-    QHash<ACTIONS, QPair<Node *, Node *> > lstContext;
+    QHash<ACTIONS, int> lstCountDownTime; ///< Liste des temps de recharge par pouvoir
+    QHash<ACTIONS, int> lstPowerDuration; ///< Liste de la durée des pouvoirs (par pouvoir)
+    QHash<ACTIONS, int> lstPowerCurentTime; ///< Liste de l'ecoulement des pouvoirs (par pouvoir)
+    QHash<ACTIONS, bool> lstPowerFinish; ///< Liste des flag "pouvoir fini" par pouvoir
+    QHash<ACTIONS, QPair<Node *, Node *> > lstContext; ///< Liste des contexts des pouvoirs (par pouvoir)
 
     /*METHODE PRIVE*/
     void deletePower(ACTIONS a);

@@ -22,6 +22,10 @@ namespace GameMenu
     class LobbyMenu;
 }
 
+/**
+ * @class LobbyMenu
+ * @brief Menu du salon de jeu (avant la partie)
+ */
 class LobbyMenu : public QWidget
 {
     Q_OBJECT
@@ -70,9 +74,9 @@ private:
     QLabel *txtConnected;
 
     /*OUTIL*/
-    bool host;
-    GameServer *server;
-    GameClient *client;
+    bool host; ///< Indique si le joueur est l'host
+    GameServer *server; ///< Serveur de jeu (si host)
+    GameClient *client; ///< Client de jeu
 
     /*METHODE PRIVE*/
     void setUpUI();

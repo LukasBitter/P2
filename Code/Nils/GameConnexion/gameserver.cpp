@@ -11,7 +11,7 @@
 /*----------------------------------------------------*/
 
 GameServer::GameServer(int maxConnexion, QObject *parent) : QObject(parent),
-    lockConnexion(false), refreshLoopMS(100), port(8000), map(0)
+    lockConnexion(false), refreshLoopMS(TIC), port(PORT), map(0)
 {
     server = new Server(port, maxConnexion, this);
 
@@ -237,7 +237,7 @@ void GameServer::receive_C_LAUNCH_GAME(QTcpSocket *t, const QString &msg)
     if(map != 0) delete map;
     map = new GameView(m.getCreationString(), lstGamer);
     map->updateFromString(m.getUpdateString());
-    sendToAllGamer(QString("%1#%2").arg(C_LAUNCH_GAME).arg(m.getCreationString()));
+    sendToAllGamer(QString("%1#%2").arg(C_TRANSIT_GAME).arg(m.getCreationString()));
 
     QList<Gamer *> lst = lstGamer.getLstGamer().values();
 
@@ -249,7 +249,7 @@ void GameServer::receive_C_LAUNCH_GAME(QTcpSocket *t, const QString &msg)
     connect(map, SIGNAL(gamerAction(QString)),
             this, SLOT(sendGamerAction(QString)));
 
-    startTimer(100);
+    startTimer(refreshLoopMS);
 }
 
 void GameServer::receive_C_UPDATE_CURRENT_GAMER(QTcpSocket *t, const QString &msg)

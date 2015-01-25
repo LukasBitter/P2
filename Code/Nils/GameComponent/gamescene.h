@@ -10,12 +10,14 @@ class Gamer;
 
 namespace GameComponent
 {
-class GameScene;
+    class GameScene;
 }
 
 /**
  * @class GameScene
- * @brief Scene de jeu
+ * @brief Représente une map de jeu logique
+ * Si on l'associe avec une editview, il est possible d'éditer et de créer des map et
+ * si on l'associe avec une gameview, il est possible de jouer sur la map
  */
 class GameScene : public QGraphicsScene
 {
@@ -55,8 +57,8 @@ private slots:
 
 private:
     /*ENTREE*/
-    const Gamer *owner; ///< Joueur actuellement au commande de la map
-    GamerList &lstGamer; ///< Liste des joueurs
+    const Gamer *owner; ///< Joueur au commande de la map
+    GamerList &lstGamer; ///< Liste des joueurs présents
 
     /*OUTIL*/
     QHash<int, Node *> lstNode; ///< Liste de tous les noeuds

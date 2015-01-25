@@ -13,12 +13,12 @@ class GamerList;
 
 namespace GameComponent
 {
-class Node;
+    class Node;
 }
 
 /**
  * @class Node
- * @brief Représente les noeuds
+ * @brief Représente les noeuds de manière générale
  */
 class Node : public QGraphicsItem, public IdentityToken
 {
@@ -58,7 +58,7 @@ public:
 protected:
     /*TOOL*/
     int radius; ///< Rayon du noeud
-    QMap<int, Connexion *> mapConnexion; ///< Cle = id noeud distant, Valeur = pointeur sur sa connextion
+    QMap<int, Connexion *> mapConnexion; ///< Liste des connexion du noeud (Cle = id noeud distant, Valeur = pointeur sur sa connextion)
 };
 
 #endif // NODE_H

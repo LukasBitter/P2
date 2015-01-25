@@ -42,7 +42,7 @@ private:
     QString name; ///< Nom du joueur
     bool ready; ///< Indique si le joueur est pret
     QTcpSocket * socket; ///< Socket de connexion au serveur
-    int slotNumber;
+    int slotNumber; ///< Emplacement de spawn du joueur
 };
 
 #endif // GAMER_H

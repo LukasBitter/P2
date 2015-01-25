@@ -13,12 +13,13 @@ class GamerList;
 
 namespace GameComponent
 {
-class NodeCombat;
+    class NodeCombat;
 }
 
 /**
  * @class NodeCombat
- * @brief Représente les noeuds prenable par les joueur
+ * @brief Représente les noeuds que les joueur peuvent controler et
+ * pour lesquel ils doivent se battre
  */
 class NodeCombat : public Node
 {
@@ -66,14 +67,14 @@ private:
     /*ENTREE*/
     int ressourcesMax; ///< Capacité maximale du noeud
     const Gamer *owner; ///< Propriétaire acctuel du noeud
-    const GamerList &lstGamer; ///< Liste des joueurs
+    const GamerList &lstGamer; ///< Liste des joueurs présents
 
     /*TOOL*/
     int armorLvl; ///< Armure du noeud en nombre de ressources
     int ressourcesRate; ///< Taux de croissance des ressources par "tic"
     int nbRessources; ///< Nombre de ressources acctuellement dans le noeud
     bool invicible; ///< Indique si le noeud est invincible
-    int counterAdvance; ///< Reducteur de "tic" pour le gain de ressource
+    int counterAdvance; ///< Diviseur de "tic" pour le gain de ressource
 
     /*METHODE PRIVE*/
     int dealDamageOnArmor(int damage);

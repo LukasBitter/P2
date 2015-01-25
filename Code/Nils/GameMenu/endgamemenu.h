@@ -11,6 +11,10 @@ namespace GameMenu
     class EndGameMenu;
 }
 
+/**
+ * @class EndGameMenu
+ * @brief Menu de victoire/défaite
+ */
 class EndGameMenu : public QWidget
 {
     Q_OBJECT

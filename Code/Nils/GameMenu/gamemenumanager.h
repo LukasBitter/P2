@@ -16,6 +16,10 @@ namespace GameMenu
     class GameMenuManager;
 }
 
+/**
+ * @class GameMenuManager
+ * @brief Wiget de gestion des menu de l'application
+ */
 class GameMenuManager : public QMainWindow
 {
     Q_OBJECT

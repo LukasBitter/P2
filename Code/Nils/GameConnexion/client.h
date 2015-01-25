@@ -8,10 +8,15 @@
 
 class QTcpSocket;
 
-namespace GameConnexion {
+namespace GameConnexion
+{
     class Client;
 }
 
+/**
+ * @class Client
+ * @brief Permet l'envoit de texte au server
+ */
 class Client : public QObject
 {
     Q_OBJECT

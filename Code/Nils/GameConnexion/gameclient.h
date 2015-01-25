@@ -13,10 +13,15 @@ class GameView;
 class GamerList;
 class Gamer;
 
-namespace GameConnexion {
+namespace GameConnexion
+{
     class GameClient;
 }
 
+/**
+ * @class GameClient
+ * @brief Gère le jeu coté client et les communications avec le serveur de jeu
+ */
 class GameClient : public QObject
 {
     Q_OBJECT
@@ -55,11 +60,11 @@ private slots:
 
 private:
     /*OUTIL*/
-    Client *client;
-    GameView *map;
-    int const port;
-    int gamerId;
-    GamerList lstGamer;
+    Client *client; ///< Client de communication textuelle
+    GameView *map; ///< Map d'affichage de jeu coté client
+    int const port; ///< Port utilisé
+    int gamerId; ///< Identifiant du joueur client
+    GamerList lstGamer; ///< Liste des joueurs présents
 
     /*METHODE PRIVE*/
     void updateCurrentGamer();
@@ -67,7 +72,7 @@ private:
     /*RECEPTION*/
     void receive_C_GAMER_INFO(const QString &msg);
     void receive_C_INFORMATION(const QString &msg);
-    void receive_C_LAUNCH_GAME(const QString &msg);
+    void receive_C_TRANSIT_GAME(const QString &msg);
     void receive_C_LOBBY_UPDATE(const QString &msg);
     void receive_C_MAP_UPDATE(const QString &msg);
     void receive_C_ADD_MAP(const QString &msg);

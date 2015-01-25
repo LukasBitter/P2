@@ -14,7 +14,7 @@ class GamerList;
 
 namespace GameComponent
 {
-class Connexion;
+    class Connexion;
 }
 
 /**

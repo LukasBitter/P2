@@ -14,12 +14,13 @@ class Gamer;
 
 namespace GameComponent
 {
-class EditView;
+    class EditView;
 }
 
 /**
- * @class Map
- * @brief Editeur du jeu
+ * @class EditView
+ * @brief Editeur du map
+ * Permet de créer des maps personnalisées
  */
 class EditView: public QGraphicsView
 {
@@ -51,14 +52,14 @@ private slots:
 
 private:
     /*INTERFACE*/
-    EditorInterface *editorUi;
+    EditorInterface *editorUi; ///< Palette d'édition
 
     /*OUTIL*/
     GameScene * scene; ///< Scene de jeu
-    GamerList lstGamer;
-    Gamer *spawnGamer;
-    ACTIONS a;
-    Node *memory;
+    GamerList lstGamer; ///< Liste des joueurs factice
+    Gamer *spawnGamer; ///< Joueur marquant le spawn
+    ACTIONS a; ///< Action en cours
+    Node *memory; ///< Mémoire du noeud sélectionné précédement
 
     /*METHODE PRIVE*/
     void setUpUI();

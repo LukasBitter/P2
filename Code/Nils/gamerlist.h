@@ -29,7 +29,7 @@ public:
 
 private:
     /*OUTIL*/
-    QHash<int,Gamer *> lstGamers;
+    QHash<int,Gamer *> lstGamers; ///< Liste interne des joueurs présents
 };
 
 #endif // GAMERLIST_H

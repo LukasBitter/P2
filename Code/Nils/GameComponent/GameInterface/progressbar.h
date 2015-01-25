@@ -3,8 +3,9 @@
 
 #include <QGraphicsItem>
 
-namespace GameInterface {
-class ProgressBar;
+namespace GameInterface
+{
+    class ProgressBar;
 }
 
 class ProgressBar : public QGraphicsItem
