@@ -78,6 +78,12 @@ void GameScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
     //Pas d'appel au parent sinon sa marche pas !
 }
 
+void GameScene::drawBackground(QPainter *painter, const QRectF &rect)
+{
+    const QPixmap background(":/Background.jpg");
+    painter->drawPixmap(-10,-10, background);
+}
+
 /*----------------------------------------------------*/
 /*ASSESSEUR / MUTATEUR*/
 /*----------------------------------------------------*/

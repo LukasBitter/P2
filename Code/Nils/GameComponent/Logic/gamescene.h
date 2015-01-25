@@ -31,6 +31,7 @@ public:
 
     /*SURCHARGE*/
     void dragMoveEvent(QGraphicsSceneDragDropEvent *event);
+    void drawBackground(QPainter *painter, const QRectF &rect);
 
     /*ASSESSEUR / MUTATEUR*/
     Node *getNode(int idNode);
