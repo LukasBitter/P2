@@ -70,4 +70,5 @@ OTHER_FILES += \
 
 FORMS +=
 
-RESOURCES +=
+RESOURCES += \
+    Graphics/graphics.qrc
