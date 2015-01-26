@@ -20,17 +20,22 @@ void EndGameMenu::onBtReturnPressed()
     emit returnToMenu();
 }
 
-void EndGameMenu::paintEvent()
+void EndGameMenu::paintEvent(QPaintEvent *)
 {
-    QPainter painter;
-    const QPixmap background(":/Victory.jpg");
+    QPainter painter(this);
+    QPixmap background(":/Victory.jpg");
 
     painter.drawPixmap(-10, -10, background);
+    qDebug() << "Victory!!!";
 }
 
 
 void EndGameMenu::enableVictory()
 {
+
+    qDebug() << "-----------------------------";
+    qDebug() << "enableVictory: Victory!!!";
+    update();
 
 //    title->setText("Victory");
 //    QFont f = title->font();
