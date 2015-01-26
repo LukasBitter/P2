@@ -72,7 +72,11 @@ enum POWER
 /*----------------------------------------------------*/
 
 //fréquence de la boucle de rafraichissement en milliseconde
-#define TIC 75
+//de l'interface des pouvoir en local chez le client
+#define POWER_TIC 100
+//fréquence de la boucle de rafraichissement en milliseconde
+//du jeu sur le serveur
+#define GAME_TIC 75
 //port de connexion
 #define PORT 8000
 //maximum de joueur dans le salon
@@ -99,6 +103,7 @@ enum POWER
 
 //mana initiale
 #define P_INITIAL_MANA 1000
+#define P_MAX_MANA 1000
 
 //cout des pouvoirs
 #define P_TELEPORTATION_COST 40
@@ -106,14 +111,14 @@ enum POWER
 #define P_DESTROY_COST 80
 #define P_INVINCIBILITY_COST 50
 
-//temps recharge des pouvoirs
-#define P_TELEPORTATION_CD 20
-#define P_ARMOR_CD 5
-#define P_DESTROY_CD 30
-#define P_INVINCIBILITY_CD 30
+//temps recharge des pouvoirs en tic de POWER_TIC
+#define P_TELEPORTATION_CD 200
+#define P_ARMOR_CD 50
+#define P_DESTROY_CD 300
+#define P_INVINCIBILITY_CD 300
 
 //durée des pouvoirs
-#define P_ARMOR_DURATION 5
-#define P_INVINCIBILITY_DURATION 5
+#define P_ARMOR_DURATION 50
+#define P_INVINCIBILITY_DURATION 50
 
 #endif // ENUMLIB_H

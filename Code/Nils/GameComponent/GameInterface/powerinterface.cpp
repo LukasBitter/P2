@@ -1,4 +1,6 @@
 #include "powerinterface.h"
+#include "actionmanager.h"
+#include "progressbar.h"
 #include "GameComponent/Logic/node.h"
 #include "GameComponent/GameInterface/button.h"
 
@@ -7,13 +9,14 @@
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-PowerInterface::PowerInterface(QGraphicsItem * parent) : QGraphicsWidget(parent),mana(0),
-    powerSelected(NO_POWER)
+PowerInterface::PowerInterface(ActionManager &am, QGraphicsItem * parent) :
+    QGraphicsWidget(parent),mana(0), powerSelected(NO_POWER),
+    am(am)
 {
     setAcceptHoverEvents(true);
     setCacheMode(DeviceCoordinateCache);
     setUpUI();
-    startTimer(1000);
+    startTimer(POWER_TIC);
 }
 
 /*----------------------------------------------------*/
@@ -32,11 +35,8 @@ void PowerInterface::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
 
     QPixmap buttonBackground(":/ButtonBackground.png");
 
-    QRectF source(0.0, 0.0, 502.0, 1446.0);
-    painter->drawPixmap(PowerInterface::boundingRect(), buttonBackground, source);
-
-    //painter->setBrush(Qt::lightGray);
-    //painter->drawRect(boundingRect());
+    QRectF source(0, 0, 502, 1446);
+    painter->drawPixmap(boundingRect(), buttonBackground, source);
 }
 
 void PowerInterface::timerEvent(QTimerEvent *event)
@@ -44,11 +44,18 @@ void PowerInterface::timerEvent(QTimerEvent *event)
     Q_UNUSED(event);
 
     pcd.advence();
-    updateCD();
+
     btPowerArmore->setPowerPercent(pcd.percentReload(GA_USEPOWER_ARMORE));
     btPowerInvincibility->setPowerPercent(pcd.percentReload(GA_USEPOWER_INVINCIBILITY));
     btPowerTeleportation->setPowerPercent(pcd.percentReload(GA_USEPOWER_TELEPORTATION));
     btPowerDestroy->setPowerPercent(pcd.percentReload(GA_USEPOWER_DESTROY));
+
+    btPowerArmore->setSelected(am.getCurrentAction() == GA_USEPOWER_ARMORE);
+    btPowerInvincibility->setSelected(am.getCurrentAction() == GA_USEPOWER_INVINCIBILITY);
+    btPowerTeleportation->setSelected(am.getCurrentAction() == GA_USEPOWER_TELEPORTATION);
+    btPowerDestroy->setSelected(am.getCurrentAction() == GA_USEPOWER_DESTROY);
+
+    pbMana->setValue(0, mana);
 }
 
 /*----------------------------------------------------*/
@@ -160,26 +167,22 @@ void PowerInterface::usePower(ACTIONS a, Node *n1, Node *n2)
 
 void PowerInterface::btPowerArmorePressed()
 {
-    emit powerPressed(GA_USEPOWER_ARMORE);
-    powerSelected = ARMOR;
+    am.actionChanged(GA_USEPOWER_ARMORE);
 }
 
 void PowerInterface::btPowerInvincibilityPressed()
 {
-    emit powerPressed(GA_USEPOWER_INVINCIBILITY);
-    powerSelected = INVINCIBILITY;
+    am.actionChanged(GA_USEPOWER_INVINCIBILITY);
 }
 
 void PowerInterface::btPowerTeleportationPressed()
 {
-    emit powerPressed(GA_USEPOWER_TELEPORTATION);
-    powerSelected = TELEPORTATION;
+    am.actionChanged(GA_USEPOWER_TELEPORTATION);
 }
 
 void PowerInterface::btPowerDestroyPressed()
 {
-    emit powerPressed(GA_USEPOWER_DESTROY);
-    powerSelected = DESTRUCTION;
+    am.actionChanged(GA_USEPOWER_DESTROY);
 }
 
 /*----------------------------------------------------*/
@@ -189,7 +192,6 @@ void PowerInterface::btPowerDestroyPressed()
 void PowerInterface::setUpUI()
 {
     //INSTANTIATION
-    txtMana = new QGraphicsTextItem("Mana : ",this);
     btPowerArmore = new Button(ARMOR, this);
     btPowerInvincibility = new Button(INVINCIBILITY, this);
     btPowerTeleportation = new Button(TELEPORTATION, this);
@@ -198,6 +200,7 @@ void PowerInterface::setUpUI()
     txtCdPowerInvincibility = new QGraphicsTextItem("",this);
     txtCdPowerTeleportation = new QGraphicsTextItem("",this);
     txtCdPowerDestroy = new QGraphicsTextItem("",this);
+    pbMana = new ProgressBar(QRectF(20, 20, 5, 200), this);
 
     //CONNEXION
 
@@ -215,7 +218,6 @@ void PowerInterface::setUpUI()
     txtCdPowerInvincibility->setX(2);
     txtCdPowerTeleportation->setX(2);
     txtCdPowerDestroy->setX(2);
-    txtMana->setX(5);
 
     btPowerArmore->setY(50);
     btPowerInvincibility->setY(110);
@@ -225,16 +227,7 @@ void PowerInterface::setUpUI()
     txtCdPowerInvincibility->setY(110);
     txtCdPowerTeleportation->setY(170);
     txtCdPowerDestroy->setY(230);
-    txtMana->setY(185);
+
+    //PARAMETRAGE
+    pbMana->insertPlage(0, P_INITIAL_MANA, P_MAX_MANA,Qt::cyan);
 }
-
-void PowerInterface::updateCD()
-{
-//    txtCdPowerArmore->setPlainText(QString("%1 %").arg((int)pcd.percentReload(GA_USEPOWER_ARMORE)));
-//    txtCdPowerInvincibility->setPlainText(QString("%1 %").arg((int)pcd.percentReload(GA_USEPOWER_INVINCIBILITY)));
-//    txtCdPowerTeleportation->setPlainText(QString("%1 %").arg((int)pcd.percentReload(GA_USEPOWER_TELEPORTATION)));
-//    txtCdPowerDestroy->setPlainText(QString("%1 %").arg((int)pcd.percentReload(GA_USEPOWER_DESTROY)));
-
-    txtMana->setPlainText(QString("Mana : %1").arg(mana));
-}
-
