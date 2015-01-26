@@ -27,6 +27,7 @@ public:
 
     /*SIGNALS/SLOTS*/
 signals:
+    void doAction(ACTIONS action);
     void doAction(ACTIONS action, Node *n);
     void doAction(ACTIONS action, Node *n1, Node *n2);
 public slots:

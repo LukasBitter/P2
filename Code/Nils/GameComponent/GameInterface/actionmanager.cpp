@@ -64,4 +64,5 @@ void ActionManager::reset()
     currentSelection = 0;
     lastSelection = 0;
     action = NO_ACTION;
+    emit doAction(action);
 }
