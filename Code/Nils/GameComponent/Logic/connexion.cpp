@@ -107,27 +107,6 @@ void Connexion::paint(QPainter *painter,
     painter->restore();
 }
 
-
-void Connexion::squadPatern(QPainter *painter, Squad *s)
-{
-    painter->save();
-
-    const int x = 0;
-    const int y = s->getProgress()*stepMultiplier;
-    const int length = 10;
-    const int width = 8;
-
-    QPointF p[3];
-    p[0]=QPointF(x - width, y);
-    p[1]=QPointF(0, y + length);
-    p[2]=QPointF(x + width, y);
-
-    painter->setBrush(s->getOwner().getColor());
-    painter->drawConvexPolygon(p, 3);
-
-    painter->restore();
-}
-
 void Connexion::advance(int step)
 {
     if(step == 0) return;
@@ -444,4 +423,24 @@ QList<QPair<Squad *, Squad *> > Connexion::checkSquadColision()
         }
     }
     return lstColision;
+}
+
+void Connexion::squadPatern(QPainter *painter, Squad *s)
+{
+    painter->save();
+
+    const int x = 0;
+    const int y = s->getProgress()*stepMultiplier;
+    const int length = 10;
+    const int width = 8;
+
+    QPointF p[3];
+    p[0]=QPointF(x - width, y);
+    p[1]=QPointF(0, y + length);
+    p[2]=QPointF(x + width, y);
+
+    painter->setBrush(s->getOwner().getColor());
+    painter->drawConvexPolygon(p, 3);
+
+    painter->restore();
 }

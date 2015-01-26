@@ -41,6 +41,7 @@ signals:
     void connexionOk();
     void switchToGame();
     void reciveChatMessage(QString s);
+    void mapSelectionChange(QString s);
 public slots:
     void launchGame(QString mapName);
     bool setName(QString name);
@@ -48,6 +49,7 @@ public slots:
     void setColor(QColor c);
     void setSlot(int s);
     void sendChatMessage(QString msg);
+    void setMap(int index);
 
 private slots:
     void onErrorOccured(QAbstractSocket::SocketError socketError);
@@ -74,6 +76,7 @@ private:
     void receive_C_MAP_UPDATE(const QString &msg);
     void receive_C_ADD_MAP(const QString &msg);
     void receive_C_RECIVE_CHAT_MESSAGE(const QString &msg);
+    void receive_C_MAP_CHANGE(const QString &msg);
 };
 
 #endif // GAMECLIENT_H

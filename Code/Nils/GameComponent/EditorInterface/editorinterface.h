@@ -20,8 +20,13 @@ class EditorInterface : public QWidget
     Q_OBJECT
 
 public:
+    /*CONSTRUCTEUR / DESTRUCTEUR*/
     explicit EditorInterface(QWidget *parent = 0);
 
+    /*SURCHARGE*/
+    void paintEvent(QPaintEvent *);
+
+    /*ASSESSEUR / MUTATEUR*/
     bool isStandardNodeChecked()const;
     bool isSpawnNodeChecked()const;
     bool isManaNodeChecked()const;
@@ -60,6 +65,7 @@ private:
     QPushButton *btLoadFromFile;
     QPushButton *btClear;
     QPushButton *btReturn;
+    QPixmap background;
 
     /*METHODE PRIVE*/
     void setUpUI();

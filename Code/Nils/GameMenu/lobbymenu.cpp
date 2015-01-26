@@ -237,12 +237,25 @@ void LobbyMenu::onSuccessfulConnexion()
 
     txtConnected->setText("Connecté");
     wantChangeName(); //Demande un nom  au démmarage
-    if(server != 0) client->setReady(true); //Le joueur host est pret de base
+    if(host) client->setReady(true); //Le joueur host est pret de base
 }
 
 void LobbyMenu::onAddMap(QString s)
 {
     cbbMap->addItem(s);
+}
+
+void LobbyMenu::onMapChangeFromServer(QString s)
+{
+    cbbMap->setCurrentIndex(cbbMap->findText(s));
+}
+
+void LobbyMenu::onCbbMapChanged(int i)
+{
+    if(client != 0 && host)
+    {
+        client->setMap(i);
+    }
 }
 
 void LobbyMenu::onCbbColorChanged(int i)
@@ -300,6 +313,7 @@ void LobbyMenu::setUpUI()
     connect(btChangeName,SIGNAL(clicked()),this,SLOT(wantChangeName()));
     connect(cbbColor,SIGNAL(currentIndexChanged(int)),this,SLOT(onCbbColorChanged(int)));
     connect(cbbSlot,SIGNAL(currentIndexChanged(int)),this,SLOT(onCbbSlotChanged(int)));
+    connect(cbbMap,SIGNAL(currentIndexChanged(int)),this,SLOT(onCbbMapChanged(int)));
 
     //PARAMETRAGE
 
@@ -397,6 +411,7 @@ void LobbyMenu::setClient(GameClient *c)
         connect(client,SIGNAL(addMapName(QString)),this,SLOT(onAddMap(QString)));
         connect(client,SIGNAL(errorOccured(NETWORK_INFORMATION)),this,SLOT(showMessage(NETWORK_INFORMATION)));
         connect(client,SIGNAL(reciveChatMessage(QString)),this,SLOT(onReciveChatMessage(QString)));
+        connect(client,SIGNAL(mapSelectionChange(QString)),this,SLOT(onMapChangeFromServer(QString)));
     }
 }
 

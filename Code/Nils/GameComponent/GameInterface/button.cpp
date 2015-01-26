@@ -82,11 +82,13 @@ void Button::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     painter->setPen(p);
     painter->rotate(-90);
 
-    for(int i=0;i<=((this->powerPercent/100)*60);i++)
+    painter->save();
+    for(int i=0;i<=((this->powerPercent/100)*60);++i)
     {
         painter->drawLine(25, 0, 28, 0);
         painter->rotate(6.0);
     }
+    painter->restore();
 }
 
 

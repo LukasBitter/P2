@@ -47,6 +47,8 @@ private slots:
     void wantSendChatMessage();
     void onSuccessfulConnexion();
     void onAddMap(QString s);
+    void onMapChangeFromServer(QString s);
+    void onCbbMapChanged(int i);
     void onCbbColorChanged(int i);
     void onCbbSlotChanged(int i);
     void onReciveChatMessage(QString s);

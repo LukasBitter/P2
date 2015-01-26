@@ -62,8 +62,6 @@ QRectF NodeCombat::boundingRect() const
 void NodeCombat::paint(QPainter *painter,
                  const QStyleOptionGraphicsItem *option,QWidget *widget)
 {
-    Node::paint(painter, option, widget);
-
     //PARAMETRAGE
     QColor invert;
     invert.setBlue(255 - color.blue());
@@ -74,33 +72,57 @@ void NodeCombat::paint(QPainter *painter,
     QString armorTxt = QString("+%1").arg(armorLvl);
 
     QFont f = painter->font();
-    f.setBold(invicible);
+    f.setBold(true);
     QFontMetrics fm(f);
     int centre = (fm.height()/2)-2;
 
-    //DESSIN DU NOEU
+    //DESSIN DES EFFETS
+    if(armorLvl > 0)
+    {
+        painter->save();
+        QPointF p[3];
+        p[0]=QPointF(-3, radius-1);
+        p[1]=QPointF(0, radius+10);
+        p[2]=QPointF(3, radius-1);
+        painter->setBrush(owner->getColor());
+
+        painter->setRenderHint(QPainter::Antialiasing, true);
+        for(int i=0;i<60;++i)
+        {
+            painter->drawConvexPolygon(p, 3);
+            painter->rotate(60/(radius/10));
+        }
+        painter->restore();
+    }
+    if(invicible)
+    {
+        painter->save();
+
+        painter->setBrush(owner->getColor().lighter());
+
+        painter->setRenderHint(QPainter::Antialiasing, true);
+        for(int i=0;i<60;++i)
+        {
+            painter->drawEllipse(-5, radius-5, +10, 10);
+            painter->rotate(60/(radius/10));
+        }
+        painter->restore();
+    }
+
+    //DESSIN DU NOEUD
+    Node::paint(painter, option, widget);
+
+    //AFFICHAGE DU TEXTE
     painter->setPen(invert);
     painter->setFont(f);
     painter->setRenderHint(QPainter::Antialiasing, true);
 
-    QRectF r = boundingRect();
-    QRectF source(0.0, 0.0, 389.0, 389.0);
-    QPixmap *powerImg;
-
     if(armorLvl > 0)
     {
-        powerImg = new QPixmap(":/NodeRingGreenH.png");
         int l2 = fm.width(ressourceTxt, -1);
         painter->drawText(-(l2/2), centre-(fm.height()/2)+2 , ressourceTxt);
         int l1 = fm.width(armorTxt, -1);
         painter->drawText(-(l1/2), centre+(fm.height()/2)+2, armorTxt);
-        painter->drawPixmap(r, *powerImg,source);
-    }
-    else if (this->invicible)
-    {
-        qDebug() << "------------------------------";
-        powerImg = new QPixmap(":/NodeRingOrangeH.png");
-        painter->drawPixmap(r, *powerImg,source);
     }
     else
     {

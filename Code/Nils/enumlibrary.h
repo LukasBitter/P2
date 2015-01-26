@@ -22,6 +22,7 @@ enum NETWORK_COMMANDE
     C_UPDATE_CURRENT_GAMER,///< Client->Serveur : met à jour les données du joueur
     C_SEND_CHAT_MESSAGE,///< Client->Serveur : envois d'un message au autres joueurs
     C_RECIVE_CHAT_MESSAGE,///< Serveur->Client : réception d'un message des autres joueurs
+    C_MAP_CHANGE,///< Serveur->Client : changement de la map de jeu
 };
 
 ///Informations que le serveur envoi au client
@@ -98,7 +99,7 @@ enum POWER
 
 #define VACANT_COLOR Qt::white
 #define BASE_NODE_COLOR Qt::darkBlue
-
+#define BACGROUND_COLOR "#142249"
 
 /*----------------------------------------------------*/
 /*GAMEPLAY*/

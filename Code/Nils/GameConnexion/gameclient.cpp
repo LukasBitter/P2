@@ -107,6 +107,12 @@ void GameClient::sendChatMessage(QString msg)
     client->sendMessageToServer(message);
 }
 
+void GameClient::setMap(int index)
+{
+    QString message = QString("%1#%2").arg(C_MAP_CHANGE).arg(index);
+    client->sendMessageToServer(message);
+}
+
 void GameClient::onErrorOccured(QAbstractSocket::SocketError socketError)
 {
     qWarning()<<"GameClient : enter 'onErrorOccured'"<<socketError;
@@ -171,6 +177,12 @@ void GameClient::onMessageRecive(QString s)
     {
         qDebug()<<"GameClient : in 'onMessageRecive' recive C_RECIVE_CHAT_MESSAGE";
         receive_C_RECIVE_CHAT_MESSAGE(msg);
+        break;
+    }
+    case C_MAP_CHANGE:
+    {
+        qDebug()<<"GameClient : in 'onMessageRecive' recive C_MAP_CHANGE";
+        receive_C_MAP_CHANGE(msg);
         break;
     }
     default:
@@ -269,4 +281,9 @@ void GameClient::receive_C_ADD_MAP(const QString &msg)
 void GameClient::receive_C_RECIVE_CHAT_MESSAGE(const QString &msg)
 {
     emit reciveChatMessage(msg);
+}
+
+void GameClient::receive_C_MAP_CHANGE(const QString &msg)
+{
+    mapSelectionChange(msg);
 }

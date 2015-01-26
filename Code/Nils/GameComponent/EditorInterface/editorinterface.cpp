@@ -11,6 +11,23 @@ EditorInterface::EditorInterface(QWidget *parent) : QWidget(parent)
     setUpUI();
 }
 
+/*----------------------------------------------------*/
+/*SURCHARGE*/
+/*----------------------------------------------------*/
+
+void EditorInterface::paintEvent(QPaintEvent *)
+{
+    QPainter painter(this);
+    QRectF target(-15.0, -15.0, 840.0, 580.0);
+    QRectF source(0.0, 0.0, 2975.0, 1870.0);
+
+    painter.drawPixmap(target, background, source);
+}
+
+/*----------------------------------------------------*/
+/*SURCHARGE*/
+/*----------------------------------------------------*/
+
 bool EditorInterface::isStandardNodeChecked() const
 {
     return rbtStandard->isChecked();
@@ -109,6 +126,7 @@ void EditorInterface::setUpUI()
     spSize->setMaximum(3);
     spSize->setMinimum(1);
     rbtStandard->setChecked(true);
+    background.load(":/ButtonBackground.png");
 
     //CONNEXION
 

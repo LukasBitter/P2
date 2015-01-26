@@ -50,6 +50,7 @@ private:
     int const port; ///< Port utilisé
     GamerList lstGamer; ///< Liste des joueurs présents
     QStringList lstMapName; ///< Liste des map présentes sur le serveur
+    int mapSelected; ///< Numéro de la map sélectionnée
 
     /*METHODE PRIVE*/
     void sendToAllGamer(const QString s);
@@ -65,6 +66,7 @@ private:
     void receive_C_SET_NAME(QTcpSocket *t, const QString &msg);
     void receive_C_GAMER_ACTION(QTcpSocket *t, const QString &msg);
     void receive_C_SEND_CHAT_MESSAGE(QTcpSocket *t, const QString &msg);
+    void receive_C_MAP_CHANGE(QTcpSocket *t, const QString &msg);
 };
 
 #endif // GAMESERVER_H

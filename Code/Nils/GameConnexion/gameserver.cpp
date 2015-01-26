@@ -10,7 +10,8 @@
 /*----------------------------------------------------*/
 
 GameServer::GameServer(int maxConnexion, QObject *parent) : QObject(parent),
-    lockConnexion(false), refreshLoopMS(GAME_TIC), port(PORT), map(0)
+    lockConnexion(false), refreshLoopMS(GAME_TIC), port(PORT), map(0),
+    mapSelected(0)
 {
     server = new Server(port, maxConnexion, this);
 
@@ -84,8 +85,14 @@ void GameServer::onMessageRecive(QTcpSocket *t, QString s)
     }
     case C_SEND_CHAT_MESSAGE:
     {
-        qDebug()<<"GameServer : in 'onMessageRecive' recive C_GAMER_ACTION";
+        qDebug()<<"GameServer : in 'onMessageRecive' recive C_SEND_CHAT_MESSAGE";
         receive_C_SEND_CHAT_MESSAGE(t, msg);
+        break;
+    }
+    case C_MAP_CHANGE:
+    {
+        qDebug()<<"GameServer : in 'onMessageRecive' recive C_MAP_CHANGE";
+        receive_C_MAP_CHANGE(t, msg);
         break;
     }
     default:
@@ -234,6 +241,9 @@ void GameServer::receive_C_REQUEST_SLOT(QTcpSocket *t, const QString &msg)
             server->sendMessageToClient(t,QString("%1#%2").arg(C_ADD_MAP).arg(s));
         }
 
+        //Selection de la map acctuelle
+        sendToAllGamer(QString("%1#%2").arg(C_MAP_CHANGE).arg(lstMapName.value(mapSelected,"")));
+
         updateGamerList();
         server->sendMessageToClient(t,QString("%1#%2").arg(C_INFORMATION).arg(I_CLIENT_PARAMETRED));
     }
@@ -308,4 +318,10 @@ void GameServer::receive_C_SEND_CHAT_MESSAGE(QTcpSocket *t, const QString &msg)
     Q_UNUSED(t);
 
     sendToAllGamer(QString("%1#%2").arg(C_RECIVE_CHAT_MESSAGE).arg(msg));
+}
+
+void GameServer::receive_C_MAP_CHANGE(QTcpSocket *t, const QString &msg)
+{
+    mapSelected = msg.toInt();
+    sendToAllGamer(QString("%1#%2").arg(C_MAP_CHANGE).arg(lstMapName.value(mapSelected,"")));
 }

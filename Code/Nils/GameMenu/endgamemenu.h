@@ -20,6 +20,9 @@ public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     EndGameMenu(QWidget *parent = 0);
 
+    /*SURCHARGE*/
+    void paintEvent(QPaintEvent *);
+
     /*SIGNALS/SLOTS*/
 signals:
     void returnToMenu();
@@ -35,9 +38,7 @@ private:
     /*INTERFACE*/
     QPushButton* btReturn;
     QLabel *title;
-    void paintEvent(QPaintEvent *);
     QPixmap background;
-    QRectF source;
 
     /*METHODE PRIVE*/
     void setUpUI();
