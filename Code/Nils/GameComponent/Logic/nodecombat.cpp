@@ -61,8 +61,8 @@ void NodeCombat::paint(QPainter *painter,
 {
     Q_UNUSED(option);
     Q_UNUSED(widget);
-    painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
     painter->setRenderHint(QPainter::SmoothPixmapTransform, true);
+    painter->setRenderHint(QPainter::Antialiasing, true);
 
     QColor ownerColor = QColor(Qt::white);
     QPixmap nodeImg;
@@ -108,7 +108,8 @@ void NodeCombat::paint(QPainter *painter,
 
     //QRectF target(0, 0, radius, radius);
     QRectF source(0.0, 0.0, 212.0, 212.0);
-    painter->drawPixmap(Node::boundingRect(), nodeImg, source);
+    painter->drawPixmap(-radius,-radius,2*radius,2*radius, nodeImg);
+    //painter->drawPixmap(Node::boundingRect(), nodeImg, source);
 
     if(invicible)
     {

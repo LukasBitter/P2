@@ -29,8 +29,14 @@ void PowerInterface::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    painter->setBrush(Qt::lightGray);
-    painter->drawRect(boundingRect());
+
+    QPixmap buttonBackground(":/ButtonBackground.png");
+
+    QRectF source(0.0, 0.0, 502.0, 1446.0);
+    painter->drawPixmap(PowerInterface::boundingRect(), buttonBackground, source);
+
+    //painter->setBrush(Qt::lightGray);
+    //painter->drawRect(boundingRect());
 }
 
 void PowerInterface::timerEvent(QTimerEvent *event)
