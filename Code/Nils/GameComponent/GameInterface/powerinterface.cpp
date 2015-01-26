@@ -202,7 +202,7 @@ void PowerInterface::setUpUI()
     txtCdPowerInvincibility = new QGraphicsTextItem("",this);
     txtCdPowerTeleportation = new QGraphicsTextItem("",this);
     txtCdPowerDestroy = new QGraphicsTextItem("",this);
-    pbMana = new ProgressBar(QRectF(20, 20, 5, 200), this);
+    pbMana = new ProgressBar(QRectF(25, 25, 6, 230), this);
 
     //CONNEXION
 
@@ -212,10 +212,10 @@ void PowerInterface::setUpUI()
     connect(btPowerArmore, SIGNAL(pressed()), this, SLOT(btPowerArmorePressed()));
 
     //POSITIONNEMENT
-    btPowerArmore->setX(59);
-    btPowerInvincibility->setX(59);
-    btPowerTeleportation->setX(59);
-    btPowerDestroy->setX(59);
+    btPowerArmore->setX(67);
+    btPowerInvincibility->setX(67);
+    btPowerTeleportation->setX(67);
+    btPowerDestroy->setX(67);
     txtCdPowerArmore->setX(2);
     txtCdPowerInvincibility->setX(2);
     txtCdPowerTeleportation->setX(2);
@@ -231,5 +231,6 @@ void PowerInterface::setUpUI()
     txtCdPowerDestroy->setY(230);
 
     //PARAMETRAGE
-    pbMana->insertPlage(0, P_INITIAL_MANA, P_MAX_MANA,Qt::cyan);
+    pbMana->insertPlage(0, P_INITIAL_MANA, P_MAX_MANA,Qt::darkMagenta);
+    pbMana->setInverse(false);
 }

@@ -83,12 +83,24 @@ void NodeCombat::paint(QPainter *painter,
     painter->setFont(f);
     painter->setRenderHint(QPainter::Antialiasing, true);
 
+    QRectF r = boundingRect();
+    QRectF source(0.0, 0.0, 389.0, 389.0);
+    QPixmap *powerImg;
+
     if(armorLvl > 0)
     {
+        powerImg = new QPixmap(":/NodeRingGreenH.png");
         int l2 = fm.width(ressourceTxt, -1);
         painter->drawText(-(l2/2), centre-(fm.height()/2)+2 , ressourceTxt);
         int l1 = fm.width(armorTxt, -1);
         painter->drawText(-(l1/2), centre+(fm.height()/2)+2, armorTxt);
+        painter->drawPixmap(r, *powerImg,source);
+    }
+    else if (this->invicible)
+    {
+        qDebug() << "------------------------------";
+        powerImg = new QPixmap(":/NodeRingOrangeH.png");
+        painter->drawPixmap(r, *powerImg,source);
     }
     else
     {
