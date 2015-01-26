@@ -32,9 +32,6 @@ public:
     /*SURCHARGE*/
     void mousePressEvent(QMouseEvent *e);
 
-    /*ASSESSEUR / MUTATEUR*/
-    void clearMap();
-
     /*LECTURE-ECRITURE*/
     void loadMapName(QString s);
     void saveMapName(QString s);
@@ -47,6 +44,7 @@ private slots:
     void onBtSaveToFilePressed();
     void onBtLoadFromFilePressed();
     void onBtReturnPressed();
+    void clearMap();
 
 private:
     /*INTERFACE*/
@@ -61,6 +59,7 @@ private:
 
     /*METHODE PRIVE*/
     void setUpUI();
+    void newScene();
 };
 
 #endif // EDITVIEW_H

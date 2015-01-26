@@ -18,14 +18,13 @@ EditView::EditView(QWidget *parent) : QGraphicsView(parent),
     spawnGamer = new Gamer();
     spawnGamer->setColor(Qt::gray);
     lstGamer.addGamer(spawnGamer);
-    scene = new GameScene(lstGamer, 0, 0);
-    setScene(scene);
+    newScene();
     setUpUI();
 }
 
 EditView::~EditView()
 {
-    delete scene;
+    if(scene != 0) delete scene;
 }
 
 /*----------------------------------------------------*/
@@ -106,15 +105,6 @@ void EditView::mousePressEvent(QMouseEvent *e)
 
     scene->update(scene->sceneRect());
     QGraphicsView::mousePressEvent(e);
-}
-
-/*----------------------------------------------------*/
-/*ASSESSEUR / MUTATEUR*/
-/*----------------------------------------------------*/
-
-void EditView::clearMap()
-{
-    scene->clear();
 }
 
 /*----------------------------------------------------*/
@@ -218,6 +208,11 @@ void EditView::onBtReturnPressed()
     emit returnToMenu();
 }
 
+void EditView::clearMap()
+{
+    newScene();
+}
+
 /*----------------------------------------------------*/
 /*METHODE PRIVE*/
 /*----------------------------------------------------*/
@@ -236,5 +231,13 @@ void EditView::setUpUI()
     connect(editorUi,SIGNAL(btReturnPressed()),this,SLOT(onBtReturnPressed()));
     connect(editorUi,SIGNAL(btLoadFromFilePressed()),this,SLOT(onBtLoadFromFilePressed()));
     connect(editorUi,SIGNAL(btSaveToFilePressed()),this,SLOT(onBtSaveToFilePressed()));
+    connect(editorUi,SIGNAL(btClearPressed()),this,SLOT(clearMap()));
+}
+
+void EditView::newScene()
+{
+    if(scene != 0) delete scene;
+    scene = new GameScene(lstGamer, 0, 0);
+    setScene(scene);
 }
 

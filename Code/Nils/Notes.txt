@@ -13,3 +13,4 @@ Ajout last-minute :
 - nom map controle serveur
 - ajouter creation de dossier dans editeur
 - ajouter bt clear editeur
+- memoire action editeur
