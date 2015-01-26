@@ -42,6 +42,7 @@ public:
     /*ASSESSEUR / MUTATEUR*/
     void setPercentToSend(int percent);
     static bool isContainsPrivateChar(QString &s);
+    QHash<int,int> getGamerRessource()const;
 
     /*DELEGUES*/
     QString getUpdateString();
@@ -65,13 +66,12 @@ private slots:
 private:
     /*INTERFACE*/
     PowerInterface *powerUi; ///< Palette de gestion des pouvoirs
-    ProgressBar *ressourceBar; ///< Barre d'indication des ressources
 
     /*ENTREE*/
     Gamer *owner; ///< Joueur actuellement au commande de la map
 
     /*OUTIL*/
-    GameScene * scene; ///< Scene de jeu
+    GameScene *scene; ///< Scene de jeu
     ActionManager am; ///< Gestionnaire des actions du joueur
     double percentToSend; ///< Pourcentage du noeud à envoyer lors d'un envoi
     bool gameFinished; ///< Indique si le jeu est fini

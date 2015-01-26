@@ -1,6 +1,7 @@
 #include "gamescene.h"
 #include "node.h"
 #include "nodeconnectable.h"
+#include "nodecombat.h"
 #include "nodemana.h"
 #include "connexion.h"
 #include "gamer.h"
@@ -166,6 +167,68 @@ void GameScene::removeConnexion(NodeConnectable &n1, NodeConnectable &n2)
     Connexion *c = n1.getConnexion(n2.getId());
     lstConnexion.remove(c->getId());
     removeItem(c);
+}
+
+/*----------------------------------------------------*/
+/*STATISTIQUE*/
+/*----------------------------------------------------*/
+
+int GameScene::getTotalRessources(Gamer &g)
+{
+    qDebug()<<"GameScene : enter 'getTotalRessources'";
+
+    int total = 0;
+    foreach (Node *n, lstNode)
+    {
+        NodeCombat *nc = dynamic_cast<NodeCombat *>(n);
+
+        if(nc != 0 && nc->getOwner() == &g) total += nc->getRessources();
+    }
+    return total;
+}
+
+int GameScene::getAvrageRessourcesRate(Gamer &g)
+{
+    qDebug()<<"GameScene : enter 'getAvrageRessourcesRate'";
+
+    int sum = 0;
+    int nb = 0;
+    foreach (Node *n, lstNode)
+    {
+        NodeCombat *nc = dynamic_cast<NodeCombat *>(n);
+
+        if(nc != 0 && nc->getOwner() == &g) sum += nc->getRessourcesRate();
+        ++nb;
+    }
+    return sum / nb;
+}
+
+int GameScene::getTotalRessources()
+{
+    qDebug()<<"GameScene : enter 'getTotalRessources'";
+
+    int total = 0;
+    foreach (Node *n, lstNode)
+    {
+        NodeCombat *nc = dynamic_cast<NodeCombat *>(n);
+
+        if(nc != 0) total += nc->getRessources();
+    }
+    return total;
+}
+
+int GameScene::getAvrageRessourcesRate()
+{
+    qDebug()<<"GameScene : enter 'getAvrageRessourcesRate'";
+
+    int sum = 0;
+    foreach (Node *n, lstNode)
+    {
+        NodeCombat *nc = dynamic_cast<NodeCombat *>(n);
+
+        if(nc != 0) sum += nc->getRessourcesRate();
+    }
+    return sum / lstNode.size();
 }
 
 /*----------------------------------------------------*/

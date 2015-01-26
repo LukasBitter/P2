@@ -117,6 +117,15 @@ bool GameView::isContainsPrivateChar(QString &s)
             GameScene::isContainsPrivateChar(s) || NodeMana::isContainsPrivateChar(s);
 }
 
+QHash<int, int> GameView::getGamerRessource() const
+{
+    foreach (Gamer *g) {
+
+    }
+    scene->getTotalRessources()
+}
+
+
 /*----------------------------------------------------*/
 /*DELEGUES*/
 /*----------------------------------------------------*/
@@ -347,8 +356,6 @@ void GameView::setUpUI()
     powerUi->setX(0);
     powerUi->setY(0);
     powerUi->setMana(P_INITIAL_MANA);
-
-    ressourceBar = new ProgressBar(120,0,680,10);
 
     const PowerCountDown &pcd = powerUi->getCountDownManager();
     connect(&pcd,SIGNAL(powerFinishing(ACTIONS,Node*,Node*)),this,SLOT(onPowerFinishing(ACTIONS,Node*,Node*)));

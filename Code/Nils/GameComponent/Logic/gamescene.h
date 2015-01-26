@@ -44,6 +44,12 @@ public:
     void removeNode(Node &n);
     void removeConnexion(NodeConnectable &n1, NodeConnectable &n2);
 
+    /*STATISTIQUE*/
+    int getTotalRessources(Gamer &g);
+    int getAvrageRessourcesRate(Gamer &g);
+    int getTotalRessources();
+    int getAvrageRessourcesRate();
+
     /*MISE A JOUR*/
     QString getUpdateString();
     void updateFromString(QString s);
