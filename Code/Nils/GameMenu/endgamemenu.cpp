@@ -62,7 +62,7 @@ void EndGameMenu::setUpUI()
     //AJOUT LAYOUT
 
     QGridLayout *l = new QGridLayout(this);
-    //l->addWidget(title, 0, 0);
+    l->addWidget(title, 0, 0);
     l->addWidget(btReturn, 1, 0);
 
     this->setLayout(l);

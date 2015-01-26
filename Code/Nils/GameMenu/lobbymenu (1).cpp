@@ -1,7 +1,10 @@
 #include "lobbymenu.h"
-#include "gamer.h"
 #include "GameConnexion/gameclient.h"
 #include "GameConnexion/gameserver.h"
+#include "gamecontext.h"
+#include "gamerlist.h"
+#include "gamer.h"
+#include "global.h"
 
 
 /*----------------------------------------------------*/
@@ -26,7 +29,6 @@ void LobbyMenu::enableClientUI()
     btConnect->setEnabled(true);
     txtAdressIP->setEnabled(true);
 
-
     host = false;
 }
 
@@ -46,10 +48,9 @@ void LobbyMenu::updateUI()
 {
     qDebug()<<"LobbyMenu : enter 'updateUI'";
 
-    tblStatus->clearContents(); //Detruit également les pointeurs
-
     if(client == 0)return;
 
+    tblStatus->clearContents(); //Detruit également les pointeurs
     int cpt = 0;
     foreach (Gamer *g, client->getListGamer())
     {
@@ -72,25 +73,40 @@ void LobbyMenu::updateUI()
     if(currentGamer != 0)
     {
         cbtReady->setChecked(currentGamer->isReady());
-        txtName->setText(QString(tr("Your user name : %1")).arg(currentGamer->getName()));
+        txtName->setText(QString(tr("User name : %1")).arg(currentGamer->getName()));
         btChangeName->setEnabled(true);
-        cbbColor->setCurrentIndex(cbbColor->findData(currentGamer->getColor()));
-        cbbSlot->setCurrentIndex(cbbSlot->findData(currentGamer->getSlotNumber()));
-
     }
 }
 
-void LobbyMenu::orderToSwitchToGame()
+void LobbyMenu::launchGame()
 {
     qDebug()<<"LobbyMenu : enter 'launchGame'";
-
-    if(client != 0)
+    GameContext *gc = 0;
+    if( host && client != 0 && server != 0)
     {
-        emit play(client->getMap());
+        qDebug()<<"LobbyMenu : launch game as host";
+        gc = new GameContext(client, server);
+    }
+    else if(!host && client != 0)
+    {
+        qDebug()<<"LobbyMenu : launch game as client";
+        gc = new GameContext(client);
     }
     else
     {
         qCritical()<<"LobbyMenu : unexpected case in 'launchGame' no server and no client";
+    }
+
+    if(gc != 0)
+    {
+        //Perte volontaire des pinteur
+        client = 0;
+        server = 0;
+        emit play(gc);
+    }
+    else
+    {
+        qCritical()<<"LobbyMenu : unexpected case in 'launchGame' gamecontext no created";
     }
 }
 
@@ -114,31 +130,28 @@ void LobbyMenu::showMessage(NETWORK_INFORMATION err)
     switch (err)
     {
     case I_SAME_COLOR:
-        msgBox.setText(tr("Players have same colour"));
+        msgBox.setText(tr("Players have same color"));
         break;
     case I_SAME_SLOT:
-        msgBox.setText(tr("Players have same spawn"));
+        msgBox.setText(tr("Players have sam spawn"));
         break;
     case I_GAME_STARTED:
         msgBox.setText(tr("Game has already started"));
         break;
     case I_SLOT_NOT_SELECTED:
-        msgBox.setText(tr("A player has not selected any spawn"));
+        msgBox.setText(tr("One player did not select any spawn"));
         break;
     case I_COLOR_NOT_SELECTED:
-        msgBox.setText(tr("A player has not selected any colour"));
+        msgBox.setText(tr("One player has not selected any color"));
         break;
     case I_MAP_INVALID:
         msgBox.setText(tr("Invalid map"));
         break;
     case I_MAP_NOT_BIG_ENOUGH:
-        msgBox.setText(tr("Map too small!"));
+        msgBox.setText(tr("Map size too small"));
         break;
     case I_NOT_READY:
-        msgBox.setText(tr("A player is not ready"));
-        break;
-    case I_LOBBY_FULL:
-        msgBox.setText(tr("Lobby is full"));
+        msgBox.setText(tr("One player is not ready"));
         break;
     default:
         qCritical()<<"LobbyMenu : unexpected case in 'showMessage'"<<err;
@@ -147,13 +160,13 @@ void LobbyMenu::showMessage(NETWORK_INFORMATION err)
     msgBox.exec();
 }
 
-void LobbyMenu::wantReturnToMenu()
+void LobbyMenu::onBtReturnPressed()
 {
     qDebug()<<"LobbyMenu : want switch to menu";
     emit returnToMenu();
 }
 
-void LobbyMenu::wantConnectToServer()
+void LobbyMenu::onBtConnectPressed()
 {
     qDebug()<<"LobbyMenu : enter 'onBtConnectPressed'";
     btConnect->setEnabled(false);
@@ -169,7 +182,7 @@ void LobbyMenu::wantConnectToServer()
     }
 }
 
-void LobbyMenu::wantLaunchGame()
+void LobbyMenu::onBtStartPressed()
 {
     qDebug()<<"LobbyMenu : enter 'onBtStartPressed'";
     if(client != 0)
@@ -183,61 +196,28 @@ void LobbyMenu::wantLaunchGame()
     }
 }
 
-void LobbyMenu::wantChangeName()
+void LobbyMenu::onBtChangeNamePressed()
 {
-    bool stop = false;
-
-    while(!stop)
+    bool ok;
+    QString text;
+    text = QInputDialog::getText(this, tr("Enter user name")
+                                         ,tr("User name :"), QLineEdit::Normal,
+                                         "", &ok);
+    if(ok)
     {
-        QString previousName = client->getCurrentGamer()->getName();
-        bool ok = false;
-        QString currentName = QInputDialog::getText(this, tr("Enter your user name")
-                                                    ,tr("User name :"), QLineEdit::Normal,
-                                                    "", &ok);
-
-        if(ok && !currentName.isEmpty())
-        {
-            stop = client->setName(currentName);
-
-            if(!stop)
-            {
-                QMessageBox msgBox;
-                msgBox.setText(tr("Contains forbidden characters"));
-                msgBox.exec();
-            }
-            else
-            {
-                client->sendChatMessage(previousName+" --> "+currentName);
-            }
-        }
-        else if(!ok && !previousName.isEmpty())
-        {
-            stop = true;
-        }
+        client->setName(text);
     }
 }
 
-void LobbyMenu::wantChangeReadyState()
+void LobbyMenu::onBtReadyPressed()
 {
     client->setReady(cbtReady->isChecked());
-}
-
-void LobbyMenu::wantSendChatMessage()
-{
-    if(client != 0 && !txtToSendChat->text().isEmpty())
-    {
-        client->sendChatMessage(txtToSendChat->text());
-        txtToSendChat->setText("");
-    }
 }
 
 void LobbyMenu::onSuccessfulConnexion()
 {
     qDebug()<<"LobbyMenu : successfull connexion to server";
-
-    txtConnected->setText(tr("Connected"));
-    wantChangeName(); //Demande un nom  au démmarage
-    if(server != 0) client->setReady(true); //Le joueur host est pret de base
+    txtConnected->setText("Connected");
 }
 
 void LobbyMenu::onAddMap(QString s)
@@ -248,20 +228,13 @@ void LobbyMenu::onAddMap(QString s)
 void LobbyMenu::onCbbColorChanged(int i)
 {
     if(client != 0)
-    {
-        client->setColor(cbbColor->itemData(i).value<QColor>());
-    }
+        client->setColor(QColor(cbbColor->itemText(i)));
 }
 
 void LobbyMenu::onCbbSlotChanged(int i)
 {
     if(client != 0)
         client->setSlot(cbbSlot->itemText(i).toInt());
-}
-
-void LobbyMenu::onReciveChatMessage(QString s)
-{
-    txtChat->append(s);
 }
 
 /*----------------------------------------------------*/
@@ -272,110 +245,83 @@ void LobbyMenu::setUpUI()
 {
     //INSTANTIATION
 
-    this->btStart = new QPushButton(tr("Launch game"), this);
-    this->btConnect = new QPushButton(tr("Connection"),this);
-    this->btReturn = new QPushButton(tr("Back"),this);
-    this->btChangeName = new QPushButton(tr("Change user name"),this);
-    this->cbtReady = new QCheckBox(tr("Ready"), this);
+    this->btStart = new QPushButton("Play game", this);
+    this->btConnect = new QPushButton("Connection",this);
+    this->btReturn = new QPushButton("Quit",this);
+    this->btChangeName = new QPushButton("Change user name",this);
+    this->cbtReady = new QCheckBox("Ready", this);
     this->cbbMap = new QComboBox(this);
     this->cbbColor = new QComboBox(this);
     this->cbbSlot = new QComboBox(this);
     this->tblStatus = new QTableWidget(this);
-    this->txtAdressIP = new QLineEdit(tr("Enter IP address"),this);
-    this->txtName = new QLabel(tr("Your user name : "),this);
-    this->txtConnected = new QLabel(tr("Not connected"),this);
-    this->txtChat = new QTextEdit(this);
-    this->txtToSendChat = new QLineEdit(this);
-    this->btSend = new QPushButton(tr("Send"), this);
+    this->txtAdressIP = new QLineEdit("Enter host IP address",this);
+    this->txtName = new QLabel("Your user name : ",this);
+    this->txtConnected = new QLabel("Not connected",this);
 
     //CONNEXION
 
-    connect(btSend,SIGNAL(clicked()),this,SLOT(wantSendChatMessage()));
-    connect(txtToSendChat,SIGNAL(returnPressed()),this,SLOT(wantSendChatMessage()));
-    connect(btReturn,SIGNAL(clicked()),this,SLOT(wantReturnToMenu()));
-    connect(btConnect,SIGNAL(clicked()),this,SLOT(wantConnectToServer()));
-    connect(txtAdressIP,SIGNAL(returnPressed()),this,SLOT(wantConnectToServer()));
-    connect(btStart,SIGNAL(clicked()),this,SLOT(wantLaunchGame()));
-    connect(cbtReady,SIGNAL(clicked()),this,SLOT(wantChangeReadyState()));
-    connect(btChangeName,SIGNAL(clicked()),this,SLOT(wantChangeName()));
+    connect(btReturn,SIGNAL(clicked()),this,SLOT(onBtReturnPressed()));
+    connect(btConnect,SIGNAL(clicked()),this,SLOT(onBtConnectPressed()));
+    connect(btStart,SIGNAL(clicked()),this,SLOT(onBtStartPressed()));
+    connect(cbtReady,SIGNAL(clicked()),this,SLOT(onBtReadyPressed()));
+    connect(btChangeName,SIGNAL(clicked()),this,SLOT(onBtChangeNamePressed()));
     connect(cbbColor,SIGNAL(currentIndexChanged(int)),this,SLOT(onCbbColorChanged(int)));
     connect(cbbSlot,SIGNAL(currentIndexChanged(int)),this,SLOT(onCbbSlotChanged(int)));
 
-    //PARAMETRAGE
+    //PEUPLEMENT
 
     tblStatus->setRowCount(MAX_GAMER);
     tblStatus->setColumnCount(4);
     QStringList &s = *new QStringList();
     s<<"Nom joueur"<<"Couleur"<<"Slot spawn"<<"Pret";
     tblStatus->setHorizontalHeaderLabels(s);
-    tblStatus->verticalHeader()->setVisible(false);
-    txtChat->setReadOnly(true);
 
+    for(int i = 1; i <= MAX_GAMER; ++i)
+    {
+        cbbSlot->addItem(QString("%1").arg(i));
+    }
 
-    //PEUPLEMENT
-
-    populate();
+    const QStringList colorNames = QColor::colorNames();
+    int index = 0;
+    foreach (const QString &colorName, colorNames) {
+        const QColor color(colorName);
+        cbbColor->addItem(colorName, color);
+        const QModelIndex idx = cbbColor->model()->index(index++, 0);
+        cbbColor->model()->setData(idx, color, Qt::BackgroundColorRole);
+    }
 
     //AJOUT AU LAYOUT
 
     QGridLayout *l = new QGridLayout(this);
-    l->setColumnStretch(0, 1);
-    l->setColumnStretch(1, 1);
-    l->setColumnStretch(2, 1);
     l->addWidget(txtName, 0,0,1,2);
     l->addWidget(btChangeName, 0,2);
     l->addWidget(txtAdressIP, 1,0,1,2);
     l->addWidget(btConnect, 1,2);
-    l->addWidget(tblStatus, 10,0,3,2);
-    l->addWidget(txtChat, 10,2);
-    l->addWidget(txtToSendChat, 11,2);
-    l->addWidget(btSend, 12,2);
-    l->addWidget(cbbMap, 20,0,1,3);
-    l->addWidget(cbbColor, 21,0);
-    l->addWidget(cbbSlot, 21,1);
-    l->addWidget(cbtReady, 21,2);
+    l->addWidget(tblStatus, 2,0,1,3);
+    l->addWidget(cbbMap, 3,0,1,3);
+    l->addWidget(cbbColor, 4,0);
+    l->addWidget(cbbSlot, 4,1);
+    l->addWidget(cbtReady, 4,2);
 
-    l->addWidget(btReturn, 30,0);
-    l->addWidget(txtConnected, 30,1);
-    l->addWidget(btStart, 30,2);
+    l->addWidget(btReturn, 5,0);
+    l->addWidget(txtConnected, 5,1);
+    l->addWidget(btStart, 5,2);
 
     this->setLayout(l);
 }
 
-void LobbyMenu::populate()
-{
-    //Tableau des couleurs de joueur
-    QColor colorArray [MAX_GAMER] = PLAYER_COLOR;
-
-    //peuplement du combobox de selection de slot
-    for(int i = 1; i <= MAX_GAMER; ++i)
-    {
-        cbbSlot->addItem(QString("%1").arg(i), i);
-    }
-
-    //Peuplement du combobox de selection de la couleur
-    cbbColor->addItem(tr("Red"), colorArray[0]);
-    cbbColor->addItem(tr("Vert"), colorArray[1]);
-    cbbColor->addItem(tr("Orange"), colorArray[2]);
-    cbbColor->addItem(tr("Jaune"), colorArray[3]);
-}
-
 void LobbyMenu::disableUI()
 {
-    setClient(0);
-    setServer(0);
-
     cbbMap->setEnabled(false);
     btStart->setEnabled(false);
     cbtReady->setEnabled(false);
     btConnect->setEnabled(false);
     txtAdressIP->setEnabled(false);
     btChangeName->setEnabled(false);
-
-    txtAdressIP->setText(tr("Enter host Ip address"));
-    txtName->setText(tr("Your user name : ");
-
     updateUI();
+
+    setClient(0);
+    setServer(0);
 }
 
 void LobbyMenu::setClient(GameClient *c)
@@ -389,14 +335,13 @@ void LobbyMenu::setClient(GameClient *c)
     client = c;
     if(client != 0)
     {
-        connect(client,SIGNAL(switchToGame()),this,SLOT(orderToSwitchToGame()));
+        connect(client,SIGNAL(switchToGame()),this,SLOT(launchGame()));
         connect(client,SIGNAL(errorOccured(QAbstractSocket::SocketError)),
                 this,SLOT(showError(QAbstractSocket::SocketError)));
         connect(client,SIGNAL(connexionOk()),this,SLOT(onSuccessfulConnexion()));
         connect(client,SIGNAL(updateLobby()),this,SLOT(updateUI()));
         connect(client,SIGNAL(addMapName(QString)),this,SLOT(onAddMap(QString)));
         connect(client,SIGNAL(errorOccured(NETWORK_INFORMATION)),this,SLOT(showMessage(NETWORK_INFORMATION)));
-        connect(client,SIGNAL(reciveChatMessage(QString)),this,SLOT(onReciveChatMessage(QString)));
     }
 }
 
