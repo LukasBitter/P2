@@ -80,6 +80,8 @@ void GameScene::dragMoveEvent(QGraphicsSceneDragDropEvent *event)
 
 void GameScene::drawBackground(QPainter *painter, const QRectF &rect)
 {
+    Q_UNUSED(rect);
+
     const QPixmap background(":/Background.jpg");
     painter->drawPixmap(-10,-10, background);
 }

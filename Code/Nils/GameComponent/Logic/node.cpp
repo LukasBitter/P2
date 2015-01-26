@@ -6,13 +6,14 @@
 #include "global.h"
 #include "nodecombat.h"
 #include "nodemana.h"
+#include "enumlibrary.h"
 
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
 Node::Node(int x, int y, int radius): QGraphicsItem(0),
-    radius(radius)
+    radius(radius), color(BASE_NODE_COLOR)
 {
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setAcceptHoverEvents(true);
@@ -50,8 +51,8 @@ Node *Node::createNode(QString &create, GamerList &gl)
 
 QRectF Node::boundingRect() const
 {
-    return QRectF(-radius-3, -radius-3,
-                      2*radius+7, 2*radius+6);
+    return QRectF(-radius, -radius,
+                      2*radius, 2*radius);
 }
 
 void Node::paint(QPainter *painter,
@@ -60,18 +61,47 @@ void Node::paint(QPainter *painter,
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    painter->setBrush(Qt::black);
+    painter->save();
 
-    if(isSelected() || isUnderMouse())
+    bool over= option->state & QStyle::State_MouseOver;
+
+    QPen p = painter->pen();
+    p.setWidth(2);
+    p.setColor(Qt::black);
+    QRadialGradient radialGrad(0, 0, radius);
+    radialGrad.setColorAt(0, color.darker());
+    radialGrad.setColorAt(1, color.darker());
+
+    //PARAMETRAGE SUIVANT ETAT
+    if(isSelected())
     {
-        QPen pen(Qt::gray);
-        pen.setStyle(Qt::SolidLine);
-        pen.setWidth(5);
-        painter->setPen(pen);
-        painter->drawEllipse(QPoint(0,0),radius+3,radius+3);
+        radialGrad.setColorAt(0, color.lighter());
+        radialGrad.setColorAt(1, color.darker());
+        p.setColor(color.lighter());
     }
-    painter->setPen(Qt::black);
-    painter->drawEllipse(QPoint(0,0),radius,radius);
+    else if(over)
+    {
+        radialGrad.setColorAt(0, color.lighter());
+        radialGrad.setColorAt(1, color.darker());
+    }
+
+    //DESSIN DU NOEU DE BASE
+    painter->setRenderHint(QPainter::Antialiasing, true);
+    painter->setBrush(radialGrad);
+    painter->setPen(p);
+    painter->drawEllipse(-radius, -radius, 2*radius, 2*radius);
+
+    painter->restore();
+}
+
+QColor Node::getColor()
+{
+    return color;
+}
+
+void Node::setColor(QColor c)
+{
+    color = c;
 }
 
 /*----------------------------------------------------*/

@@ -75,6 +75,11 @@ void EditorInterface::onBtReturnPressed()
     emit btReturnPressed();
 }
 
+void EditorInterface::onBtClearPressed()
+{
+    emit btClearPressed();
+}
+
 /*----------------------------------------------------*/
 /*PRIVATE*/
 /*----------------------------------------------------*/
@@ -95,6 +100,7 @@ void EditorInterface::setUpUI()
     btReturn = new QPushButton("Retour", this);
     btLoadFromFile = new QPushButton("Ouvrir", this);
     btSaveToFile = new QPushButton("Sauver", this);
+    btClear = new QPushButton("Clear", this);
 
     //PARAMETRAGE
 
@@ -113,6 +119,7 @@ void EditorInterface::setUpUI()
     connect(btReturn, SIGNAL(pressed()), this, SLOT(onBtReturnPressed()));
     connect(btLoadFromFile, SIGNAL(pressed()), this, SLOT(onBtLoadFromFilePressed()));
     connect(btSaveToFile, SIGNAL(pressed()), this, SLOT(onBtSaveToFilePressed()));
+    connect(btClear, SIGNAL(pressed()), this, SLOT(onBtClearPressed()));
 
     //AJOUT AU LAYOUT
 
@@ -132,7 +139,8 @@ void EditorInterface::setUpUI()
     layout->addWidget(new QLabel("Open / save", this), 20,0);
     layout->addWidget(btLoadFromFile, 21,0);
     layout->addWidget(btSaveToFile, 22,0);
-    layout->addWidget(btReturn, 23,0);
+    layout->addWidget(btClear, 23,0);
+    layout->addWidget(btReturn, 24,0);
 
     this->setLayout(layout);
 

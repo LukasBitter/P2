@@ -68,7 +68,7 @@ enum POWER
 /*----------------------------------------------------*/
 
 //fréquence de la boucle de rafraichissement en milliseconde
-#define TIC 100
+#define TIC 75
 //port de connexion
 #define PORT 8000
 //maximum de joueur dans le salon
@@ -79,6 +79,13 @@ enum POWER
 #define MAP_FILE "./maps"
 #define MAP_EXTENSION "rtsmap"
 #define MAP_EXTENSION_FILTER "*.rtsmap"
+
+/*----------------------------------------------------*/
+/*GRAPHISME*/
+/*----------------------------------------------------*/
+
+#define VACANT_COLOR Qt::white
+#define BASE_NODE_COLOR Qt::darkBlue
 
 /*----------------------------------------------------*/
 /*GAMEPLAY*/

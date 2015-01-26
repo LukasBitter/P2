@@ -34,6 +34,7 @@ signals:
     void btReturnPressed();
     void btSaveToFilePressed();
     void btLoadFromFilePressed();
+    void btClearPressed();
 private slots:
     void onBtCreateNodePressed();
     void onBtRemoveNodePressed();
@@ -42,6 +43,7 @@ private slots:
     void onBtSaveToFilePressed();
     void onBtLoadFromFilePressed();
     void onBtReturnPressed();
+    void onBtClearPressed();
 
 private:
     /*INTERFACE*/
@@ -56,6 +58,7 @@ private:
     QPushButton *btDisconnectNode;
     QPushButton *btSaveToFile;
     QPushButton *btLoadFromFile;
+    QPushButton *btClear;
     QPushButton *btReturn;
 
     /*METHODE PRIVE*/
