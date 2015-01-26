@@ -11,8 +11,9 @@ ProgressBar::ProgressBar(const QRectF &dimension, QGraphicsItem* parent):
     setY(dimension.y());
     this->dimension = QRectF(0,0,dimension.width(), dimension.height());
 
-    borderPen.setWidth(2);
+    borderPen.setWidth(1);
     borderPen.setColor(Qt::black);
+    borderPen.setJoinStyle(Qt::RoundJoin);
 }
 
 ProgressBar::ProgressBar(int x, int y, int w, int h, QGraphicsItem *parent)
