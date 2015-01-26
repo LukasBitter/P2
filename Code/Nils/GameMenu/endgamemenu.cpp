@@ -25,7 +25,7 @@ void EndGameMenu::paintEvent()
     QPainter painter;
     const QPixmap background(":/Victory.jpg");
 
-    painter->drawPixmap(-10, -10, background);
+    painter.drawPixmap(-10, -10, background);
 }
 
 

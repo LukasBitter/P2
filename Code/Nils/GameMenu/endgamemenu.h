@@ -35,6 +35,7 @@ private:
     /*INTERFACE*/
     QPushButton* btReturn;
     QLabel *title;
+    void paintEvent();
 
     /*METHODE PRIVE*/
     void setUpUI();
