@@ -231,6 +231,6 @@ void PowerInterface::setUpUI()
     txtCdPowerDestroy->setY(230);
 
     //PARAMETRAGE
-    pbMana->insertPlage(0, P_INITIAL_MANA, P_MAX_MANA,Qt::darkMagenta);
+    pbMana->insertPlage(0, P_INITIAL_MANA, P_MAX_MANA,Qt::magenta);
     pbMana->setInverse(false);
 }
