@@ -4,12 +4,12 @@
 #include "global.h"
 #include "enumlibrary.h"
 #include "powercountdown.h"
-#include "qprogressbar.h"
-#include "QVBoxLayout"
 
 class Node;
 class Button;
 class QGraphicsTextItem;
+class ActionManager;
+class ProgressBar;
 
 namespace GameInterface
 {
@@ -29,7 +29,7 @@ class PowerInterface : public QGraphicsWidget
 
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    PowerInterface(QGraphicsItem *parent = 0);
+    PowerInterface(ActionManager &am, QGraphicsItem *parent = 0);
 
     /*SURCHARGE*/
     QRectF boundingRect() const;
@@ -43,8 +43,6 @@ public:
     const PowerCountDown &getCountDownManager()const;
 
     /*SIGNALS/SLOTS*/
-signals:
-    void powerPressed(ACTIONS a);
 public slots:
     void shortCutPressed(QKeyEvent *e);
     void usePower(ACTIONS a, Node* n1, Node* n2);
@@ -56,7 +54,7 @@ private slots:
 
 private:
     /*INTERFACE*/
-    QGraphicsTextItem *txtMana;
+    ProgressBar *pbMana;
     Button *btPowerArmore;
     Button *btPowerInvincibility;
     Button *btPowerTeleportation;
@@ -66,6 +64,7 @@ private:
     QGraphicsTextItem *txtCdPowerTeleportation;
     QGraphicsTextItem *txtCdPowerDestroy;
     POWER powerSelected;
+    ActionManager &am;
 
     /*OUTIL*/
     int mana; ///< Réservoir de ressources consomées par les pouvoirs
@@ -73,7 +72,6 @@ private:
 
     /*METHODE PRIVE*/
     void setUpUI();
-    void updateCD();
 };
 
 #endif // POWERINTERFACE_H

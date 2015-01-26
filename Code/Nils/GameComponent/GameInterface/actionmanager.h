@@ -24,6 +24,8 @@ public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
     ActionManager(QObject *parent = 0);
 
+    /*ASSESSEUR / MUTATEUR*/
+    ACTIONS getCurrentAction()const;
 
     /*SIGNALS/SLOTS*/
 signals:

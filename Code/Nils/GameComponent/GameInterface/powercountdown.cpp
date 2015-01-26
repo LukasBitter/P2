@@ -58,6 +58,7 @@ bool PowerCountDown::isReady(ACTIONS a) const
 
 void PowerCountDown::deletePower(ACTIONS a)
 {
+    qDebug()<<"";
     lstContext.remove(a);
     lstCountDownTime.remove(a);
     lstPowerDuration.remove(a);

@@ -12,6 +12,11 @@ ActionManager::ActionManager(QObject *parent) :
 
 }
 
+ACTIONS ActionManager::getCurrentAction() const
+{
+    return action;
+}
+
 /*----------------------------------------------------*/
 /*SIGNALS/SLOTS*/
 /*----------------------------------------------------*/
@@ -22,13 +27,17 @@ void ActionManager::selectionChanged(Node *n)
 
     if(n == 0)
     {
+        qDebug()<<"ActionManager : selection changed to 0";
         reset();
     }
     else
     {
+        qDebug()<<"ActionManager : selection changed to another node";
+
         if(currentSelection == 0)
         {
             currentSelection = n;
+            qDebug()<<"ActionManager : emit doAction( x , x )";
             emit doAction(action, currentSelection);
         }
         else
@@ -36,6 +45,7 @@ void ActionManager::selectionChanged(Node *n)
             lastSelection = currentSelection;
             currentSelection = n;
 
+            qDebug()<<"ActionManager : emit doAction( x , x , x )";
             emit doAction(action, lastSelection, currentSelection);
         }
     }
@@ -44,6 +54,7 @@ void ActionManager::selectionChanged(Node *n)
 void ActionManager::actionChanged(ACTIONS a)
 {
     qDebug()<<"ActionManager : enter 'actionChanged'";
+    qDebug()<<"ActionManager : action number "<<a;
 
     action = a;
     currentSelection = 0;
@@ -61,8 +72,11 @@ void ActionManager::actionChanged(ACTIONS a)
 
 void ActionManager::reset()
 {
+    qDebug()<<"ActionManager : enter 'reset'";
     currentSelection = 0;
     lastSelection = 0;
     action = NO_ACTION;
+
+    qDebug()<<"ActionManager : emit doAction( x )";
     emit doAction(action);
 }

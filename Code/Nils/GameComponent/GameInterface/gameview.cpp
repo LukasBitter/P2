@@ -84,14 +84,7 @@ void GameView::mousePressEvent(QMouseEvent *e)
 
     Node *n = dynamic_cast <Node*>(itemAt(e->pos()));
 
-    if(n == 0)
-    {
-        am.reset();
-    }
-    else
-    {
-        am.selectionChanged(n);
-    }
+    am.selectionChanged(n);
 
     QGraphicsView::mousePressEvent(e);
 }
@@ -161,11 +154,6 @@ void GameView::advance()
 /*----------------------------------------------------*/
 /*SIGNALS/SLOTS*/
 /*----------------------------------------------------*/
-
-void GameView::onPowerPressed(ACTIONS action)
-{
-    am.actionChanged(action);
-}
 
 void GameView::onPowerStarting(ACTIONS a, Node *n1,Node *n2)
 {
@@ -277,6 +265,13 @@ void GameView::onDoAction(ACTIONS action, Node *n1, Node *n2)
     }
 }
 
+/**
+ * @brief GameView::applyGamerAction Réception des action des joueurs
+ * @param s Chaine d'action
+ *
+ * Cette methode est utilisée par la GameView coté serveur afin d'executer
+ * les actions des clients
+ */
 void GameView::applyGamerAction(QString s)
 {
     QStringList msgStr = s.split(".");
@@ -348,13 +343,12 @@ void GameView::applyGamerAction(QString s)
 
 void GameView::setUpUI()
 {
-    powerUi = new PowerInterface();
+    powerUi = new PowerInterface(am);
     powerUi->setX(0);
     powerUi->setY(0);
     powerUi->setMana(P_INITIAL_MANA);
 
     const PowerCountDown &pcd = powerUi->getCountDownManager();
-    connect(powerUi,SIGNAL(powerPressed(ACTIONS)),this,SLOT(onPowerPressed(ACTIONS)));
     connect(&pcd,SIGNAL(powerFinishing(ACTIONS,Node*,Node*)),this,SLOT(onPowerFinishing(ACTIONS,Node*,Node*)));
     connect(&pcd,SIGNAL(powerStarting(ACTIONS,Node*,Node*)),this,SLOT(onPowerStarting(ACTIONS,Node*,Node*)));
     connect(&am,SIGNAL(doAction(ACTIONS,Node*)),this,SLOT(onDoAction(ACTIONS,Node*)));
@@ -375,6 +369,11 @@ void GameView::setUpUI()
 /*ENVOIS*/
 /*----------------------------------------------------*/
 
+/**
+ * @brief GameView::sendSquad Action utilisateur demandant l'envoi de squad
+ * @param from Noeud source
+ * @param to Noeud de destination
+ */
 void GameView::sendSquad(Node *from, Node *to)
 {
     NodeCombat *nodeFromTmp = dynamic_cast <NodeCombat*>(from);
@@ -395,6 +394,14 @@ void GameView::sendSquad(Node *from, Node *to)
     }
 }
 
+/**
+ * @brief GameView::sendAction Envoit une action utilisateur de la GameView client
+ * a la GameView serveur
+ * @param a Action voulu
+ * @param from Noeud source
+ * @param to Noeud de destination
+ * @param param Parametre optionnel
+ */
 void GameView::sendAction(ACTIONS a, int nodeFromId, int nodeToId, int param)
 {
     int ownerId = owner == 0 ? -1 : owner->getId();
@@ -406,6 +413,7 @@ void GameView::sendAction(ACTIONS a, int nodeFromId, int nodeToId, int param)
 /*----------------------------------------------------*/
 /*RECEPTION*/
 /*----------------------------------------------------*/
+
 
 void GameView::receive_GA_SEND(int gamerId, Node *nodeFrom, Node *nodeTo, int param)
 {

@@ -10,7 +10,7 @@
 /*----------------------------------------------------*/
 
 GameServer::GameServer(int maxConnexion, QObject *parent) : QObject(parent),
-    lockConnexion(false), refreshLoopMS(TIC), port(PORT), map(0)
+    lockConnexion(false), refreshLoopMS(GAME_TIC), port(PORT), map(0)
 {
     server = new Server(port, maxConnexion, this);
 

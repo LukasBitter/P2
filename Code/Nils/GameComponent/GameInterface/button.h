@@ -28,7 +28,7 @@ public:
     void mousePressEvent(QGraphicsSceneMouseEvent *);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *);
     void setPowerPercent(double percent);
-    void setSelectedButton(bool buttonState);
+    void setSelected(bool b);
 
     /*SIGNALS/SLOTS*/
 signals:

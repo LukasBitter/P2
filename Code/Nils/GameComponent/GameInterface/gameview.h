@@ -46,7 +46,6 @@ public:
     QString getUpdateString();
     void updateFromString(QString s);
     QString getCreationString();
-
 public slots:
     void advance();
 
@@ -58,7 +57,6 @@ signals:
 public slots:
     void applyGamerAction(QString action);
 private slots:
-    void onPowerPressed(ACTIONS action);
     void onPowerStarting(ACTIONS a, Node *n1, Node *n2);
     void onPowerFinishing(ACTIONS a, Node *n1, Node *n2);
     void onDoAction(ACTIONS action, Node *n);
