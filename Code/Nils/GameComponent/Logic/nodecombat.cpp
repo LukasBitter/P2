@@ -103,7 +103,7 @@ void NodeCombat::advance(int step)
     if(step == 0) return;
 
     //Wait number of tic
-    if(counterAdvance < 10)
+    if(counterAdvance < 20)
     {
         ++counterAdvance;
         return;

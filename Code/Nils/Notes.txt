@@ -2,15 +2,10 @@
 vérifier pourquoi il ne faut pas appelker dragMoveEvent de la scene
 Demander autre relire initialisation variable
 
-Doute:
--Demander pour constructeur base.
-
 Ajout last-minute :
 - mise a jour de la map selectionné coté client
 - controle des version des map pour message explicite
 - numéro de spawn dans l'ordre d'arrivée
 - menu editeur ilisible
-- nom map controle serveur
-- ajouter creation de dossier dans editeur
-- ajouter bt clear editeur
 - memoire action editeur
+- flood car connexion trop longue

@@ -1,5 +1,6 @@
 #include "mapfile.h"
 #include "gamer.h"
+#include "enumlibrary.h"
 #include "GameComponent/Logic/node.h"
 
 
@@ -132,7 +133,7 @@ void MapFile::loadFromFile(const QString &file)
     int nbGamer = 0;
     QStringList lstFile = loadFileLine(file);
 
-    if(lstFile.size() >= 6)
+    if(lstFile.size() >= 4)
     {
         version = lstFile.value(0).toInt(&versionOk);
         creation = lstFile.value(1);
@@ -149,10 +150,23 @@ void MapFile::loadFromFile(const QString &file)
             }
         }
 
-        if(versionOk && nbGamerOk && gamerSlots.size() == nbGamer)
+        if(versionOk && nbGamerOk && gamerSlots.size() == nbGamer &&
+                version == VERSION_MAP)
         {
             valide = true;
         }
+        else
+        {
+            qCritical()<<"MapFile : map invalid because : ";
+            qCritical()<<"MapFile : versionOk : "<<versionOk;
+            qCritical()<<"MapFile : nbGamerOk : "<<nbGamerOk;
+            qCritical()<<"MapFile : nbGamerOk : "<<(gamerSlots.size() == nbGamer);
+            qCritical()<<"MapFile : nbGamerOk : "<<(version == VERSION_MAP);
+        }
+    }
+    else
+    {
+        qCritical()<<"MapFile : Not enough line : "<<lstFile.size();
     }
 }
 

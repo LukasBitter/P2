@@ -36,15 +36,15 @@ public slots:
 
 private slots:
     void updateUI();
-    void launchGame();
+    void orderToSwitchToGame();
     void showError(QAbstractSocket::SocketError err);
     void showMessage(NETWORK_INFORMATION err);
-    void onBtReturnPressed();
-    void onBtConnectPressed();
-    void onBtStartPressed();
-    void onBtChangeNamePressed();
-    void onBtReadyPressed();
-    void onBtSendPressed();
+    void wantReturnToMenu();
+    void wantConnectToServer();
+    void wantLaunchGame();
+    void wantChangeName();
+    void wantChangeReadyState();
+    void wantSendChatMessage();
     void onSuccessfulConnexion();
     void onAddMap(QString s);
     void onCbbColorChanged(int i);

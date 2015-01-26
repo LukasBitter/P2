@@ -1,6 +1,8 @@
 #ifndef ENUMLIB_H
 #define ENUMLIB_H
 
+#include <QColor>
+
 /*----------------------------------------------------*/
 /*ENUMERATIONS*/
 /*----------------------------------------------------*/
@@ -35,6 +37,7 @@ enum NETWORK_INFORMATION
     I_MAP_NOT_BIG_ENOUGH,///< Erreur : La map demandée par le client est invalide
     I_NOT_READY,///< Erreur : Des joueurs ne sont pas prêt
     I_CLIENT_PARAMETRED,///< Information : Le client parametré est ajouté au serveur
+    I_LOBBY_FULL,///< Information : Le salon est plein
 };
 
 ///Actions échangées entre les jeux coté client et serveur (GA = action en jeu ; EA = action editeur)
@@ -73,6 +76,7 @@ enum POWER
 #define PORT 8000
 //maximum de joueur dans le salon
 #define MAX_GAMER 4
+#define PLAYER_COLOR {Qt::darkRed, Qt::darkGreen, Qt::darkYellow, Qt::darkCyan}
 //Numéro de version des map supportées
 #define VERSION_MAP 1
 //Enregistrement et lecture des maps
@@ -86,6 +90,7 @@ enum POWER
 
 #define VACANT_COLOR Qt::white
 #define BASE_NODE_COLOR Qt::darkBlue
+
 
 /*----------------------------------------------------*/
 /*GAMEPLAY*/

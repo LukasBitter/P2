@@ -30,6 +30,9 @@ public:
     explicit GameServer(int maxConnexion, QObject *parent = 0);
     ~GameServer();
 
+    /*ASSESSEUR / MUTATEUR*/
+    static bool isContainsPrivateChar(QString &s);
+
     /*SIGNALS/SLOTS*/
 signals:
     void errorOccured(QAbstractSocket::SocketError socketError);

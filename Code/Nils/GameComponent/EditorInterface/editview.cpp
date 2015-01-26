@@ -115,7 +115,7 @@ void EditView::loadMapName(QString s)
 {
     MapFile m;
     m.loadFromFile(s);
-    if(m.isValide() && m.getNumberOfSlot() <= MAX_GAMER)
+    if(m.isValide())
     {
         delete scene;
         scene = new GameScene(m.getCreationString(),lstGamer, 0, this);
@@ -127,6 +127,10 @@ void EditView::loadMapName(QString s)
             scene->updateFromString(m.getSlot(i,spawnGamer));
         }
         scene->update(scene->sceneRect());
+    }
+    else
+    {
+        qCritical()<<"EditView : map is not valid";
     }
 }
 

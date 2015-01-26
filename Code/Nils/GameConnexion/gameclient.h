@@ -31,7 +31,6 @@ public:
     GameView *getMap()const;
     const QHash<int, Gamer *> &getListGamer();
     const Gamer *getCurrentGamer()const;
-    static bool isContainsPrivateChar(QString &s);
 
     /*SIGNALS/SLOTS*/
 signals:

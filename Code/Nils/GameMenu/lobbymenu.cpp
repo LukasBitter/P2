@@ -77,7 +77,7 @@ void LobbyMenu::updateUI()
     }
 }
 
-void LobbyMenu::launchGame()
+void LobbyMenu::orderToSwitchToGame()
 {
     qDebug()<<"LobbyMenu : enter 'launchGame'";
 
@@ -134,6 +134,9 @@ void LobbyMenu::showMessage(NETWORK_INFORMATION err)
     case I_NOT_READY:
         msgBox.setText("Un joueur n'est pas prêt");
         break;
+    case I_LOBBY_FULL:
+        msgBox.setText("Le salon est plein");
+        break;
     default:
         qCritical()<<"LobbyMenu : unexpected case in 'showMessage'"<<err;
         break;
@@ -141,13 +144,13 @@ void LobbyMenu::showMessage(NETWORK_INFORMATION err)
     msgBox.exec();
 }
 
-void LobbyMenu::onBtReturnPressed()
+void LobbyMenu::wantReturnToMenu()
 {
     qDebug()<<"LobbyMenu : want switch to menu";
     emit returnToMenu();
 }
 
-void LobbyMenu::onBtConnectPressed()
+void LobbyMenu::wantConnectToServer()
 {
     qDebug()<<"LobbyMenu : enter 'onBtConnectPressed'";
     btConnect->setEnabled(false);
@@ -163,7 +166,7 @@ void LobbyMenu::onBtConnectPressed()
     }
 }
 
-void LobbyMenu::onBtStartPressed()
+void LobbyMenu::wantLaunchGame()
 {
     qDebug()<<"LobbyMenu : enter 'onBtStartPressed'";
     if(client != 0)
@@ -177,7 +180,7 @@ void LobbyMenu::onBtStartPressed()
     }
 }
 
-void LobbyMenu::onBtChangeNamePressed()
+void LobbyMenu::wantChangeName()
 {
     bool stop = false;
 
@@ -211,14 +214,14 @@ void LobbyMenu::onBtChangeNamePressed()
     }
 }
 
-void LobbyMenu::onBtReadyPressed()
+void LobbyMenu::wantChangeReadyState()
 {
     client->setReady(cbtReady->isChecked());
 }
 
-void LobbyMenu::onBtSendPressed()
+void LobbyMenu::wantSendChatMessage()
 {
-    if(client != 0)
+    if(client != 0 && !txtToSendChat->text().isEmpty())
     {
         client->sendChatMessage(txtToSendChat->text());
         txtToSendChat->setText("");
@@ -231,7 +234,7 @@ void LobbyMenu::onSuccessfulConnexion()
     txtConnected->setText("Connecté");
     client->setColor(cbbColor->currentData().value<QColor>());
     client->setSlot(cbbSlot->currentText().toInt());
-    onBtChangeNamePressed();
+    wantChangeName();
 }
 
 void LobbyMenu::onAddMap(QString s)
@@ -284,12 +287,14 @@ void LobbyMenu::setUpUI()
 
     //CONNEXION
 
-    connect(btSend,SIGNAL(clicked()),this,SLOT(onBtSendPressed()));
-    connect(btReturn,SIGNAL(clicked()),this,SLOT(onBtReturnPressed()));
-    connect(btConnect,SIGNAL(clicked()),this,SLOT(onBtConnectPressed()));
-    connect(btStart,SIGNAL(clicked()),this,SLOT(onBtStartPressed()));
-    connect(cbtReady,SIGNAL(clicked()),this,SLOT(onBtReadyPressed()));
-    connect(btChangeName,SIGNAL(clicked()),this,SLOT(onBtChangeNamePressed()));
+    connect(btSend,SIGNAL(clicked()),this,SLOT(wantSendChatMessage()));
+    connect(txtToSendChat,SIGNAL(returnPressed()),this,SLOT(wantSendChatMessage()));
+    connect(btReturn,SIGNAL(clicked()),this,SLOT(wantReturnToMenu()));
+    connect(btConnect,SIGNAL(clicked()),this,SLOT(wantConnectToServer()));
+    connect(txtAdressIP,SIGNAL(returnPressed()),this,SLOT(wantConnectToServer()));
+    connect(btStart,SIGNAL(clicked()),this,SLOT(wantLaunchGame()));
+    connect(cbtReady,SIGNAL(clicked()),this,SLOT(wantChangeReadyState()));
+    connect(btChangeName,SIGNAL(clicked()),this,SLOT(wantChangeName()));
     connect(cbbColor,SIGNAL(currentIndexChanged(int)),this,SLOT(onCbbColorChanged(int)));
     connect(cbbSlot,SIGNAL(currentIndexChanged(int)),this,SLOT(onCbbSlotChanged(int)));
 
@@ -302,6 +307,7 @@ void LobbyMenu::setUpUI()
     tblStatus->setHorizontalHeaderLabels(s);
     tblStatus->verticalHeader()->setVisible(false);
     txtChat->setReadOnly(true);
+
 
     //PEUPLEMENT
 
@@ -377,7 +383,7 @@ void LobbyMenu::setClient(GameClient *c)
     client = c;
     if(client != 0)
     {
-        connect(client,SIGNAL(switchToGame()),this,SLOT(launchGame()));
+        connect(client,SIGNAL(switchToGame()),this,SLOT(orderToSwitchToGame()));
         connect(client,SIGNAL(errorOccured(QAbstractSocket::SocketError)),
                 this,SLOT(showError(QAbstractSocket::SocketError)));
         connect(client,SIGNAL(connexionOk()),this,SLOT(onSuccessfulConnexion()));

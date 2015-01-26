@@ -1,5 +1,6 @@
 #include <QApplication>
 #include "GameMenu/gamemenumanager.h"
+#include "enumlibrary.h"
 
 
 //void logOutput(QtMsgType type, const QMessageLogContext &, const QString & str)
@@ -36,6 +37,13 @@
 
 int main(int argc, char *argv[])
 {
+    QDir d(MAP_FILE);
+
+    if(!d.exists())
+    {
+        d.mkpath(".");
+    }
+
 //    qInstallMessageHandler(logOutput);
     QApplication a(argc, argv);
 

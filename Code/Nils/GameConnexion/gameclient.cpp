@@ -1,4 +1,5 @@
 #include "gameclient.h"
+#include "gameserver.h"
 #include "client.h"
 #include "gamer.h"
 #include "GameComponent/GameInterface/gameview.h"
@@ -44,11 +45,6 @@ const Gamer *GameClient::getCurrentGamer() const
     return lstGamer.getGamer(gamerId);
 }
 
-bool GameClient::isContainsPrivateChar(QString &s)
-{
-    return s.contains("#");
-}
-
 /*----------------------------------------------------*/
 /*SIGNALS/SLOTS*/
 /*----------------------------------------------------*/
@@ -64,7 +60,8 @@ bool GameClient::setName(QString name)
 {
     qDebug()<<"GameClient : enter 'setName'";
 
-    if(GameView::isContainsPrivateChar(name) || isContainsPrivateChar(name)) return false;
+    if(GameView::isContainsPrivateChar(name) ||
+            GameServer::isContainsPrivateChar(name)) return false;
 
     Gamer *g = lstGamer.getGamer(gamerId);
     g->setName(name);
@@ -102,7 +99,7 @@ void GameClient::setSlot(int s)
 
 void GameClient::sendChatMessage(QString msg)
 {
-    if(GameView::isContainsPrivateChar(msg) || isContainsPrivateChar(msg)) return;
+    if(GameServer::isContainsPrivateChar(msg)) return;
 
     QString name = lstGamer.getGamer(gamerId) == 0 ? "" : lstGamer.getGamer(gamerId)->getName();
     QString message = QString("%1#%2 : %3").arg(C_SEND_CHAT_MESSAGE).

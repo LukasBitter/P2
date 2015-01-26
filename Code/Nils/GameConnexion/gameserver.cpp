@@ -4,6 +4,8 @@
 #include "mapfile.h"
 #include "GameComponent/GameInterface/gameview.h"
 
+QColor colorArray [4] = PLAYER_COLOR;
+
 
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
@@ -24,6 +26,15 @@ GameServer::~GameServer()
 {
     qDebug()<<"GameServer : destroy";
     if(map != 0) delete map;
+}
+
+/*----------------------------------------------------*/
+/*ASSESSEUR / MUTATEUR*/
+/*----------------------------------------------------*/
+
+bool GameServer::isContainsPrivateChar(QString &s)
+{
+    return s.contains("#");
 }
 
 /*----------------------------------------------------*/
@@ -138,6 +149,18 @@ void GameServer::loadMapsFromFile()
     QStringList filter;
     filter << MAP_EXTENSION_FILTER;
     lstMapName = d.entryList(filter);
+
+    //Controle des noms
+    int i = 0;
+    foreach (QString s, lstMapName)
+    {
+        if(isContainsPrivateChar(s))
+        {
+            lstMapName.removeAt(i);
+            qCritical()<<"GameServer : map remove from the list : "<<s;
+        }
+        ++i;
+    }
 }
 
 NETWORK_INFORMATION GameServer::checkReadyToLaunchGame(MapFile &m)
@@ -187,6 +210,13 @@ void GameServer::receive_C_REQUEST_SLOT(QTcpSocket *t, const QString &msg)
 {
     Q_UNUSED(msg);
 
+    if(lstGamer.getLstGamer().size() == MAX_GAMER)
+    {
+        qDebug()<<"GameServer : refuse client (1)";
+
+        server->sendMessageToClient(t,QString("%1#%2").arg(C_INFORMATION).arg(I_LOBBY_FULL));
+    }
+
     if(!lockConnexion)
     {
         qDebug()<<"GameServer : accept client";
@@ -195,6 +225,7 @@ void GameServer::receive_C_REQUEST_SLOT(QTcpSocket *t, const QString &msg)
         g->setSocket(t);
         lstGamer.addGamer(g);
         g->setSlotNumber(lstGamer.getLstGamer().size());
+        g->setColor(colorArray[lstGamer.getLstGamer().size()]);
         server->sendMessageToClient(t,QString("%1#%2").arg(C_GAMER_INFO).arg(g->getId()));
 
         foreach (QString s, lstMapName)
@@ -207,7 +238,7 @@ void GameServer::receive_C_REQUEST_SLOT(QTcpSocket *t, const QString &msg)
     }
     else
     {
-        qDebug()<<"GameServer : refuse client";
+        qDebug()<<"GameServer : refuse client (2)";
 
         server->sendMessageToClient(t,QString("%1#%2").arg(C_INFORMATION).arg(I_GAME_STARTED));
     }
@@ -215,7 +246,6 @@ void GameServer::receive_C_REQUEST_SLOT(QTcpSocket *t, const QString &msg)
 
 void GameServer::receive_C_LAUNCH_GAME(QTcpSocket *t, const QString &msg)
 {
-    //
     MapFile m;
     m.loadFromFile(QString("%1/%2").arg(MAP_FILE).arg(msg));
 
