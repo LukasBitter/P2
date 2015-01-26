@@ -2,6 +2,7 @@
 #define BUTTON_H
 
 #include "global.h"
+#include "enumlibrary.h"
 
 namespace GameInterface
 {
@@ -18,7 +19,7 @@ class Button : public QGraphicsWidget
 
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    Button(const QString &s, QGraphicsItem *parent = 0);
+    Button(POWER power, QGraphicsItem *parent = 0);
 
     /*SURCHARGE*/
     QRectF boundingRect() const;
@@ -33,7 +34,7 @@ signals:
 
 private:
     /*ENTREE*/
-    QString text; ///< Texte du bouton
+    POWER power;
 };
 
 #endif // BUTTON_H

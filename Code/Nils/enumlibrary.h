@@ -54,6 +54,15 @@ enum ACTIONS
     EA_DISCONNECT, ///< Déconnecte deux noeuds
 };
 
+/// Pouvoirs disponibles dans le jeu
+enum POWER
+{
+    ARMOR,         /// Bouclie
+    INVINCIBILITY,  /// Invincibilité
+    TELEPORTATION,  /// Téléportation
+    DESTRUCTION,    /// Destruction
+};
+
 /*----------------------------------------------------*/
 /*GENERAL*/
 /*----------------------------------------------------*/

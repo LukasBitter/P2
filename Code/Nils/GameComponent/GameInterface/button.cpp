@@ -4,8 +4,8 @@
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-Button::Button(const QString &s, QGraphicsItem *parent)
-    : QGraphicsWidget(parent), text(s)
+Button::Button(POWER p, QGraphicsItem *parent)
+    : QGraphicsWidget(parent), power(p)
 {
     setAcceptHoverEvents(true);
     setCacheMode(DeviceCoordinateCache);
@@ -17,7 +17,7 @@ Button::Button(const QString &s, QGraphicsItem *parent)
 
 QRectF Button::boundingRect() const
 {
-    return QRectF(-20, -20, 40, 40);
+    return QRectF(-50, -50, 100, 100);
 }
 
 QPainterPath Button::shape() const
@@ -32,29 +32,42 @@ void Button::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     bool down = option->state & QStyle::State_Sunken;
     bool over= option->state & QStyle::State_MouseOver;
 
-    QPixmap buttonImg;
-    QRectF source;
+    QString buttonPath;
+    QRectF source(0.0, 0.0, 432.0, 432.0);
 
     painter->setRenderHint(QPainter::SmoothPixmapTransform, true);
     painter->setRenderHint(QPainter::Antialiasing, true);
 
+    switch (this->power)
+    {
+    case ARMOR: buttonPath = ":/Button1";
+        break;
+    case INVINCIBILITY: buttonPath = ":/Button2";
+        break;
+    case TELEPORTATION: buttonPath = ":/Button3";
+        break;
+    case DESTRUCTION: buttonPath = ":/Button4";
+        break;
+    }
+
     if (down)
     {
-        buttonImg = QPixmap(":/Button1Click.png");
-        source = QRect(0.0, 0.0, 432.0, 432.0);
+        buttonPath += "Click.png";
     }
     else if (over)
     {
-        buttonImg = QPixmap(":/Button1Hover.png");
-        source = QRect(0.0, 0.0, 369.0, 370.0);
+        buttonPath += "Hover.png";
     }
     else
     {
-        buttonImg = QPixmap(":/Button1Normal.png");
-        source = QRect(0.0, 0.0, 244.0, 244.0);
+        buttonPath += "Normal.png";
     }
+
+    const QPixmap buttonImg = QPixmap(buttonPath);
+
+    QRectF r = boundingRect();
     //QRectF source(0.0, 0.0, 212.0, 212.0);
-    painter->drawPixmap(Button::boundingRect(), buttonImg, source);
+    painter->drawPixmap(r, buttonImg,source);
 
 //    QRectF r = boundingRect();
 //    QLinearGradient grad(r.topLeft(), r.bottomRight());
