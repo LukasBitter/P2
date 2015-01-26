@@ -64,6 +64,12 @@ void NodeCombat::paint(QPainter *painter,
     painter->setRenderHint(QPainter::SmoothPixmapTransform, true);
     painter->setRenderHint(QPainter::Antialiasing, true);
 
+
+    QRadialGradient radialGrad(0, 0, radius);
+        radialGrad.setColorAt(0, Qt::white);
+        radialGrad.setColorAt(0.5, Qt::green);
+        radialGrad.setColorAt(1, Qt::black);
+        QRect rect_radial(300,50,200,200);
     QColor ownerColor = QColor(Qt::white);
     QPixmap nodeImg;
 

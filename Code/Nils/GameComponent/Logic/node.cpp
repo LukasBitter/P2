@@ -6,6 +6,7 @@
 #include "global.h"
 #include "nodecombat.h"
 #include "nodemana.h"
+#include "enumlibrary.h"
 
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
@@ -50,8 +51,8 @@ Node *Node::createNode(QString &create, GamerList &gl)
 
 QRectF Node::boundingRect() const
 {
-    return QRectF(-radius-3, -radius-3,
-                      2*radius+7, 2*radius+6);
+    return QRectF(-radius, -radius,
+                      2*radius, 2*radius);
 }
 
 void Node::paint(QPainter *painter,
@@ -60,18 +61,33 @@ void Node::paint(QPainter *painter,
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    painter->setBrush(Qt::black);
+    bool over= option->state & QStyle::State_MouseOver;
 
-    if(isSelected() || isUnderMouse())
+    QColor basicColor(BASE_NODE_COLOR);
+    QPen p = painter->pen();
+    p.setWidth(2);
+    p.setColor(Qt::black);
+    QRadialGradient radialGrad(0, 0, radius);
+    radialGrad.setColorAt(0, basicColor.darker());
+    radialGrad.setColorAt(1, basicColor.darker());
+
+    //PARAMETRAGE SUIVANT ETAT
+    if(isSelected())
     {
-        QPen pen(Qt::gray);
-        pen.setStyle(Qt::SolidLine);
-        pen.setWidth(5);
-        painter->setPen(pen);
-        painter->drawEllipse(QPoint(0,0),radius+3,radius+3);
+        radialGrad.setColorAt(0, basicColor.lighter());
+        radialGrad.setColorAt(1, basicColor.darker());
+        p.setColor(basicColor.lighter());
     }
-    painter->setPen(Qt::black);
-    painter->drawEllipse(QPoint(0,0),radius,radius);
+    else if(over)
+    {
+        radialGrad.setColorAt(0, basicColor.lighter());
+        radialGrad.setColorAt(1, basicColor.darker());
+    }
+
+    //DESSIN DU NOEU DE BASE
+    painter->setBrush(radialGrad);
+    painter->setPen(p);
+    painter->drawEllipse(-radius, -radius, 2*radius, 2*radius);
 }
 
 /*----------------------------------------------------*/

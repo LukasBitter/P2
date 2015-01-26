@@ -68,6 +68,7 @@ private:
     void resolveSquadFigth();
     void checkSquadArrive();
     QList<QPair<Squad *, Squad *> > checkSquadColision();
+    void squadPatern(QPainter *painter, Squad *s);
 };
 
 #endif // CONNEXION_H

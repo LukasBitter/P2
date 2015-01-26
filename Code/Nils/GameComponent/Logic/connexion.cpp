@@ -4,6 +4,7 @@
 #include "squad.h"
 #include "gamerlist.h"
 #include "global.h"
+#include "enumlibrary.h"
 
 
 /*----------------------------------------------------*/
@@ -70,32 +71,58 @@ void Connexion::paint(QPainter *painter,
     Q_UNUSED(widget);
 
     painter->save();
-    //Angle entre les 2 noeud de la connexion
+
+    //MODIFICATION DES COORDONNEES DE DESSINS
     qreal angle = qRadiansToDegrees(qAtan2(n1.y()-n2.y(),n1.x()-n2.x()))+90;
     painter->rotate(angle);
     painter->translate(0, n1.getRadius());
-    painter->drawLine(0, 0, 0, pathLength);
+
+    //DESSIN DE LA CONNEXION
+    painter->save();
+
+    QColor c1 = n1.getOwner() != 0 ? n1.getOwner()->getColor() : VACANT_COLOR;
+    QColor c2 = n2.getOwner() != 0 ? n2.getOwner()->getColor() : VACANT_COLOR;
+    QLinearGradient linearGrad(0, 0, 0, pathLength);
+    linearGrad.setColorAt(0, c1);
+    linearGrad.setColorAt(1, c2);
+    painter->setPen(Qt::NoPen);
+    painter->fillRect(-2, 0, 4, pathLength, linearGrad);
+
+    painter->restore();
+
+    //DESSIN DES SQUADS
 
     foreach(Squad *s, lstSquad1To2)
     {
-        painter->setBrush(s->getOwner().getColor());
-        QPointF  p[3];
-        p[0]=QPointF(-5,s->getProgress());
-        p[1]=QPointF(0,s->getProgress()+5);
-        p[2]=QPointF(5,s->getProgress());
-        painter->drawConvexPolygon(p, 3);
+        squadPatern(painter, s);
     }
     painter->rotate(180);
     painter->translate(0, -pathLength);
     foreach(Squad *s, lstSquad2To1)
     {
-        painter->setBrush(s->getOwner().getColor());
-        QPointF  p[3];
-        p[0]=QPointF(-5,s->getProgress());
-        p[1]=QPointF(0,s->getProgress()+5);
-        p[2]=QPointF(5,s->getProgress());
-        painter->drawConvexPolygon(p, 3);
+        squadPatern(painter, s);
     }
+
+    painter->restore();
+}
+
+
+void Connexion::squadPatern(QPainter *painter, Squad *s)
+{
+    painter->save();
+
+    const int x = 0;
+    const int y = s->getProgress();
+    const int length = 10;
+    const int width = 8;
+
+    QPointF p[3];
+    p[0]=QPointF(x - width, y);
+    p[1]=QPointF(0, y + length);
+    p[2]=QPointF(x + width, y);
+
+    painter->setBrush(s->getOwner().getColor());
+    painter->drawConvexPolygon(p, 3);
 
     painter->restore();
 }
