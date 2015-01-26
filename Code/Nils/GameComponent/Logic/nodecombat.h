@@ -1,9 +1,7 @@
 #ifndef NODECOMBAT_H
 #define NODECOMBAT_H
 
-#include <QGraphicsItem>
-#include <QMap>
-#include "node.h"
+#include "nodeconnectable.h"
 
 class Gamer;
 class Connexion;
@@ -21,7 +19,7 @@ namespace GameComponent
  * @brief Représente les noeuds que les joueur peuvent controler et
  * pour lesquel ils doivent se battre
  */
-class NodeCombat : public Node
+class NodeCombat : public NodeConnectable
 {
 
 public:

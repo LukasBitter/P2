@@ -3,7 +3,6 @@
 #include "connexion.h"
 #include "gamer.h"
 #include "gamerlist.h"
-#include "global.h"
 #include "enumlibrary.h"
 
 
@@ -12,7 +11,7 @@
 /*----------------------------------------------------*/
 
 NodeCombat::NodeCombat(int x, int y, int radius, int ressourcesMax, const GamerList &gl, Gamer *g)
-    : Node(x,y,radius), owner(0), invicible(false), ressourcesRate(0),
+    : NodeConnectable(x,y,radius), owner(0), invicible(false), ressourcesRate(0),
       ressourcesMax(ressourcesMax), nbRessources(0), counterAdvance(0),
       armorLvl(0), lstGamer(gl)
 {

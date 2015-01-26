@@ -42,5 +42,9 @@
 #include <QAbstractSocket>
 #include <QTcpServer>
 #include <QGraphicsView>
+#include <QGraphicsItem>
+#include <QMap>
+#include <QQueue>
+#include <QGraphicsScene>
 
 #endif // GLOBAL_H

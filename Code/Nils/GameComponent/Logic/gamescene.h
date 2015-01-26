@@ -1,9 +1,10 @@
 #ifndef GAMESCENE_H
 #define GAMESCENE_H
 
-#include <QGraphicsScene>
+#include "global.h"
 
 class Node;
+class NodeConnectable;
 class Connexion;
 class GamerList;
 class Gamer;
@@ -39,9 +40,9 @@ public:
     const Gamer *isVictory();
 
     void addNode(Node &n);
-    void addConnexion(Node &n1, Node &n2);
+    void addConnexion(NodeConnectable &n1, NodeConnectable &n2);
     void removeNode(Node &n);
-    void removeConnexion(Node &n1, Node &n2);
+    void removeConnexion(NodeConnectable &n1, NodeConnectable &n2);
 
     /*MISE A JOUR*/
     QString getUpdateString();
@@ -49,12 +50,6 @@ public:
     QString getCreationString();
     QStringList normalizeSpawn();
     static bool isContainsPrivateChar(QString &s);
-
-    /*SIGNALS/SLOTS*/
-signals:
-    void manaEmission(int gamerId, int mana);
-private slots:
-    void onManaEmission(int gamerId, int mana);
 
 private:
     /*ENTREE*/

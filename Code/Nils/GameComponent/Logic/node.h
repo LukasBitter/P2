@@ -1,14 +1,12 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include <QGraphicsItem>
-#include <QMap>
 #include "identitytoken.h"
+#include "global.h"
 
 class Gamer;
 class Connexion;
 class Squad;
-class QPainter;
 class GamerList;
 
 namespace GameComponent
@@ -42,12 +40,6 @@ public:
     virtual int getRadius() const;
     virtual const Gamer* getOwner()const = 0;
     virtual void setOwner(const Gamer* g) = 0;
-    virtual bool isConnected(int nodeId) const;
-
-    virtual void connect(int nodeId, Connexion *c);
-    virtual void disconnect(int nodeId);
-    virtual Connexion *getConnexion(int nodeId) const;
-    virtual QMap<int, Connexion *> getConnexions() const;
 
     virtual void incoming(Squad s) = 0;
     virtual void sendSquad(int ressource, int nodeId) = 0;

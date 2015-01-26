@@ -74,6 +74,9 @@ void LobbyMenu::updateUI()
         cbtReady->setChecked(currentGamer->isReady());
         txtName->setText(QString("Votre pseudo : %1").arg(currentGamer->getName()));
         btChangeName->setEnabled(true);
+        cbbColor->setCurrentIndex(cbbColor->findData(currentGamer->getColor()));
+        cbbSlot->setCurrentIndex(cbbSlot->findData(currentGamer->getSlotNumber()));
+
     }
 }
 
@@ -232,8 +235,6 @@ void LobbyMenu::onSuccessfulConnexion()
 {
     qDebug()<<"LobbyMenu : successfull connexion to server";
     txtConnected->setText("Connecté");
-    client->setColor(cbbColor->currentData().value<QColor>());
-    client->setSlot(cbbSlot->currentText().toInt());
     wantChangeName();
 }
 
@@ -341,17 +342,20 @@ void LobbyMenu::setUpUI()
 
 void LobbyMenu::populate()
 {
+    //Tableau des couleurs de joueur
+    QColor colorArray [MAX_GAMER] = PLAYER_COLOR;
+
     //peuplement du combobox de selection de slot
     for(int i = 1; i <= MAX_GAMER; ++i)
     {
-        cbbSlot->addItem(QString("%1").arg(i));
+        cbbSlot->addItem(QString("%1").arg(i), i);
     }
 
     //Peuplement du combobox de selection de la couleur
-    cbbColor->addItem("Rouge", QColor(Qt::darkRed));
-    cbbColor->addItem("Vert", QColor(Qt::green));
-    cbbColor->addItem("Orange", QColor(Qt::red));
-    cbbColor->addItem("Jaune", QColor(Qt::yellow));
+    cbbColor->addItem("Rouge", colorArray[0]);
+    cbbColor->addItem("Vert", colorArray[1]);
+    cbbColor->addItem("Orange", colorArray[2]);
+    cbbColor->addItem("Jaune", colorArray[3]);
 }
 
 void LobbyMenu::disableUI()

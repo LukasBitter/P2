@@ -56,9 +56,7 @@ void NodeMana::setOwner(const Gamer *g)
 
 void NodeMana::incoming(Squad s)
 {
-    const Gamer &g = s.getOwner();
-    int ressource = s.getNbRessources();
-    emit manaEmission(g.getId(), ressource);
+    Q_UNUSED(s);
 }
 
 void NodeMana::sendSquad(int ressource, int nodeId)

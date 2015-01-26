@@ -63,7 +63,6 @@ private slots:
     void onPowerFinishing(ACTIONS a, Node *n1, Node *n2);
     void onDoAction(ACTIONS action, Node *n);
     void onDoAction(ACTIONS action, Node *n1, Node *n2);
-    void onManaReception(int gamerId, int mana);
 private:
     /*INTERFACE*/
     PowerInterface *powerUi; ///< Palette de gestion des pouvoirs
@@ -91,7 +90,7 @@ private:
     void receive_GA_USEPOWER_ARMORE(int gamerId, Node *nodeFrom, Node *nodeTo, int param);
     void receive_GA_USEPOWER_TELEPORTATION(int gamerId, Node *nodeFrom, Node *nodeTo, int param);
     void receive_GA_GAME_FINISHED(int gamerId, Node *nodeFrom, Node *nodeTo, int param);
-    void receive_GA_MANA_EMISSION(int gamerId, Node *nodeFrom, Node *nodeTo, int param);
+    void receive_GA_MANA_BURN(int gamerId, Node *nodeFrom, Node *nodeTo, int param);
 };
 
 #endif // GAMEVIEW_H

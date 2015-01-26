@@ -50,7 +50,7 @@ enum ACTIONS
     GA_USEPOWER_TELEPORTATION, ///< Utilisation du pouvoir "teleportation"
     GA_USEPOWER_ARMORE, ///< Utilisation du pouvoir "armure"
     GA_GAME_FINISHED, ///< Signal de fin de jeu
-    GA_MANA_EMISSION, ///< Gain de mana par un joueur
+    GA_MANA_BURN, ///< Destruction de ressource à cause d'un gain de mana
     EA_ADD, ///< Ajout d'un noeud à la map
     EA_REMOVE, ///< Suppression d'un noeud de la map
     EA_CONNECT, ///< Connecte deux noeuds

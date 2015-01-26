@@ -1,10 +1,10 @@
 #include "gamescene.h"
 #include "node.h"
+#include "nodeconnectable.h"
 #include "nodemana.h"
 #include "connexion.h"
 #include "gamer.h"
 #include "gamerlist.h"
-#include "global.h"
 
 
 /*----------------------------------------------------*/
@@ -43,12 +43,15 @@ GameScene::GameScene(QString create, GamerList &gl, const Gamer *g, QObject *par
             int idNode2;
             Connexion::getCreationValue(s,numberId,idNode1,idNode2);
 
-            Node *n1 = getNode(idNode1);
-            Node *n2 = getNode(idNode2);
-            Connexion *c = new Connexion(*n1, *n2, lstGamer);
-            c->setId(numberId);
-            lstConnexion.insert(numberId, c);
-            addItem(c);
+            NodeConnectable *n1 = dynamic_cast<NodeConnectable*>(getNode(idNode1));
+            NodeConnectable *n2 = dynamic_cast<NodeConnectable*>(getNode(idNode2));
+            if(n1 != 0 && n2 != 0)
+            {
+                Connexion *c = new Connexion(*n1, *n2, lstGamer);
+                c->setId(numberId);
+                lstConnexion.insert(numberId, c);
+                addItem(c);
+            }
         }
     }
 }
@@ -122,18 +125,11 @@ void GameScene::addNode(Node &n)
 {
     qDebug()<<"GameScene : enter 'addNode'";
 
-    NodeMana *nm = dynamic_cast <NodeMana*>(&n);
-
-    if(nm != 0)
-    {
-        connect(nm, SIGNAL(manaEmission(int,int)), this, SLOT(onManaEmission(int,int)));
-    }
-
     lstNode.insert(n.getId(),&n);
     addItem(&n);
 }
 
-void GameScene::addConnexion(Node &n1, Node &n2)
+void GameScene::addConnexion(NodeConnectable &n1, NodeConnectable &n2)
 {
     qDebug()<<"GameScene : enter 'addConnexion'";
 
@@ -152,7 +148,9 @@ void GameScene::removeNode(Node &n)
 {
     qDebug()<<"GameScene : enter 'removeNode'";
 
-    foreach (Connexion *c, n.getConnexions())
+    NodeConnectable &nc = dynamic_cast<NodeConnectable&>(n);
+
+    foreach (Connexion *c, nc.getConnexions())
     {
         lstConnexion.remove(c->getId());
         removeItem(c);
@@ -161,7 +159,7 @@ void GameScene::removeNode(Node &n)
     removeItem(&n);
 }
 
-void GameScene::removeConnexion(Node &n1, Node &n2)
+void GameScene::removeConnexion(NodeConnectable &n1, NodeConnectable &n2)
 {
     qDebug()<<"GameScene : enter 'removeConnexion'";
 
@@ -229,11 +227,6 @@ QStringList GameScene::normalizeSpawn()
 bool GameScene::isContainsPrivateChar(QString &s)
 {
     return s.contains("@") || s.contains(".") || s.contains("/");
-}
-
-void GameScene::onManaEmission(int gamerId, int mana)
-{
-    emit manaEmission(gamerId, mana);
 }
 
 void GameScene::updateFromString(QString s)

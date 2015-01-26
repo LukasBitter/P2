@@ -2,6 +2,7 @@
 #include "gamer.h"
 #include "mapfile.h"
 #include "editorinterface.h"
+#include "GameComponent/Logic/nodeconnectable.h"
 #include "GameComponent/Logic/nodecombat.h"
 #include "GameComponent/Logic/nodemana.h"
 #include "GameComponent/Logic/connexion.h"
@@ -16,7 +17,7 @@ EditView::EditView(QWidget *parent) : QGraphicsView(parent),
     scene(0), editorUi(0), memory(0), a(NO_ACTION)
 {
     spawnGamer = new Gamer();
-    spawnGamer->setColor(Qt::gray);
+    spawnGamer->setColor(Qt::black);
     lstGamer.addGamer(spawnGamer);
     newScene();
     setUpUI();
@@ -65,7 +66,7 @@ void EditView::mousePressEvent(QMouseEvent *e)
     }
     case EA_CONNECT:
     {
-        Node *n = dynamic_cast <Node*>(itemAt(e->pos()));
+        NodeConnectable *n = dynamic_cast <NodeConnectable*>(itemAt(e->pos()));
         if(n != 0)
         {
             if(memory != 0)
@@ -83,7 +84,7 @@ void EditView::mousePressEvent(QMouseEvent *e)
     }
     case EA_DISCONNECT:
     {
-        Node *n = dynamic_cast <Node*>(itemAt(e->pos()));
+        NodeConnectable *n = dynamic_cast <NodeConnectable*>(itemAt(e->pos()));
         if(n != 0)
         {
             if(memory != 0)

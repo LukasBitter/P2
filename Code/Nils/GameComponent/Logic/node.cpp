@@ -1,9 +1,6 @@
 #include "node.h"
-#include "squad.h"
-#include "connexion.h"
 #include "gamer.h"
 #include "gamerlist.h"
-#include "global.h"
 #include "nodecombat.h"
 #include "nodemana.h"
 #include "enumlibrary.h"
@@ -70,7 +67,7 @@ void Node::paint(QPainter *painter,
     p.setColor(Qt::black);
     QRadialGradient radialGrad(0, 0, radius);
     radialGrad.setColorAt(0, color.darker());
-    radialGrad.setColorAt(1, color.darker());
+    radialGrad.setColorAt(1, color);
 
     //PARAMETRAGE SUIVANT ETAT
     if(isSelected())
@@ -78,6 +75,7 @@ void Node::paint(QPainter *painter,
         radialGrad.setColorAt(0, color.lighter());
         radialGrad.setColorAt(1, color.darker());
         p.setColor(color.lighter());
+        p.setWidth(4);
     }
     else if(over)
     {
@@ -111,33 +109,4 @@ void Node::setColor(QColor c)
 int Node::getRadius() const
 {
     return radius;
-}
-
-void Node::connect(int nodeId, Connexion *c)
-{
-    if(!mapConnexion.contains(nodeId) && nodeId != getId() &&
-            (&c->getNode1() == this || &c->getNode2() == this))
-    {
-        mapConnexion.insert(nodeId, c);
-    }
-}
-
-void Node::disconnect(int nodeId)
-{
-    mapConnexion.remove(nodeId);
-}
-
-Connexion *Node::getConnexion(int nodeId) const
-{
-    return mapConnexion.value(nodeId, 0);
-}
-
-QMap<int, Connexion *> Node::getConnexions() const
-{
-    return mapConnexion;
-}
-
-bool Node::isConnected(int nodeId) const
-{
-    return mapConnexion.contains(nodeId);
 }

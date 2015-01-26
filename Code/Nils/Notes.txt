@@ -4,8 +4,6 @@ Demander autre relire initialisation variable
 
 Ajout last-minute :
 - mise a jour de la map selectionné coté client
-- controle des version des map pour message explicite
-- numéro de spawn dans l'ordre d'arrivée
 - menu editeur ilisible
 - memoire action editeur
-- flood car connexion trop longue
+- changer le calcule des colision de squad

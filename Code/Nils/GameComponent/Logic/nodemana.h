@@ -1,9 +1,7 @@
 #ifndef NODEMANA_H
 #define NODEMANA_H
 
-#include <QGraphicsItem>
-#include <QMap>
-#include <QObject>
+#include "global.h"
 #include "node.h"
 
 class Gamer;
@@ -24,9 +22,8 @@ namespace GameComponent
  * Les ressources sont imédiattement convertie, il est impossible de prendre ce noeud
  * ou de passer au travers.
  */
-class NodeMana :  public QObject, public Node
+class NodeMana : public Node
 {
-    Q_OBJECT
 
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
@@ -47,9 +44,6 @@ public:
     QString normalizeSpawn();
     static bool isContainsPrivateChar(QString &s);
 
-    /*SIGNALS/SLOTS*/
-signals:
-    void manaEmission(int gamerId, int mana);
 private:
     /*ENTREE*/
     const GamerList &lstGamer; ///< Liste des joueurs présents

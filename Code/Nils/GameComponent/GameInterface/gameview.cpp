@@ -1,5 +1,6 @@
 #include "gameview.h"
 #include "GameComponent/Logic/nodecombat.h"
+#include "GameComponent/Logic/nodeconnectable.h"
 #include "GameComponent/Logic/nodemana.h"
 #include "GameComponent/Logic/connexion.h"
 #include "GameComponent/Logic/gamescene.h"
@@ -276,12 +277,6 @@ void GameView::onDoAction(ACTIONS action, Node *n1, Node *n2)
     }
 }
 
-void GameView::onManaReception(int gamerId, int mana)
-{
-    emit gamerAction(QString("%1.%2.-1.-1.%3").arg(GA_MANA_EMISSION).
-                     arg(gamerId).arg(mana));
-}
-
 void GameView::applyGamerAction(QString s)
 {
     QStringList msgStr = s.split(".");
@@ -334,10 +329,10 @@ void GameView::applyGamerAction(QString s)
         receive_GA_GAME_FINISHED(gamerId, nodeFrom, nodeTo, param);
         break;
     }
-    case GA_MANA_EMISSION:
+    case GA_MANA_BURN:
     {
-        qDebug()<<"GameView : in 'applyGamerAction' recive GA_GAME_FINISHED";
-        receive_GA_MANA_EMISSION(gamerId, nodeFrom, nodeTo, param);
+        qDebug()<<"GameView : in 'applyGamerAction' recive GA_MANA_BURN";
+        receive_GA_MANA_BURN(gamerId, nodeFrom, nodeTo, param);
         break;
     }
     default:
@@ -372,7 +367,6 @@ void GameView::setUpUI()
     setRenderHint( QPainter::Antialiasing, true );
 
     setScene(scene);
-    connect(scene, SIGNAL(manaEmission(int,int)), this, SLOT(onManaReception(int,int)));
 
     scene->addItem(powerUi);
 }
@@ -384,10 +378,20 @@ void GameView::setUpUI()
 void GameView::sendSquad(Node *from, Node *to)
 {
     NodeCombat *nodeFromTmp = dynamic_cast <NodeCombat*>(from);
-    if(nodeFromTmp != 0 && to != 0)
+    int nbRessource = (int)(nodeFromTmp->getRessources()*(percentToSend/100));
+    if(nodeFromTmp != 0)
     {
-        sendAction(GA_SEND, nodeFromTmp->getId(), to->getId(),
-                   (int)(nodeFromTmp->getRessources()*(percentToSend/100)));
+        NodeConnectable *nodeToComba = dynamic_cast <NodeConnectable*>(to);
+        NodeMana *nodeToMana = dynamic_cast <NodeMana*>(to);
+        if(nodeToComba != 0)
+        {
+            sendAction(GA_SEND, nodeFromTmp->getId(), nodeToComba->getId(),nbRessource);
+        }
+        else if(nodeToMana != 0)
+        {
+            powerUi->addMana(nbRessource);
+            sendAction(GA_MANA_BURN, nodeFromTmp->getId(), 0,nbRessource);
+        }
     }
 }
 
@@ -477,10 +481,15 @@ void GameView::receive_GA_GAME_FINISHED(int gamerId, Node *nodeFrom, Node *nodeT
     emit gameFinish(param == owner->getId());
 }
 
-void GameView::receive_GA_MANA_EMISSION(int gamerId, Node *nodeFrom, Node *nodeTo, int param)
+void GameView::receive_GA_MANA_BURN(int gamerId, Node *nodeFrom, Node *nodeTo, int param)
 {
     Q_UNUSED(nodeFrom);
     Q_UNUSED(nodeTo);
 
-    if(gamerId == owner->getId()) powerUi->addMana(param);
+    NodeCombat *nodeFromTmp = dynamic_cast <NodeCombat*>(nodeFrom);
+    if(nodeFromTmp != 0 && nodeFromTmp->getOwner() != 0 &&
+            nodeFromTmp->getOwner()->getId() == gamerId)
+    {
+        nodeFromTmp->setRessources(nodeFromTmp->getRessources() - param);
+    }
 }

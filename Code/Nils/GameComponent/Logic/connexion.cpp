@@ -1,9 +1,8 @@
 #include "connexion.h"
-#include "node.h"
+#include "nodeconnectable.h"
 #include "gamer.h"
 #include "squad.h"
 #include "gamerlist.h"
-#include "global.h"
 #include "enumlibrary.h"
 
 
@@ -21,8 +20,9 @@
  *
  * A la création un identifiant unique est défini.
  */
-Connexion::Connexion(Node &n1, Node &n2, const GamerList &gl)
-    : QGraphicsItem(0), n1(n1), n2(n2), lstGamer(gl), counterAdvance(0)
+Connexion::Connexion(NodeConnectable &n1, NodeConnectable &n2, const GamerList &gl)
+    : QGraphicsItem(0), n1(n1), n2(n2), lstGamer(gl), counterAdvance(0),
+      stepMultiplier(1.5)
 {
     setNextId();
     setX(n1.x());
@@ -30,10 +30,11 @@ Connexion::Connexion(Node &n1, Node &n2, const GamerList &gl)
     setZValue(1);
 
     //Calcule de la distance de la connexion
-    pathLength = (int)sqrt(pow(n1.x()-n2.x(),2)+
+    distance = (int)sqrt(pow(n1.x()-n2.x(),2)+
                       pow(n1.y()-n2.y(),2));
-    pathLength -= n2.getRadius();
-    pathLength -= n1.getRadius();
+    distance -= n2.getRadius();
+    distance -= n1.getRadius();
+    pathLegth = (int)(distance/stepMultiplier);
 
     //Connexion des noeud
     n1.connect(n2.getId(), this);
@@ -82,11 +83,11 @@ void Connexion::paint(QPainter *painter,
 
     QColor c1 = n1.getOwner() != 0 ? n1.getOwner()->getColor() : VACANT_COLOR;
     QColor c2 = n2.getOwner() != 0 ? n2.getOwner()->getColor() : VACANT_COLOR;
-    QLinearGradient linearGrad(0, 0, 0, pathLength);
+    QLinearGradient linearGrad(0, 0, 0, distance);
     linearGrad.setColorAt(0, c1);
     linearGrad.setColorAt(1, c2);
     painter->setPen(Qt::NoPen);
-    painter->fillRect(-2, 0, 4, pathLength, linearGrad);
+    painter->fillRect(-2, 0, 4, distance, linearGrad);
 
     painter->restore();
 
@@ -97,7 +98,7 @@ void Connexion::paint(QPainter *painter,
         squadPatern(painter, s);
     }
     painter->rotate(180);
-    painter->translate(0, -pathLength);
+    painter->translate(0, -distance);
     foreach(Squad *s, lstSquad2To1)
     {
         squadPatern(painter, s);
@@ -112,7 +113,7 @@ void Connexion::squadPatern(QPainter *painter, Squad *s)
     painter->save();
 
     const int x = 0;
-    const int y = s->getProgress();
+    const int y = s->getProgress()*stepMultiplier;
     const int length = 10;
     const int width = 8;
 
@@ -148,17 +149,17 @@ void Connexion::advance(int step)
 /*ASSESSEUR / MUTATEUR*/
 /*----------------------------------------------------*/
 
-Node & Connexion::getNode1()const
+NodeConnectable &Connexion::getNode1()const
 {
     return n1;
 }
 
-Node & Connexion::getNode2()const
+NodeConnectable & Connexion::getNode2()const
 {
     return n2;
 }
 
-bool Connexion::isConnextedTo(Node &n) const
+bool Connexion::isConnextedTo(NodeConnectable &n) const
 {
     return &n == &n1 || &n == &n2;
 }
@@ -402,7 +403,7 @@ void Connexion::checkSquadArrive()
 {
     foreach(Squad *s, lstSquad1To2)
     {
-        if(s->getProgress() >= pathLength)
+        if(s->getProgress() >= pathLegth)
         {
             n2.incoming(*s);
             delete s;
@@ -411,7 +412,7 @@ void Connexion::checkSquadArrive()
     }
     foreach(Squad *s, lstSquad2To1)
     {
-        if(s->getProgress() >= pathLength)
+        if(s->getProgress() >= pathLegth)
         {
             n1.incoming(*s);
             delete s;
@@ -435,7 +436,7 @@ QList<QPair<Squad *, Squad *> > Connexion::checkSquadColision()
     {
         foreach(Squad *s2to1, lstSquad2To1)
         {
-            if(abs(s1to2->getProgress()+s2to1->getProgress()) >= pathLength &&
+            if(abs(s1to2->getProgress()+s2to1->getProgress()) >= pathLegth &&
                     &s1to2->getOwner() != &s2to1->getOwner())
             {
                 lstColision.append(QPair<Squad *, Squad *>(s1to2, s2to1));

@@ -4,8 +4,6 @@
 #include "mapfile.h"
 #include "GameComponent/GameInterface/gameview.h"
 
-QColor colorArray [4] = PLAYER_COLOR;
-
 
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
@@ -221,11 +219,14 @@ void GameServer::receive_C_REQUEST_SLOT(QTcpSocket *t, const QString &msg)
     {
         qDebug()<<"GameServer : accept client";
 
+        //Tableau des couleurs de joueur
+        QColor colorArray [MAX_GAMER] = PLAYER_COLOR;
+
         Gamer *g = new Gamer();
         g->setSocket(t);
+        g->setColor(colorArray[lstGamer.getLstGamer().size()]);
         lstGamer.addGamer(g);
         g->setSlotNumber(lstGamer.getLstGamer().size());
-        g->setColor(colorArray[lstGamer.getLstGamer().size()]);
         server->sendMessageToClient(t,QString("%1#%2").arg(C_GAMER_INFO).arg(g->getId()));
 
         foreach (QString s, lstMapName)

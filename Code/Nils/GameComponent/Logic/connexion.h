@@ -1,11 +1,10 @@
 #ifndef CONNEXION_H
 #define CONNEXION_H
 
-#include <QGraphicsObject>
-#include <QQueue>
 #include "identitytoken.h"
+#include "global.h"
 
-class Node;
+class NodeConnectable;
 class QPainter;
 class Gamer;
 class QObject;
@@ -26,7 +25,7 @@ class Connexion : public QGraphicsItem, public IdentityToken
 
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    explicit Connexion(Node &n1, Node &n2, const GamerList &gl);
+    explicit Connexion(NodeConnectable &n1, NodeConnectable &n2, const GamerList &gl);
     virtual ~Connexion();
 
     /*SURCHARGE*/
@@ -37,9 +36,9 @@ public:
     void advance(int step);
 
     /*ASSESSEUR / MUTATEUR*/
-    Node &getNode1() const;
-    Node &getNode2() const;
-    bool isConnextedTo(Node &n) const;
+    NodeConnectable &getNode1() const;
+    NodeConnectable &getNode2() const;
+    bool isConnextedTo(NodeConnectable &n) const;
 
     void sendSquad(Squad s, int nodeId);
 
@@ -52,15 +51,17 @@ public:
 
 private:
     /*ENTREE*/
-    Node &n1; ///< Point d'ancrage de la connexion
-    Node &n2; ///< Point d'ancrage de la connexion
+    NodeConnectable &n1; ///< Point d'ancrage de la connexion
+    NodeConnectable &n2; ///< Point d'ancrage de la connexion
     const GamerList &lstGamer; ///< Liste des joueurs
 
     /*OUTIL*/
-    int pathLength; ///< Durée en nombre de "tic" de la traversée d'un noeud a l'autre
+    int distance; ///< Distance entre chaque noeud
+    int pathLegth; ///< Durée en nombre de "tic" de la traversée d'un noeud a l'autre
     int counterAdvance; ///< Diviseur de tic
     QQueue<Squad *> lstSquad1To2; ///< File de transfère du noeud 1 au noeud 2
     QQueue<Squad *> lstSquad2To1; ///< File de transfère du noeud 2 au noeud 1
+    const double stepMultiplier; ///< Augmante l'avance des squads dans la connexion
 
 
     /*METHODE PRIVE*/

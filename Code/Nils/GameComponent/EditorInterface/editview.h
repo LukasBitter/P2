@@ -9,6 +9,7 @@
 class GameScene;
 class EditorInterface;
 class Gamer;
+class NodeConnectable;
 
 namespace GameComponent
 {
@@ -55,7 +56,7 @@ private:
     GamerList lstGamer; ///< Liste des joueurs factice
     Gamer *spawnGamer; ///< Joueur marquant le spawn
     ACTIONS a; ///< Action en cours
-    Node *memory; ///< Mémoire du noeud sélectionné précédement
+    NodeConnectable *memory; ///< Mémoire du noeud sélectionné précédement
 
     /*METHODE PRIVE*/
     void setUpUI();
