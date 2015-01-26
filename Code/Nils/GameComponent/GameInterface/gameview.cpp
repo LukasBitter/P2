@@ -8,6 +8,7 @@
 #include "gamer.h"
 #include "gamerlist.h"
 #include "powerinterface.h"
+#include "ressourcebar.h"
 
 
 /*----------------------------------------------------*/
@@ -27,6 +28,7 @@ GameView::GameView(GamerList &gl, Gamer *g, QWidget *parent) :
 {
     initialize();
     scene = new GameScene(gl, g, 0);
+    ressBar = new RessourceBar(120,0,680,10,gl,*scene);
     setUpUI();
 }
 
@@ -35,6 +37,7 @@ GameView::GameView(QString create, GamerList &gl, Gamer *g, QWidget *parent):
 {
     initialize();
     scene = new GameScene(create, gl, g, 0);
+    ressBar = new RessourceBar(120,0,680,10,gl,*scene);
     setUpUI();
 }
 
@@ -146,7 +149,7 @@ void GameView::advance()
         if(g != 0)
         {
             gameFinished = true;
-            sendAction(GA_GAME_FINISHED, -1,-1, g->getId());
+            //sendAction(GA_GAME_FINISHED, -1,-1, g->getId());
         }
     }
 }
@@ -357,12 +360,13 @@ void GameView::setUpUI()
     // Désactivation des scrollbars
     setVerticalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
     setHorizontalScrollBarPolicy ( Qt::ScrollBarAlwaysOff );
-    setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate );
-    setRenderHint( QPainter::Antialiasing, true );
+    setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate);
+    setRenderHint( QPainter::Antialiasing, true);
 
     setScene(scene);
 
     scene->addItem(powerUi);
+    scene->addItem(ressBar);
 }
 
 /*----------------------------------------------------*/

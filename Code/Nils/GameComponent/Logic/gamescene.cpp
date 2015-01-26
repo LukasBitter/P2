@@ -175,7 +175,7 @@ void GameScene::removeConnexion(NodeConnectable &n1, NodeConnectable &n2)
 
 int GameScene::getTotalRessources(Gamer &g)
 {
-    qDebug()<<"GameScene : enter 'getTotalRessources'";
+    //qDebug()<<"GameScene : enter 'getTotalRessources'";
 
     int total = 0;
     foreach (Node *n, lstNode)
@@ -189,7 +189,7 @@ int GameScene::getTotalRessources(Gamer &g)
 
 int GameScene::getAvrageRessourcesRate(Gamer &g)
 {
-    qDebug()<<"GameScene : enter 'getAvrageRessourcesRate'";
+    //qDebug()<<"GameScene : enter 'getAvrageRessourcesRate'";
 
     int sum = 0;
     int nb = 0;
@@ -205,7 +205,7 @@ int GameScene::getAvrageRessourcesRate(Gamer &g)
 
 int GameScene::getTotalRessources()
 {
-    qDebug()<<"GameScene : enter 'getTotalRessources'";
+    //qDebug()<<"GameScene : enter 'getTotalRessources'";
 
     int total = 0;
     foreach (Node *n, lstNode)
@@ -219,7 +219,7 @@ int GameScene::getTotalRessources()
 
 int GameScene::getAvrageRessourcesRate()
 {
-    qDebug()<<"GameScene : enter 'getAvrageRessourcesRate'";
+    //qDebug()<<"GameScene : enter 'getAvrageRessourcesRate'";
 
     int sum = 0;
     foreach (Node *n, lstNode)

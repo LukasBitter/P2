@@ -11,6 +11,7 @@ class GamerList;
 class NodeCombat;
 class QDropEvent;
 class PowerInterface;
+class RessourceBar;
 class Gamer;
 
 namespace GameComponent
@@ -66,6 +67,7 @@ private slots:
 private:
     /*INTERFACE*/
     PowerInterface *powerUi; ///< Palette de gestion des pouvoirs
+    RessourceBar *ressBar; ///< Bare de ressource des joueurs
 
     /*ENTREE*/
     Gamer *owner; ///< Joueur actuellement au commande de la map

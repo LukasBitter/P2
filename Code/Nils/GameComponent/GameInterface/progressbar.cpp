@@ -33,8 +33,11 @@ QRectF ProgressBar::boundingRect() const
     return dimension;
 }
 
-void ProgressBar::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
+void ProgressBar::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *w)
 {
+    Q_UNUSED(option);
+    Q_UNUSED(w);
+
     int max = fillMode ? sumOfValue() : sumOfMax();
     int dimGradiant = vertical ? (int)dimension.height() : (int)dimension.width();
     int dimBase = vertical ? (int)dimension.width() : (int)dimension.height();

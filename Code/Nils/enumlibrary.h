@@ -77,6 +77,9 @@ enum POWER
 //fréquence de la boucle de rafraichissement en milliseconde
 //du jeu sur le serveur
 #define GAME_TIC 75
+//fréquence de la boucle de rafraichissement en milliseconde
+//de la barre de statistique sur les ressource
+#define RESSOURCES_BAR_TIC 500
 //port de connexion
 #define PORT 8000
 //maximum de joueur dans le salon
