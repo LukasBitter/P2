@@ -20,14 +20,24 @@ void EndGameMenu::onBtReturnPressed()
     emit returnToMenu();
 }
 
+void EndGameMenu::paintEvent()
+{
+    QPainter painter;
+    const QPixmap background(":/Victory.jpg");
+
+    painter->drawPixmap(-10, -10, background);
+}
+
+
 void EndGameMenu::enableVictory()
 {
-    title->setText("Victory");
-    QFont f = title->font();
-    f.setBold(true);
-    f.setPointSize(20);
-    title->setFont(f);
-    title->setStyleSheet("QLabel { color : green; }");
+
+//    title->setText("Victory");
+//    QFont f = title->font();
+//    f.setBold(true);
+//    f.setPointSize(20);
+//    title->setFont(f);
+//    title->setStyleSheet("QLabel { color : green; }");
 }
 
 void EndGameMenu::enableDefeat()

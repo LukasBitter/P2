@@ -153,7 +153,7 @@ void GameView::advance()
         if(g != 0)
         {
             gameFinished = true;
-            //sendAction(GA_GAME_FINISHED, -1,-1, g->getId());
+            sendAction(GA_GAME_FINISHED, -1,-1, g->getId());
         }
     }
 }

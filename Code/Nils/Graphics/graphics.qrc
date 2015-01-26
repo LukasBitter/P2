@@ -43,5 +43,7 @@
         <file>NodeYellowN.png</file>
         <file>SpriteSheet-01.png</file>
         <file>Thumbs.db</file>
+        <file>Defeat.png</file>
+        <file>Victory.png</file>
     </qresource>
 </RCC>
