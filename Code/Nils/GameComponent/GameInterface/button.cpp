@@ -66,8 +66,14 @@ void Button::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     const QPixmap buttonImg = QPixmap(buttonPath);
 
     QRectF r = boundingRect();
-    //QRectF source(0.0, 0.0, 212.0, 212.0);
     painter->drawPixmap(r, buttonImg,source);
+
+
+    for(int i=0;i<=((this->powerPercent/100)*60);i++)
+    {
+        painter->drawLine(92, 0, 96, 0);
+        painter->rotate(6.0);
+    }
 
 //    QRectF r = boundingRect();
 //    QLinearGradient grad(r.topLeft(), r.bottomRight());
@@ -100,3 +106,12 @@ void Button::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
     update();
 }
+
+/*----------------------------------------------------*/
+/*ASSESSEUR / MUTATEUR*/
+/*----------------------------------------------------*/
+
+ void Button::setPowerPercent(double percent)
+ {
+     this->powerPercent = percent;
+ }

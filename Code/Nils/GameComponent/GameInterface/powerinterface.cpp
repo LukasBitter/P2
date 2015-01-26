@@ -45,6 +45,10 @@ void PowerInterface::timerEvent(QTimerEvent *event)
 
     pcd.advence();
     updateCD();
+    btPowerArmore->setPowerPercent(pcd.percentReload(GA_USEPOWER_ARMORE));
+    btPowerTeleportation->setPowerPercent(pcd.percentReload(GA_USEPOWER_INVINCIBILITY));
+    btPowerInvincibility->setPowerPercent(pcd.percentReload(GA_USEPOWER_TELEPORTATION));
+    btPowerDestroy->setPowerPercent(pcd.percentReload(GA_USEPOWER_DESTROY));
 }
 
 /*----------------------------------------------------*/
@@ -202,22 +206,21 @@ void PowerInterface::setUpUI()
     btPowerInvincibility->setX(59);
     btPowerTeleportation->setX(59);
     btPowerDestroy->setX(59);
-//    txtCdPowerDestroy->setX(50);
-//    txtCdPowerInvincibility->setX(50);
-//    txtCdPowerTeleportation->setX(50);
-//    txtCdPowerArmore->setX(50);
-//    txtMana->setX(5);
+    txtCdPowerDestroy->setX(10);
+    txtCdPowerInvincibility->setX(10);
+    txtCdPowerTeleportation->setX(10);
+    txtCdPowerArmore->setX(10);
+    txtMana->setX(5);
 
     btPowerArmore->setY(50);
     btPowerInvincibility->setY(110);
     btPowerTeleportation->setY(170);
     btPowerDestroy->setY(230);
-//    txtCdPowerDestroy->setY(17);
-//    txtCdPowerInvincibility->setY(62);
-//    txtCdPowerTeleportation->setY(107);
-//    txtCdPowerArmore->setY(152);
-//    txtMana->setY(185);
-
+    txtCdPowerArmore->setY(50);
+    txtCdPowerInvincibility->setY(110);
+    txtCdPowerTeleportation->setY(170);
+    txtCdPowerDestroy->setY(230);
+    txtMana->setY(185);
 }
 
 void PowerInterface::updateCD()

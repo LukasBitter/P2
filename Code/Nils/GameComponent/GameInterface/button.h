@@ -27,6 +27,7 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *);
     void mousePressEvent(QGraphicsSceneMouseEvent *);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *);
+    void setPowerPercent(double percent);
 
     /*SIGNALS/SLOTS*/
 signals:
@@ -35,6 +36,7 @@ signals:
 private:
     /*ENTREE*/
     POWER power;
+    double powerPercent;
 };
 
 #endif // BUTTON_H

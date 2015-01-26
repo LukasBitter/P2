@@ -85,7 +85,7 @@ enum POWER
 /*----------------------------------------------------*/
 
 //mana initiale
-#define P_INITIAL_MANA 0
+#define P_INITIAL_MANA 1000
 
 //cout des pouvoirs
 #define P_TELEPORTATION_COST 40
