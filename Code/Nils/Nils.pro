@@ -36,7 +36,7 @@ HEADERS += \
     GameComponent/Logic/nodemana.h \
     GameComponent/Logic/node.h \
     GameComponent/Logic/nodeconnectable.h \
-    GameComponent/GameInterface/hud.h
+    GameComponent/GameInterface/ressourcebar.h
 
 SOURCES += \
     GameComponent/Logic/connexion.cpp \
@@ -67,7 +67,7 @@ SOURCES += \
     GameComponent/Logic/nodemana.cpp \
     GameComponent/Logic/node.cpp \
     GameComponent/Logic/nodeconnectable.cpp \
-    GameComponent/GameInterface/hud.cpp
+    GameComponent/GameInterface/ressourcebar.cpp
 
 OTHER_FILES += \
     Notes.txt

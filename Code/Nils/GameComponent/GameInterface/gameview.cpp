@@ -117,15 +117,6 @@ bool GameView::isContainsPrivateChar(QString &s)
             GameScene::isContainsPrivateChar(s) || NodeMana::isContainsPrivateChar(s);
 }
 
-QHash<int, int> GameView::getGamerRessource() const
-{
-    foreach (Gamer *g) {
-
-    }
-    scene->getTotalRessources()
-}
-
-
 /*----------------------------------------------------*/
 /*DELEGUES*/
 /*----------------------------------------------------*/
@@ -372,7 +363,6 @@ void GameView::setUpUI()
     setScene(scene);
 
     scene->addItem(powerUi);
-    scene->addItem(ressourceBar);
 }
 
 /*----------------------------------------------------*/
