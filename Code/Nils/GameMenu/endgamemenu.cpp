@@ -23,36 +23,25 @@ void EndGameMenu::onBtReturnPressed()
 void EndGameMenu::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    QPixmap background(":/Victory.jpg");
+    QRectF target(10.0, 10.0, 800.0, 600.0);
 
-    painter.drawPixmap(-10, -10, background);
-    qDebug() << "Victory!!!";
+    //painter.drawPixmap(-10, -10, background);
+    painter.drawPixmap(target, background, source);
 }
 
 
 void EndGameMenu::enableVictory()
 {
-
-    qDebug() << "-----------------------------";
-    qDebug() << "enableVictory: Victory!!!";
+    background.load(":/Victory.png");
+    source.setRect(0.0, 0.0, 2975.0, 1870.0);
     update();
-
-//    title->setText("Victory");
-//    QFont f = title->font();
-//    f.setBold(true);
-//    f.setPointSize(20);
-//    title->setFont(f);
-//    title->setStyleSheet("QLabel { color : green; }");
 }
 
 void EndGameMenu::enableDefeat()
 {
-    title->setText("Defeat");
-    QFont f = title->font();
-    f.setBold(true);
-    f.setPointSize(20);
-    title->setFont(f);
-    title->setStyleSheet("QLabel { color : red; }");
+    background.load(":/Defeat.png");
+    source.setRect(0.0, 0.0, 3086.0, 1986.0);
+    update();
 }
 
 /*----------------------------------------------------*/
@@ -73,7 +62,7 @@ void EndGameMenu::setUpUI()
     //AJOUT LAYOUT
 
     QGridLayout *l = new QGridLayout(this);
-    l->addWidget(title, 0, 0);
+    //l->addWidget(title, 0, 0);
     l->addWidget(btReturn, 1, 0);
 
     this->setLayout(l);

@@ -36,6 +36,8 @@ private:
     QPushButton* btReturn;
     QLabel *title;
     void paintEvent(QPaintEvent *);
+    QPixmap background;
+    QRectF source;
 
     /*METHODE PRIVE*/
     void setUpUI();
