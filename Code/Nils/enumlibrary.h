@@ -68,7 +68,7 @@ enum POWER
 /*----------------------------------------------------*/
 
 //fréquence de la boucle de rafraichissement en milliseconde
-#define TIC 100
+#define TIC 75
 //port de connexion
 #define PORT 8000
 //maximum de joueur dans le salon
