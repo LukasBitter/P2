@@ -8,10 +8,16 @@ namespace GameInterface
     class ProgressBar;
 }
 
+/**
+ * @brief The ProgressBar class Barre de progression
+ */
 class ProgressBar : public QGraphicsItem
 {
+
 public:
+    /*CONSTRUCTEUR / DESTRUCTEUR*/
     ProgressBar(const QRectF &dimension, QGraphicsItem* parent = 0);
+    ProgressBar(int x, int y, int w, int h, QGraphicsItem* parent = 0);
 
     /*SURCHARGE*/
     QRectF boundingRect() const;
@@ -41,10 +47,10 @@ private:
     QHash<int, int> lstCurrentValue; ///< Liste des valeurs actuelle de chaque plage
     QHash<int, QColor> lstColor; ///< Liste des couleur de chaque plage
     QRectF dimension; ///< Dimension de la progressbar
-    bool fillMode;
-    bool vertical;
-    bool inverse;
-    QPen borderPen;
+    bool fillMode; ///< Indique si la barre dois remplire l'espace vide
+    bool vertical; ///< Indique si barre est verticale
+    bool inverse; ///< Indique si la barre se repli ou se vide
+    QPen borderPen; ///< Pen utilisé pour dessiner le pourtour de la barre
 
     /*METHODE PRIVE*/
     int sumOfMax() const;

@@ -234,8 +234,10 @@ void LobbyMenu::wantSendChatMessage()
 void LobbyMenu::onSuccessfulConnexion()
 {
     qDebug()<<"LobbyMenu : successfull connexion to server";
+
     txtConnected->setText("Connecté");
-    wantChangeName();
+    wantChangeName(); //Demande un nom  au démmarage
+    if(server != 0) client->setReady(true); //Le joueur host est pret de base
 }
 
 void LobbyMenu::onAddMap(QString s)

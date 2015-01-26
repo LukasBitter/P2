@@ -1,9 +1,6 @@
 #include "nodemana.h"
 #include "squad.h"
-#include "connexion.h"
-#include "gamer.h"
 #include "gamerlist.h"
-#include "global.h"
 
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/

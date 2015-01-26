@@ -1,7 +1,6 @@
 #ifndef NODEMANA_H
 #define NODEMANA_H
 
-#include "global.h"
 #include "node.h"
 
 class Gamer;

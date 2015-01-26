@@ -348,6 +348,8 @@ void GameView::setUpUI()
     powerUi->setY(0);
     powerUi->setMana(P_INITIAL_MANA);
 
+    ressourceBar = new ProgressBar(120,0,680,10);
+
     const PowerCountDown &pcd = powerUi->getCountDownManager();
     connect(&pcd,SIGNAL(powerFinishing(ACTIONS,Node*,Node*)),this,SLOT(onPowerFinishing(ACTIONS,Node*,Node*)));
     connect(&pcd,SIGNAL(powerStarting(ACTIONS,Node*,Node*)),this,SLOT(onPowerStarting(ACTIONS,Node*,Node*)));
@@ -363,6 +365,7 @@ void GameView::setUpUI()
     setScene(scene);
 
     scene->addItem(powerUi);
+    scene->addItem(ressourceBar);
 }
 
 /*----------------------------------------------------*/

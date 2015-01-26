@@ -1,10 +1,5 @@
 #include "nodeconnectable.h"
-#include "squad.h"
 #include "connexion.h"
-#include "gamer.h"
-#include "gamerlist.h"
-#include "nodecombat.h"
-#include "nodemana.h"
 #include "enumlibrary.h"
 
 

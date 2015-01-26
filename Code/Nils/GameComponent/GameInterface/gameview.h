@@ -4,6 +4,7 @@
 #include "global.h"
 #include "enumlibrary.h"
 #include "actionmanager.h"
+#include "progressbar.h"
 
 class GameScene;
 class GamerList;
@@ -64,6 +65,7 @@ private slots:
 private:
     /*INTERFACE*/
     PowerInterface *powerUi; ///< Palette de gestion des pouvoirs
+    ProgressBar *ressourceBar; ///< Barre d'indication des ressources
 
     /*ENTREE*/
     Gamer *owner; ///< Joueur actuellement au commande de la map

@@ -65,11 +65,13 @@ void PowerInterface::timerEvent(QTimerEvent *event)
 void PowerInterface::setMana(int mana)
 {
     if(mana > 0)this->mana = mana;
+    if(this->mana > P_MAX_MANA)this->mana = P_MAX_MANA;
 }
 
 void PowerInterface::addMana(int mana)
 {
     if(mana > 0)this->mana += mana;
+    if(this->mana > P_MAX_MANA)this->mana = P_MAX_MANA;
 }
 
 int PowerInterface::getMana() const
