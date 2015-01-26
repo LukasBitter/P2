@@ -60,10 +60,11 @@ enum ACTIONS
 /// Pouvoirs disponibles dans le jeu
 enum POWER
 {
-    ARMOR,         /// Bouclie
+    ARMOR,          /// Bouclie
     INVINCIBILITY,  /// Invincibilité
     TELEPORTATION,  /// Téléportation
     DESTRUCTION,    /// Destruction
+    NO_POWER,           /// Aucun
 };
 
 /*----------------------------------------------------*/

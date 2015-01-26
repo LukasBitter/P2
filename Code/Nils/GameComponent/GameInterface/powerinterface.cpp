@@ -7,7 +7,8 @@
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-PowerInterface::PowerInterface(QGraphicsItem * parent) : QGraphicsWidget(parent),mana(0)
+PowerInterface::PowerInterface(QGraphicsItem * parent) : QGraphicsWidget(parent),mana(0),
+    powerSelected(NO_POWER)
 {
     setAcceptHoverEvents(true);
     setCacheMode(DeviceCoordinateCache);
@@ -29,7 +30,6 @@ void PowerInterface::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-
     QPixmap buttonBackground(":/ButtonBackground.png");
 
     QRectF source(0.0, 0.0, 502.0, 1446.0);
@@ -46,8 +46,8 @@ void PowerInterface::timerEvent(QTimerEvent *event)
     pcd.advence();
     updateCD();
     btPowerArmore->setPowerPercent(pcd.percentReload(GA_USEPOWER_ARMORE));
-    btPowerTeleportation->setPowerPercent(pcd.percentReload(GA_USEPOWER_INVINCIBILITY));
-    btPowerInvincibility->setPowerPercent(pcd.percentReload(GA_USEPOWER_TELEPORTATION));
+    btPowerInvincibility->setPowerPercent(pcd.percentReload(GA_USEPOWER_INVINCIBILITY));
+    btPowerTeleportation->setPowerPercent(pcd.percentReload(GA_USEPOWER_TELEPORTATION));
     btPowerDestroy->setPowerPercent(pcd.percentReload(GA_USEPOWER_DESTROY));
 }
 
@@ -157,24 +157,29 @@ void PowerInterface::usePower(ACTIONS a, Node *n1, Node *n2)
     }
 }
 
-void PowerInterface::btPowerDestroyPressed()
+
+void PowerInterface::btPowerArmorePressed()
 {
-    emit powerPressed(GA_USEPOWER_DESTROY);
+    emit powerPressed(GA_USEPOWER_ARMORE);
+    powerSelected = ARMOR;
 }
 
 void PowerInterface::btPowerInvincibilityPressed()
 {
     emit powerPressed(GA_USEPOWER_INVINCIBILITY);
+    powerSelected = INVINCIBILITY;
 }
 
 void PowerInterface::btPowerTeleportationPressed()
 {
     emit powerPressed(GA_USEPOWER_TELEPORTATION);
+    powerSelected = TELEPORTATION;
 }
 
-void PowerInterface::btPowerArmorePressed()
+void PowerInterface::btPowerDestroyPressed()
 {
-    emit powerPressed(GA_USEPOWER_ARMORE);
+    emit powerPressed(GA_USEPOWER_DESTROY);
+    powerSelected = DESTRUCTION;
 }
 
 /*----------------------------------------------------*/
@@ -189,10 +194,10 @@ void PowerInterface::setUpUI()
     btPowerInvincibility = new Button(INVINCIBILITY, this);
     btPowerTeleportation = new Button(TELEPORTATION, this);
     btPowerDestroy = new Button(DESTRUCTION, this);
-    txtCdPowerDestroy = new QGraphicsTextItem("",this);
+    txtCdPowerArmore = new QGraphicsTextItem("",this);
     txtCdPowerInvincibility = new QGraphicsTextItem("",this);
     txtCdPowerTeleportation = new QGraphicsTextItem("",this);
-    txtCdPowerArmore = new QGraphicsTextItem("",this);
+    txtCdPowerDestroy = new QGraphicsTextItem("",this);
 
     //CONNEXION
 
@@ -206,10 +211,10 @@ void PowerInterface::setUpUI()
     btPowerInvincibility->setX(59);
     btPowerTeleportation->setX(59);
     btPowerDestroy->setX(59);
-    txtCdPowerDestroy->setX(10);
-    txtCdPowerInvincibility->setX(10);
-    txtCdPowerTeleportation->setX(10);
-    txtCdPowerArmore->setX(10);
+    txtCdPowerArmore->setX(2);
+    txtCdPowerInvincibility->setX(2);
+    txtCdPowerTeleportation->setX(2);
+    txtCdPowerDestroy->setX(2);
     txtMana->setX(5);
 
     btPowerArmore->setY(50);
@@ -225,10 +230,11 @@ void PowerInterface::setUpUI()
 
 void PowerInterface::updateCD()
 {
-    txtCdPowerDestroy->setPlainText(QString("%1 %").arg((int)pcd.percentReload(GA_USEPOWER_DESTROY)));
-    txtCdPowerInvincibility->setPlainText(QString("%1 %").arg((int)pcd.percentReload(GA_USEPOWER_INVINCIBILITY)));
-    txtCdPowerTeleportation->setPlainText(QString("%1 %").arg((int)pcd.percentReload(GA_USEPOWER_TELEPORTATION)));
-    txtCdPowerArmore->setPlainText(QString("%1 %").arg((int)pcd.percentReload(GA_USEPOWER_ARMORE)));
+//    txtCdPowerArmore->setPlainText(QString("%1 %").arg((int)pcd.percentReload(GA_USEPOWER_ARMORE)));
+//    txtCdPowerInvincibility->setPlainText(QString("%1 %").arg((int)pcd.percentReload(GA_USEPOWER_INVINCIBILITY)));
+//    txtCdPowerTeleportation->setPlainText(QString("%1 %").arg((int)pcd.percentReload(GA_USEPOWER_TELEPORTATION)));
+//    txtCdPowerDestroy->setPlainText(QString("%1 %").arg((int)pcd.percentReload(GA_USEPOWER_DESTROY)));
 
     txtMana->setPlainText(QString("Mana : %1").arg(mana));
 }
+

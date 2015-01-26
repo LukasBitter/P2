@@ -4,6 +4,8 @@
 #include "global.h"
 #include "enumlibrary.h"
 #include "powercountdown.h"
+#include "qprogressbar.h"
+#include "QVBoxLayout"
 
 class Node;
 class Button;
@@ -27,7 +29,7 @@ class PowerInterface : public QGraphicsWidget
 
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    PowerInterface(QGraphicsItem * parent = 0);
+    PowerInterface(QGraphicsItem *parent = 0);
 
     /*SURCHARGE*/
     QRectF boundingRect() const;
@@ -52,18 +54,18 @@ private slots:
     void btPowerTeleportationPressed();
     void btPowerArmorePressed();
 
-
 private:
     /*INTERFACE*/
     QGraphicsTextItem *txtMana;
-    Button *btPowerDestroy;
+    Button *btPowerArmore;
     Button *btPowerInvincibility;
     Button *btPowerTeleportation;
-    Button *btPowerArmore;
-    QGraphicsTextItem *txtCdPowerDestroy;
+    Button *btPowerDestroy;
+    QGraphicsTextItem *txtCdPowerArmore;
     QGraphicsTextItem *txtCdPowerInvincibility;
     QGraphicsTextItem *txtCdPowerTeleportation;
-    QGraphicsTextItem *txtCdPowerArmore;
+    QGraphicsTextItem *txtCdPowerDestroy;
+    POWER powerSelected;
 
     /*OUTIL*/
     int mana; ///< Réservoir de ressources consomées par les pouvoirs

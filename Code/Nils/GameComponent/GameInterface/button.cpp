@@ -5,7 +5,8 @@
 /*----------------------------------------------------*/
 
 Button::Button(POWER p, QGraphicsItem *parent)
-    : QGraphicsWidget(parent), power(p)
+    : QGraphicsWidget(parent), power(p), buttonSelected(false),
+      powerPercent(0)
 {
     setAcceptHoverEvents(true);
     setCacheMode(DeviceCoordinateCache);
@@ -53,10 +54,15 @@ void Button::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     if (down)
     {
         buttonPath += "Click.png";
+        this->buttonSelected = true;
     }
     else if (over)
     {
         buttonPath += "Hover.png";
+    }
+    else if (this->buttonSelected)
+    {
+        buttonPath += "Click.png";
     }
     else
     {
@@ -69,9 +75,16 @@ void Button::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     painter->drawPixmap(r, buttonImg,source);
 
 
+    QPen p = painter->pen();
+    p.setWidth(2);
+    p.setColor(Qt::green);
+
+    painter->setPen(p);
+    painter->rotate(-90);
+
     for(int i=0;i<=((this->powerPercent/100)*60);i++)
     {
-        painter->drawLine(92, 0, 96, 0);
+        painter->drawLine(25, 0, 28, 0);
         painter->rotate(6.0);
     }
 
@@ -114,4 +127,10 @@ void Button::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
  void Button::setPowerPercent(double percent)
  {
      this->powerPercent = percent;
+     this->update();
+ }
+
+ void Button::setSelectedButton(bool buttonState)
+ {
+     this->buttonSelected = buttonState;
  }
