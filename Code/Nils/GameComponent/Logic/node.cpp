@@ -13,7 +13,7 @@
 /*----------------------------------------------------*/
 
 Node::Node(int x, int y, int radius): QGraphicsItem(0),
-    radius(radius)
+    radius(radius), color(BASE_NODE_COLOR)
 {
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setAcceptHoverEvents(true);
@@ -61,33 +61,47 @@ void Node::paint(QPainter *painter,
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
+    painter->save();
+
     bool over= option->state & QStyle::State_MouseOver;
 
-    QColor basicColor(BASE_NODE_COLOR);
     QPen p = painter->pen();
     p.setWidth(2);
     p.setColor(Qt::black);
     QRadialGradient radialGrad(0, 0, radius);
-    radialGrad.setColorAt(0, basicColor.darker());
-    radialGrad.setColorAt(1, basicColor.darker());
+    radialGrad.setColorAt(0, color.darker());
+    radialGrad.setColorAt(1, color.darker());
 
     //PARAMETRAGE SUIVANT ETAT
     if(isSelected())
     {
-        radialGrad.setColorAt(0, basicColor.lighter());
-        radialGrad.setColorAt(1, basicColor.darker());
-        p.setColor(basicColor.lighter());
+        radialGrad.setColorAt(0, color.lighter());
+        radialGrad.setColorAt(1, color.darker());
+        p.setColor(color.lighter());
     }
     else if(over)
     {
-        radialGrad.setColorAt(0, basicColor.lighter());
-        radialGrad.setColorAt(1, basicColor.darker());
+        radialGrad.setColorAt(0, color.lighter());
+        radialGrad.setColorAt(1, color.darker());
     }
 
     //DESSIN DU NOEU DE BASE
+    painter->setRenderHint(QPainter::Antialiasing, true);
     painter->setBrush(radialGrad);
     painter->setPen(p);
     painter->drawEllipse(-radius, -radius, 2*radius, 2*radius);
+
+    painter->restore();
+}
+
+QColor Node::getColor()
+{
+    return color;
+}
+
+void Node::setColor(QColor c)
+{
+    color = c;
 }
 
 /*----------------------------------------------------*/

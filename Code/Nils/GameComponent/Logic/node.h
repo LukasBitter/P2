@@ -37,6 +37,8 @@ public:
                QWidget *widget);
 
     /*ASSESSEUR / MUTATEUR*/
+    virtual QColor getColor();
+    virtual void setColor(QColor c);
     virtual int getRadius() const;
     virtual const Gamer* getOwner()const = 0;
     virtual void setOwner(const Gamer* g) = 0;
@@ -58,6 +60,7 @@ public:
 protected:
     /*TOOL*/
     int radius; ///< Rayon du noeud
+    QColor color;
     QMap<int, Connexion *> mapConnexion; ///< Liste des connexion du noeud (Cle = id noeud distant, Valeur = pointeur sur sa connextion)
 };
 

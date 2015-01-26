@@ -9,3 +9,7 @@ Ajout last-minute :
 - mise a jour de la map selectionné coté client
 - controle des version des map pour message explicite
 - numéro de spawn dans l'ordre d'arrivée
+- menu editeur ilisible
+- nom map controle serveur
+- ajouter creation de dossier dans editeur
+- ajouter bt clear editeur

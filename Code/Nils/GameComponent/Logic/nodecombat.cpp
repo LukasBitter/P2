@@ -4,13 +4,15 @@
 #include "gamer.h"
 #include "gamerlist.h"
 #include "global.h"
+#include "enumlibrary.h"
+
 
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
 NodeCombat::NodeCombat(int x, int y, int radius, int ressourcesMax, const GamerList &gl, Gamer *g)
-    : Node(x,y,radius), owner(g), invicible(false), ressourcesRate(0),
+    : Node(x,y,radius), owner(0), invicible(false), ressourcesRate(0),
       ressourcesMax(ressourcesMax), nbRessources(0), counterAdvance(0),
       armorLvl(0), lstGamer(gl)
 {
@@ -20,6 +22,7 @@ NodeCombat::NodeCombat(int x, int y, int radius, int ressourcesMax, const GamerL
     setX(x);
     setY(y);
     setZValue(10);
+    setOwner(g);
 }
 
 NodeCombat::NodeCombat(QString &create, GamerList &gl) : NodeCombat(0,0,0,0,gl,0)
@@ -38,7 +41,7 @@ NodeCombat::NodeCombat(QString &create, GamerList &gl) : NodeCombat(0,0,0,0,gl,0
         nodeStr.pop_front();
         ressourcesMax = nodeStr.first().toInt();
         nodeStr.pop_front();
-        owner = lstGamer.getGamer(nodeStr.first().toInt());
+        setOwner(lstGamer.getGamer(nodeStr.first().toInt()));
     }
     else
     {
@@ -52,92 +55,47 @@ NodeCombat::NodeCombat(QString &create, GamerList &gl) : NodeCombat(0,0,0,0,gl,0
 
 QRectF NodeCombat::boundingRect() const
 {
-    return QRectF(-radius-3, -radius-3,
-                      2*radius+7, 2*radius+6);
+    int extendRadius = radius + 5;
+    return QRectF(-extendRadius, -extendRadius,
+                      2*extendRadius, 2*extendRadius);
 }
 
 void NodeCombat::paint(QPainter *painter,
                  const QStyleOptionGraphicsItem *option,QWidget *widget)
 {
-    Q_UNUSED(option);
-    Q_UNUSED(widget);
-    painter->setRenderHint(QPainter::SmoothPixmapTransform, true);
+    Node::paint(painter, option, widget);
+
+    //PARAMETRAGE
+    QColor invert;
+    invert.setBlue(255 - color.blue());
+    invert.setRed(255 - color.red());
+    invert.setGreen(255 - color.green());
+
+    QString ressourceTxt = QString::number(nbRessources);
+    QString armorTxt = QString("+%1").arg(armorLvl);
+
+    QFont f = painter->font();
+    f.setBold(invicible);
+    QFontMetrics fm(f);
+    int centre = (fm.height()/2)-2;
+
+    //DESSIN DU NOEU
+    painter->setPen(invert);
+    painter->setFont(f);
     painter->setRenderHint(QPainter::Antialiasing, true);
 
-
-    QRadialGradient radialGrad(0, 0, radius);
-        radialGrad.setColorAt(0, Qt::white);
-        radialGrad.setColorAt(0.5, Qt::green);
-        radialGrad.setColorAt(1, Qt::black);
-        QRect rect_radial(300,50,200,200);
-    QColor ownerColor = QColor(Qt::white);
-    QPixmap nodeImg;
-
-    if(owner != 0)
-    {
-        //painter->setBrush(owner->getColor());
-        ownerColor = owner->getColor();
-
-        if(ownerColor == QColor(Qt::darkRed))
-        {
-            nodeImg = QPixmap(":/NodeRedN.png");
-        }
-        else if(ownerColor == QColor(Qt::green))
-        {
-            nodeImg = QPixmap(":/NodeGreenN.png");
-        }
-        else if(ownerColor == QColor(Qt::red))
-        {
-            nodeImg = QPixmap(":/NodeOrangeN.png");
-        }
-        else if(ownerColor == QColor(Qt::yellow))
-        {
-            nodeImg = QPixmap(":/NodeYellowN.png");
-        }
-    }
-    else
-    {
-        nodeImg = QPixmap(":/NodeWhiteN.png");
-    }
-
-    if(isSelected() || isUnderMouse())
-    {
-        QPen pen(Qt::gray);
-        pen.setStyle(Qt::SolidLine);
-        pen.setWidth(5);
-        painter->setPen(pen);
-        painter->drawEllipse(QPoint(0,0),radius+3,radius+3);
-    }
-    //painter->setPen(Qt::black);
-    //painter->drawEllipse(QPoint(0,0),radius,radius);
-
-
-    //QRectF target(0, 0, radius, radius);
-    QRectF source(0.0, 0.0, 212.0, 212.0);
-    painter->drawPixmap(-radius,-radius,2*radius,2*radius, nodeImg);
-    //painter->drawPixmap(Node::boundingRect(), nodeImg, source);
-
-    if(invicible)
-    {
-        QFont f = painter->font();
-        f.setBold(true);
-        painter->setFont(f);
-    }
     if(armorLvl > 0)
     {
-        if(armorLvl<10)
-            painter->drawText(QPoint(-12 , +15),QString("+%1").arg(armorLvl));
-        else if(armorLvl<100)
-            painter->drawText(QPoint(-15 , +15),QString("+%1").arg(armorLvl));
-        else
-            painter->drawText(QPoint(-19 , +15),QString("+%1").arg(armorLvl));
+        int l2 = fm.width(ressourceTxt, -1);
+        painter->drawText(-(l2/2), centre-(fm.height()/2)+2 , ressourceTxt);
+        int l1 = fm.width(armorTxt, -1);
+        painter->drawText(-(l1/2), centre+(fm.height()/2)+2, armorTxt);
     }
-    if(nbRessources<10)
-        painter->drawText(QPoint(-4 , +4),QString("%1").arg(nbRessources));
-    else if(nbRessources<100)
-        painter->drawText(QPoint(-7 , +4),QString("%1").arg(nbRessources));
     else
-        painter->drawText(QPoint(-11 , +4),QString("%1").arg(nbRessources));
+    {
+        int l = fm.width(ressourceTxt, -1);
+        painter->drawText(-(l/2), centre, ressourceTxt);
+    }
 }
 
 void NodeCombat::advance(int step)
@@ -221,6 +179,14 @@ void NodeCombat::setInvicibility(bool b)
 void NodeCombat::setOwner(const Gamer *g)
 {
     owner = g;
+    if(owner != 0)
+    {
+        setColor(owner->getColor());
+    }
+    else
+    {
+        setColor(VACANT_COLOR);
+    }
 }
 
 const Gamer* NodeCombat::getOwner() const
@@ -272,7 +238,7 @@ void NodeCombat::incoming(Squad s)
             //Changement de propriétaire
             ressource -= nbRessources;
             setRessources(ressource);
-            owner = &g;
+            setOwner(&g);
         }
         else
         {
@@ -328,7 +294,7 @@ void NodeCombat::updateFromString(QString &s)
         nodeStr.pop_front();
         ressourcesRate = nodeStr.first().toInt();
         nodeStr.pop_front();
-        owner = lstGamer.getGamer(nodeStr.first().toInt());
+        setOwner(lstGamer.getGamer(nodeStr.first().toInt()));
         nodeStr.pop_front();
         armorLvl = nodeStr.first().toInt();
         nodeStr.pop_front();
