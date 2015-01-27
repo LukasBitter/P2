@@ -56,9 +56,14 @@ private slots:
 private:
     /*INTERFACE*/
     QLineEdit *txtAdressIP;
-    QLabel *txtName;
     QPushButton *btChangeName;
     QPushButton *btConnect;
+    QLabel *txtName;
+    QLabel *txtUserList;
+    QLabel *txtMap;
+    QLabel *txtColour;
+    QLabel *txtSlotSpawn;
+    QLabel *txtStatus;
     QTableWidget *tblStatus;
     QComboBox *cbbMap;
     QCheckBox *cbtReady;
@@ -70,6 +75,7 @@ private:
     QTextEdit *txtChat;
     QLineEdit *txtToSendChat;
     QPushButton *btSend;
+    QPixmap background;
 
     /*OUTIL*/
     bool host; ///< Indique si le joueur est l'host
@@ -82,6 +88,7 @@ private:
     void disableUI();
     void setClient(GameClient *c);
     void setServer(GameServer* s);
+    void paintEvent(QPaintEvent *);
 
 };
 

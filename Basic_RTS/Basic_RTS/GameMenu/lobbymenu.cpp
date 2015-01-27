@@ -16,6 +16,24 @@ LobbyMenu::LobbyMenu(QWidget *parent) :  QWidget(parent),
 }
 
 /*----------------------------------------------------*/
+/*SURCHARGE*/
+/*----------------------------------------------------*/
+
+void LobbyMenu::paintEvent(QPaintEvent *)
+{
+    // AJOUT BACKGROUND
+
+    background.load(":/Background_ligth.jpg");
+
+    QPainter painter(this);
+    QRectF target(0.0, 0.0, 1280.0, 800.0);
+    QRectF source(0.0, 0.0, 1280.0, 800.0);
+
+    painter.drawPixmap(target, background, source);
+}
+
+
+/*----------------------------------------------------*/
 /*SIGNALS/SLOTS*/
 /*----------------------------------------------------*/
 
@@ -285,21 +303,26 @@ void LobbyMenu::setUpUI()
 {
     //INSTANTIATION
 
-    this->btStart = new QPushButton(tr("Launch game"), this);
-    this->btConnect = new QPushButton(tr("Connection"),this);
-    this->btReturn = new QPushButton(tr("Back"),this);
-    this->btChangeName = new QPushButton(tr("Change user name"),this);
-    this->cbtReady = new QCheckBox(tr("Ready"), this);
+    this->btStart = new QPushButton(tr("&Launch game"), this);
+    this->btConnect = new QPushButton(tr("&Connection"),this);
+    this->btReturn = new QPushButton(tr("&Back"),this);
+    this->btChangeName = new QPushButton(tr("Change &user name"),this);
+    this->cbtReady = new QCheckBox(tr("&Ready"), this);
     this->cbbMap = new QComboBox(this);
     this->cbbColor = new QComboBox(this);
     this->cbbSlot = new QComboBox(this);
     this->tblStatus = new QTableWidget(this);
-    this->txtAdressIP = new QLineEdit(tr("Enter host IP address"),this);
+    this->txtAdressIP = new QLineEdit(tr("&Host IP address"),this);
     this->txtName = new QLabel(tr("Your user name : "),this);
+    this->txtUserList = new QLabel(tr("Connected users : "),this);
+    this->txtMap = new QLabel(tr("Map : "),this);
+    this->txtColour = new QLabel(tr("Player colour : "),this);
+    this->txtSlotSpawn = new QLabel(tr("Slot spawn : "),this);
+    this->txtStatus = new QLabel(tr("Status : "),this);
     this->txtConnected = new QLabel(tr("Not connected"),this);
     this->txtChat = new QTextEdit(this);
     this->txtToSendChat = new QLineEdit(this);
-    this->btSend = new QPushButton(tr("Send"), this);
+    this->btSend = new QPushButton(tr("&Send"), this);
 
     //CONNEXION
 
@@ -320,9 +343,12 @@ void LobbyMenu::setUpUI()
     tblStatus->setRowCount(MAX_GAMER);
     tblStatus->setColumnCount(4);
     QStringList &s = *new QStringList();
-    s<<"Nom joueur"<<"Couleur"<<"Slot spawn"<<"Pret";
+    s<<tr("Player name")<<tr("Colour")<<tr("Slot spawn")<<tr("Ready");
     tblStatus->setHorizontalHeaderLabels(s);
     tblStatus->verticalHeader()->setVisible(false);
+    tblStatus->setMaximumHeight(145);
+    tblStatus->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    tblStatus->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     txtChat->setReadOnly(true);
 
 
@@ -336,24 +362,35 @@ void LobbyMenu::setUpUI()
     l->setColumnStretch(0, 1);
     l->setColumnStretch(1, 1);
     l->setColumnStretch(2, 1);
-    l->addWidget(txtName, 0,0,1,2);
-    l->addWidget(btChangeName, 0,2);
-    l->addWidget(txtAdressIP, 1,0,1,2);
-    l->addWidget(btConnect, 1,2);
-    l->addWidget(tblStatus, 10,0,3,2);
-    l->addWidget(txtChat, 10,2);
-    l->addWidget(txtToSendChat, 11,2);
-    l->addWidget(btSend, 12,2);
-    l->addWidget(cbbMap, 20,0,1,3);
-    l->addWidget(cbbColor, 21,0);
-    l->addWidget(cbbSlot, 21,1);
-    l->addWidget(cbtReady, 21,2);
+    l->setColumnStretch(3, 1);
+    l->setColumnStretch(4, 3);
+    l->addWidget(txtName, 0,0);
+    l->addWidget(btChangeName, 0,1);
+    l->addWidget(txtAdressIP, 1,0);
+    l->addWidget(btConnect, 1,1);
+    l->addWidget(txtUserList, 2,0);
+    l->addWidget(tblStatus, 3,0,6,4);
+    l->addWidget(txtMap, 9,0, 1, 1, Qt::AlignRight);
+    l->addWidget(cbbMap, 9,1);
+    l->addWidget(txtColour, 10,0, 1, 1, Qt::AlignRight);
+    l->addWidget(cbbColor, 10,1);
+    l->addWidget(txtSlotSpawn, 11,0, 1, 1, Qt::AlignRight);
+    l->addWidget(cbbSlot, 11,1);
+    l->addWidget(txtStatus, 12,0, 1, 1, Qt::AlignRight);
+    l->addWidget(txtConnected, 12,1);
+    l->addWidget(cbtReady, 13,1);
+    l->addWidget(txtChat, 1,4, 20, 1);
+    l->addWidget(txtToSendChat, 21,4);
+    l->addWidget(btSend, 22,4);
 
-    l->addWidget(btReturn, 30,0);
-    l->addWidget(txtConnected, 30,1);
-    l->addWidget(btStart, 30,2);
+    l->addWidget(btReturn, 16,1);
+    l->addWidget(btStart, 16,2);
 
     this->setLayout(l);
+    txtToSendChat->setFocus();
+
+    // TAB ORDER
+    //setTabOrder(txtToSendChat, b); // a to b
 }
 
 void LobbyMenu::populate()
@@ -386,7 +423,7 @@ void LobbyMenu::disableUI()
     txtAdressIP->setEnabled(false);
     btChangeName->setEnabled(false);
 
-    txtAdressIP->setText(tr("Enter host IP address"));
+    txtAdressIP->setText(tr("Host IP address"));
     txtName->setText(tr("Your user name : "));
 
     updateUI();

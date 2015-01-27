@@ -32,19 +32,21 @@ private slots:
     void onBtHostGamePressed();
     void onBtJointGamePressed();
     void onBtQuitPressed();
+    void onBtAboutPressed();
 
 private:
     /*INTERFACE*/
     QPushButton* btEditor;
     QPushButton* btHostGame;
-    QPushButton* btJointGame;
+    QPushButton* btJoinGame;
     QPushButton* btQuit;
-    QPushButton* btEnglish;
-    QPushButton* btFrench;
-    QPushButton* btGerman;
+    QPushButton* btAbout;
+    QLabel *labelTitle;
+    QPixmap background;
 
     /*METHODE PRIVE*/
     void setUpUI();
+    void paintEvent(QPaintEvent *);
 };
 
 #endif // WELCOMEMENU_H

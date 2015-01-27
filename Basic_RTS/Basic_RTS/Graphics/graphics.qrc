@@ -45,5 +45,6 @@
         <file>Thumbs.db</file>
         <file>Defeat.png</file>
         <file>Victory.png</file>
+        <file>Background_ligth.jpg</file>
     </qresource>
 </RCC>
