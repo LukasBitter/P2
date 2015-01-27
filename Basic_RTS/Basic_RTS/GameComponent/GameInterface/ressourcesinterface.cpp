@@ -110,8 +110,8 @@ void RessourcesInterface::btDicrasePressed()
 void RessourcesInterface::setUpUI()
 {
     //INSTANTIATION
-    btIncrase = new Button(ARMOR, this);
-    btDicrase = new Button(INVINCIBILITY, this);
+    btIncrase = new Button(INCRASE, this);
+    btDicrase = new Button(DICRASE, this);
     txtPercent = new QGraphicsTextItem("",this);
 
     //CONNEXION

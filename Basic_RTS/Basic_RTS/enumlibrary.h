@@ -58,13 +58,15 @@ enum ACTIONS
     EA_DISCONNECT, ///< Déconnecte deux noeuds
 };
 
-/// Pouvoirs disponibles dans le jeu
-enum POWER
+///Image des boutons dans le jeu
+enum BUTTON_TYPE
 {
     ARMOR,          /// Bouclie
     INVINCIBILITY,  /// Invincibilité
     TELEPORTATION,  /// Téléportation
     DESTRUCTION,    /// Destruction
+    INCRASE,        /// Augmente le taux d'envoi
+    DICRASE,        /// Diminue le taux d'envoi
 };
 
 /*----------------------------------------------------*/
