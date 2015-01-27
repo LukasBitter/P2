@@ -63,7 +63,6 @@ private:
     QGraphicsTextItem *txtCdPowerInvincibility;
     QGraphicsTextItem *txtCdPowerTeleportation;
     QGraphicsTextItem *txtCdPowerDestroy;
-    POWER powerSelected;
     ActionManager &am;
 
     /*OUTIL*/
