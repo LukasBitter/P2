@@ -11,6 +11,7 @@ RessourceBar::RessourceBar(int x, int y, int w, int h, GamerList &gl,
     totalRessourcesOfMap = scene.getTotalRessources();
     startTimer(RESSOURCES_BAR_TIC);
     setVertical(false);
+    setFillMode(true);
 }
 
 void RessourceBar::timerEvent(QTimerEvent *event)
