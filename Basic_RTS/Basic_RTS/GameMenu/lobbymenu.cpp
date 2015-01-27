@@ -23,7 +23,7 @@ void LobbyMenu::paintEvent(QPaintEvent *)
 {
     // AJOUT BACKGROUND
 
-    background.load(":/Background.jpg");
+    background.load(":/Background.png");
 
     QPainter painter(this);
     QRectF target(0.0, 0.0, 1280.0, 800.0);
@@ -43,8 +43,6 @@ void LobbyMenu::enableClientUI()
     cbtReady->setEnabled(true);
     btConnect->setEnabled(true);
     txtAdressIP->setEnabled(true);
-
-
     host = false;
 }
 

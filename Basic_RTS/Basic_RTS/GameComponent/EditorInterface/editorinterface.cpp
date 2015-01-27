@@ -114,9 +114,9 @@ void EditorInterface::setUpUI()
     btRemoveNode = new QPushButton("Delete node", this);
     btConnectNode = new QPushButton("Connect node", this);
     btDisconnectNode = new QPushButton("Disconnect node", this);
-    btReturn = new QPushButton("Retour", this);
-    btLoadFromFile = new QPushButton("Ouvrir", this);
-    btSaveToFile = new QPushButton("Sauver", this);
+    btReturn = new QPushButton("Back", this);
+    btLoadFromFile = new QPushButton("Open", this);
+    btSaveToFile = new QPushButton("Save", this);
     btClear = new QPushButton("Clear", this);
 
     //PARAMETRAGE

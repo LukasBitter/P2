@@ -1,0 +1,3 @@
+cd C:\Users\Lukas\Desktop\P2\Basic_RTS_v_1.0
+
+C:\Qt\QtIFW-1.5.0\bin\binarycreator.exe -c config\config.xml -p packages Basic-RTS_Installer.exe

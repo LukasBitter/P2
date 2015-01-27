@@ -19,7 +19,7 @@ void WelcomeMenu::paintEvent(QPaintEvent *)
 {
     // AJOUT BACKGROUND
 
-    background.load(":/Background.jpg");
+    background.load(":/Background.png");
 
     QPainter painter(this);
     QRectF target(0.0, 0.0, 1280.0, 800.0);

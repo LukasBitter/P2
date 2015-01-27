@@ -86,7 +86,7 @@ void GameScene::drawBackground(QPainter *painter, const QRectF &rect)
 {
     Q_UNUSED(rect);
 
-    const QPixmap background(":/Background.jpg");
+    const QPixmap background(":/Background.png");
     painter->drawPixmap(-10,-10, background);
 }
 
