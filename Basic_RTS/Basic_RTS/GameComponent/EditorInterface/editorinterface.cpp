@@ -1,5 +1,5 @@
 #include "editorinterface.h"
-#include "GameComponent/GameInterface/button.h"
+#include "GameComponent/GameInterface/buttonpower.h"
 
 
 /*----------------------------------------------------*/

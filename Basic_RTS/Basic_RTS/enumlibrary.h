@@ -65,8 +65,10 @@ enum BUTTON_TYPE
     INVINCIBILITY,  /// Invincibilité
     TELEPORTATION,  /// Téléportation
     DESTRUCTION,    /// Destruction
-    INCRASE,        /// Augmente le taux d'envoi
-    DICRASE,        /// Diminue le taux d'envoi
+    SET_25,         /// Fixe le taux d'envoi a 25%
+    SET_50,         /// Fixe le taux d'envoi a 25%
+    SET_75,         /// Fixe le taux d'envoi a 25%
+    SET_100,        /// Fixe le taux d'envoi a 25%
 };
 
 /*----------------------------------------------------*/

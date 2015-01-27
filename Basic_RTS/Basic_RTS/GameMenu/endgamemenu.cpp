@@ -54,7 +54,6 @@ void EndGameMenu::setUpUI()
     //INSTANTIATION
 
     btReturn = new QPushButton("Retour", this);
-    title = new QLabel("END", this);
 
     //CONNEXION
 
@@ -62,8 +61,9 @@ void EndGameMenu::setUpUI()
 
     //AJOUT LAYOUT
 
-//    QGridLayout *l = new QGridLayout(this);
-//    l->addWidget(btReturn, 1, 0);
+    QGridLayout *l = new QGridLayout(this);
+    l->addWidget(btReturn, 1, 0);
+    l->setAlignment(Qt::AlignCenter);
 
-//    this->setLayout(l);
+    this->setLayout(l);
 }
