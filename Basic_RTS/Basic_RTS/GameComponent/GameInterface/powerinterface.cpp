@@ -94,7 +94,7 @@ void PowerInterface::shortCutPressed(QKeyEvent *e)
     {
     case Qt::Key_1:
     {
-        btPowerDestroyPressed();
+        btPowerArmorePressed();
         break;
     }
     case Qt::Key_2:
@@ -109,7 +109,7 @@ void PowerInterface::shortCutPressed(QKeyEvent *e)
     }
     case Qt::Key_4:
     {
-        btPowerArmorePressed();
+        btPowerDestroyPressed();
         break;
     }
     default:
