@@ -43,10 +43,10 @@ void WelcomeMenu::setUpUI()
 {
     //INSTANTIATION
 
-    btHostGame = new QPushButton("Host", this);
-    btJointGame = new QPushButton("Joint", this);
-    btQuit = new QPushButton("Quit", this);
-    btEditor = new QPushButton("Editor", this);
+    btHostGame = new QPushButton(tr("Host"), this);
+    btJointGame = new QPushButton(tr("Join"), this);
+    btQuit = new QPushButton(tr("Quit"), this);
+    btEditor = new QPushButton(tr("Editor"), this);
 
     //CONNEXION
 

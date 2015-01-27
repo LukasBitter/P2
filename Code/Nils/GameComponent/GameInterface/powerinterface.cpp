@@ -10,7 +10,7 @@
 /*----------------------------------------------------*/
 
 PowerInterface::PowerInterface(ActionManager &am, QGraphicsItem * parent) :
-    QGraphicsWidget(parent),mana(0), powerSelected(NO_POWER),
+    QGraphicsWidget(parent),mana(0),
     am(am)
 {
     setAcceptHoverEvents(true);

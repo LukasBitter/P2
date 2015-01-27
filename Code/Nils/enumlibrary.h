@@ -65,7 +65,6 @@ enum POWER
     INVINCIBILITY,  /// Invincibilité
     TELEPORTATION,  /// Téléportation
     DESTRUCTION,    /// Destruction
-    NO_POWER,           /// Aucun
 };
 
 /*----------------------------------------------------*/
