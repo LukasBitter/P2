@@ -18,6 +18,8 @@ ProgressBar::ProgressBar(const QRectF &dimension, QGraphicsItem* parent):
 
 ProgressBar::ProgressBar(int x, int y, int w, int h, QGraphicsItem *parent)
 {
+    Q_UNUSED(parent);
+
     setX(x);
     setY(y);
 
