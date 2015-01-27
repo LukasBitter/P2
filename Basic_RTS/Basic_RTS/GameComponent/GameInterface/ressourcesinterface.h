@@ -3,7 +3,7 @@
 
 #include "global.h"
 
-class Button;
+class ButtonRessource;
 class QGraphicsTextItem;
 class ActionManager;
 
@@ -35,15 +35,17 @@ public:
     /*SIGNALS/SLOTS*/
 public slots:
     void shortCutPressed(QKeyEvent *e);
-private slots:
-    void btIncrasePressed();
-    void btDicrasePressed();
+    void bt25Pressed();
+    void bt50Pressed();
+    void bt75Pressed();
+    void bt100Pressed();
 
 private:
     /*INTERFACE*/
-    Button *btIncrase;
-    Button *btDicrase;
-    QGraphicsTextItem *txtPercent;
+    ButtonRessource *bt25Percent;
+    ButtonRessource *bt50Percent;
+    ButtonRessource *bt75Percent;
+    ButtonRessource *bt100Percent;
     ActionManager &am;
 
     /*OUTIL*/
@@ -51,6 +53,7 @@ private:
 
     /*METHODE PRIVE*/
     void setUpUI();
+    void resetSelection();
 };
 
 #endif // RESSOURCESINTERFACE_H

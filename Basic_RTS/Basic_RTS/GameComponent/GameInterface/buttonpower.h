@@ -13,13 +13,13 @@ namespace GameInterface
  * @class Button
  * @brief Bouton poussoir pour interface avec le GraphicsViewFramwork
  */
-class Button : public QGraphicsWidget
+class ButtonPower : public QGraphicsWidget
 {
     Q_OBJECT
 
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    Button(BUTTON_TYPE power, QGraphicsItem *parent = 0);
+    ButtonPower(BUTTON_TYPE power, QGraphicsItem *parent = 0);
 
     /*SURCHARGE*/
     QRectF boundingRect() const;
@@ -27,7 +27,9 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *);
     void mousePressEvent(QGraphicsSceneMouseEvent *);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *);
-    void setPowerPercent(double percent);
+    void setPowerCDPercent(double percent);
+
+    /*ASSESSEUR / MUTATEUR*/
     void setSelected(bool b);
 
     /*SIGNALS/SLOTS*/
@@ -37,10 +39,8 @@ signals:
 private:
     /*ENTREE*/
     BUTTON_TYPE power;
-    double powerPercent;
+    double powerCDPercent;
     bool buttonSelected;
-
-    void drawImage();
 };
 
 #endif // BUTTON_H

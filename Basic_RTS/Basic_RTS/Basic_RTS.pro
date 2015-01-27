@@ -13,7 +13,6 @@ HEADERS += \
     GameComponent/Logic/squad.h \
     GameComponent/Logic/identitytoken.h \
     GameComponent/Logic/gamescene.h \
-    GameComponent/GameInterface/button.h \
     GameComponent/GameInterface/progressbar.h \
     GameComponent/GameInterface/powerinterface.h \
     GameConnexion/client.h \
@@ -38,14 +37,15 @@ HEADERS += \
     GameComponent/Logic/node.h \
     GameComponent/Logic/nodeconnectable.h \
     GameComponent/GameInterface/ressourcebar.h \
-    GameComponent/GameInterface/ressourcesinterface.h
+    GameComponent/GameInterface/ressourcesinterface.h \
+    GameComponent/GameInterface/buttonpower.h \
+    GameComponent/GameInterface/buttonressource.h
 
 SOURCES += \
     GameComponent/Logic/connexion.cpp \
     GameComponent/Logic/squad.cpp \
     GameComponent/Logic/identitytoken.cpp \
     GameComponent/Logic/gamescene.cpp \
-    GameComponent/GameInterface/button.cpp \
     GameComponent/GameInterface/progressbar.cpp \
     GameComponent/GameInterface/powerinterface.cpp \
     GameConnexion/client.cpp \
@@ -70,7 +70,9 @@ SOURCES += \
     GameComponent/Logic/node.cpp \
     GameComponent/Logic/nodeconnectable.cpp \
     GameComponent/GameInterface/ressourcebar.cpp \
-    GameComponent/GameInterface/ressourcesinterface.cpp
+    GameComponent/GameInterface/ressourcesinterface.cpp \
+    GameComponent/GameInterface/buttonpower.cpp \
+    GameComponent/GameInterface/buttonressource.cpp
 
 OTHER_FILES += \
     Notes.txt

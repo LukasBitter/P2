@@ -37,7 +37,6 @@ private slots:
 private:
     /*INTERFACE*/
     QPushButton* btReturn;
-    QLabel *title;
     QPixmap background;
 
     /*METHODE PRIVE*/

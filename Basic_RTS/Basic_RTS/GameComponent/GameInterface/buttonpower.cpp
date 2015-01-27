@@ -1,12 +1,12 @@
-#include "button.h"
+#include "buttonpower.h"
 
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-Button::Button(BUTTON_TYPE p, QGraphicsItem *parent)
+ButtonPower::ButtonPower(BUTTON_TYPE p, QGraphicsItem *parent)
     : QGraphicsWidget(parent), power(p), buttonSelected(false),
-      powerPercent(0)
+      powerCDPercent(0)
 {
     setAcceptHoverEvents(true);
     setCacheMode(DeviceCoordinateCache);
@@ -16,19 +16,19 @@ Button::Button(BUTTON_TYPE p, QGraphicsItem *parent)
 /*SURCHARGE*/
 /*----------------------------------------------------*/
 
-QRectF Button::boundingRect() const
+QRectF ButtonPower::boundingRect() const
 {
     return QRectF(-50, -50, 100, 100);
 }
 
-QPainterPath Button::shape() const
+QPainterPath ButtonPower::shape() const
 {
     QPainterPath path;
     path.addEllipse(boundingRect());
     return path;
 }
 
-void Button::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
+void ButtonPower::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
 {
     bool down = option->state & QStyle::State_Sunken;
     bool over= option->state & QStyle::State_MouseOver;
@@ -85,7 +85,7 @@ void Button::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
     painter->rotate(-90);
 
     painter->save();
-    for(int i=0;i<=((this->powerPercent/100)*60);++i)
+    for(int i=0;i<=((this->powerCDPercent/100)*60);++i)
     {
         painter->drawLine(25, 0, 28, 0);
         painter->rotate(6.0);
@@ -94,13 +94,13 @@ void Button::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
 }
 
 
-void Button::mousePressEvent(QGraphicsSceneMouseEvent *)
+void ButtonPower::mousePressEvent(QGraphicsSceneMouseEvent *)
 {
     emit pressed();
     update();
 }
 
-void Button::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
+void ButtonPower::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
     update();
 }
@@ -109,18 +109,13 @@ void Button::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 /*ASSESSEUR / MUTATEUR*/
 /*----------------------------------------------------*/
 
- void Button::setPowerPercent(double percent)
+ void ButtonPower::setPowerCDPercent(double percent)
  {
-     this->powerPercent = percent;
+     this->powerCDPercent = percent;
      this->update();
  }
 
- void Button::setSelected(bool b)
+ void ButtonPower::setSelected(bool b)
  {
      this->buttonSelected = b;
- }
-
- void Button::drawImage()
- {
-
  }

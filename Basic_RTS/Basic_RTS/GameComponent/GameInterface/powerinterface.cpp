@@ -2,7 +2,7 @@
 #include "actionmanager.h"
 #include "progressbar.h"
 #include "GameComponent/Logic/node.h"
-#include "GameComponent/GameInterface/button.h"
+#include "GameComponent/GameInterface/buttonpower.h"
 
 
 /*----------------------------------------------------*/
@@ -45,10 +45,10 @@ void PowerInterface::timerEvent(QTimerEvent *event)
 
     pcd.advence();
 
-    btPowerArmore->setPowerPercent(pcd.percentReload(GA_USEPOWER_ARMORE));
-    btPowerInvincibility->setPowerPercent(pcd.percentReload(GA_USEPOWER_INVINCIBILITY));
-    btPowerTeleportation->setPowerPercent(pcd.percentReload(GA_USEPOWER_TELEPORTATION));
-    btPowerDestroy->setPowerPercent(pcd.percentReload(GA_USEPOWER_DESTROY));
+    btPowerArmore->setPowerCDPercent(pcd.percentReload(GA_USEPOWER_ARMORE));
+    btPowerInvincibility->setPowerCDPercent(pcd.percentReload(GA_USEPOWER_INVINCIBILITY));
+    btPowerTeleportation->setPowerCDPercent(pcd.percentReload(GA_USEPOWER_TELEPORTATION));
+    btPowerDestroy->setPowerCDPercent(pcd.percentReload(GA_USEPOWER_DESTROY));
 
     btPowerArmore->setSelected(am.getCurrentAction() == GA_USEPOWER_ARMORE);
     btPowerInvincibility->setSelected(am.getCurrentAction() == GA_USEPOWER_INVINCIBILITY);
@@ -194,10 +194,10 @@ void PowerInterface::btPowerDestroyPressed()
 void PowerInterface::setUpUI()
 {
     //INSTANTIATION
-    btPowerArmore = new Button(ARMOR, this);
-    btPowerInvincibility = new Button(INVINCIBILITY, this);
-    btPowerTeleportation = new Button(TELEPORTATION, this);
-    btPowerDestroy = new Button(DESTRUCTION, this);
+    btPowerArmore = new ButtonPower(ARMOR, this);
+    btPowerInvincibility = new ButtonPower(INVINCIBILITY, this);
+    btPowerTeleportation = new ButtonPower(TELEPORTATION, this);
+    btPowerDestroy = new ButtonPower(DESTRUCTION, this);
     pbMana = new ProgressBar(QRectF(25, 25, 6, 230), this);
 
     //CONNEXION

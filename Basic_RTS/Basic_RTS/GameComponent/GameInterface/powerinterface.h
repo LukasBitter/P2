@@ -6,7 +6,7 @@
 #include "powercountdown.h"
 
 class Node;
-class Button;
+class ButtonPower;
 class QGraphicsTextItem;
 class ActionManager;
 class ProgressBar;
@@ -55,10 +55,10 @@ private slots:
 private:
     /*INTERFACE*/
     ProgressBar *pbMana;
-    Button *btPowerArmore;
-    Button *btPowerInvincibility;
-    Button *btPowerTeleportation;
-    Button *btPowerDestroy;
+    ButtonPower *btPowerArmore;
+    ButtonPower *btPowerInvincibility;
+    ButtonPower *btPowerTeleportation;
+    ButtonPower *btPowerDestroy;
     BUTTON_TYPE powerSelected;
     ActionManager &am;
 

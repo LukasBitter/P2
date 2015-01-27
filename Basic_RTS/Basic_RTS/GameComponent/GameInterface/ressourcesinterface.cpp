@@ -2,7 +2,7 @@
 #include "actionmanager.h"
 #include "progressbar.h"
 #include "GameComponent/Logic/node.h"
-#include "GameComponent/GameInterface/button.h"
+#include "GameComponent/GameInterface/buttonressource.h"
 
 
 /*----------------------------------------------------*/
@@ -61,46 +61,59 @@ void RessourcesInterface::shortCutPressed(QKeyEvent *e)
     {
     case Qt::Key_Q:
     {
-        setPercentToSend(25);
-        am.actionChanged(GA_SEND);
+        bt25Pressed();
         break;
     }
     case Qt::Key_W:
     {
-        setPercentToSend(50);
-        am.actionChanged(GA_SEND);
+        bt50Pressed();
         break;
     }
     case Qt::Key_E:
     {
-        setPercentToSend(75);
-        am.actionChanged(GA_SEND);
+        bt75Pressed();
         break;
     }
     case Qt::Key_R:
     {
-        setPercentToSend(100);
-        am.actionChanged(GA_SEND);
+        bt100Pressed();
         break;
     }
     default:
         break;
     }
 }
-void RessourcesInterface::btIncrasePressed()
+
+void RessourcesInterface::bt25Pressed()
 {
-    if(percentToSend < 75)
-    {
-        percentToSend += 25;
-    }
+    setPercentToSend(25);
+    am.actionChanged(GA_SEND);
+    resetSelection();
+    bt25Percent->setSelected(true);
 }
 
-void RessourcesInterface::btDicrasePressed()
+void RessourcesInterface::bt50Pressed()
 {
-    if(percentToSend > 25)
-    {
-        percentToSend -= 25;
-    }
+    setPercentToSend(50);
+    am.actionChanged(GA_SEND);
+    resetSelection();
+    bt50Percent->setSelected(true);
+}
+
+void RessourcesInterface::bt75Pressed()
+{
+    setPercentToSend(75);
+    am.actionChanged(GA_SEND);
+    resetSelection();
+    bt75Percent->setSelected(true);
+}
+
+void RessourcesInterface::bt100Pressed()
+{
+    setPercentToSend(100);
+    am.actionChanged(GA_SEND);
+    resetSelection();
+    bt100Percent->setSelected(true);
 }
 
 /*----------------------------------------------------*/
@@ -110,26 +123,33 @@ void RessourcesInterface::btDicrasePressed()
 void RessourcesInterface::setUpUI()
 {
     //INSTANTIATION
-    btIncrase = new Button(INCRASE, this);
-    btDicrase = new Button(DICRASE, this);
-    txtPercent = new QGraphicsTextItem("",this);
+    bt25Percent = new ButtonRessource(SET_25, this);
+    bt50Percent = new ButtonRessource(SET_50, this);
+    bt75Percent = new ButtonRessource(SET_75, this);
+    bt100Percent = new ButtonRessource(SET_100, this);
 
     //CONNEXION
-
-    connect(btIncrase, SIGNAL(pressed()), this, SLOT(btIncrasePressed()));
-    connect(btDicrase, SIGNAL(pressed()), this, SLOT(btDicrasePressed()));
+    connect(bt25Percent, SIGNAL(pressed()), this, SLOT(bt25Pressed()));
+    connect(bt50Percent, SIGNAL(pressed()), this, SLOT(bt50Pressed()));
+    connect(bt75Percent, SIGNAL(pressed()), this, SLOT(bt75Pressed()));
+    connect(bt100Percent, SIGNAL(pressed()), this, SLOT(bt100Pressed()));
 
     //POSITIONNEMENT
-    btIncrase->setX(67);
-    btDicrase->setX(67);
-    txtPercent->setX(67);
+    bt25Percent->setX(60);
+    bt50Percent->setX(60);
+    bt75Percent->setX(60);
+    bt100Percent->setX(60);
 
-    btIncrase->setY(50);
-    btDicrase->setY(110);
-    txtPercent->setY(170);
+    bt25Percent->setY(50);
+    bt50Percent->setY(110);
+    bt75Percent->setY(170);
+    bt100Percent->setY(230);
+}
 
-    //PARAMETRAGE
-    QFont f = txtPercent->font();
-    txtPercent->setDefaultTextColor(Qt::cyan);
-    f.setBold(true);
+void RessourcesInterface::resetSelection()
+{
+    bt25Percent->setSelected(false);
+    bt50Percent->setSelected(false);
+    bt75Percent->setSelected(false);
+    bt100Percent->setSelected(false);
 }
