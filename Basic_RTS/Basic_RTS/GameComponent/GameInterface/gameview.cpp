@@ -131,7 +131,7 @@ void GameView::advance()
         if(g != 0)
         {
             gameFinished = true;
-            //sendAction(GA_GAME_FINISHED, -1,-1, g->getId());
+            sendAction(GA_GAME_FINISHED, -1,-1, g->getId());
         }
     }
 }
@@ -353,7 +353,7 @@ void GameView::setUpUI()
 
     scene->addItem(powerUi);
     scene->addItem(ressBar);
-    scene->addItem(ressUi);
+    //scene->addItem(ressUi);
 }
 
 /*----------------------------------------------------*/

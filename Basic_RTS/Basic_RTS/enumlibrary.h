@@ -100,15 +100,14 @@ enum BUTTON_TYPE
 
 #define VACANT_COLOR Qt::white
 #define BASE_NODE_COLOR Qt::darkBlue
-#define BACGROUND_COLOR "#142249"
 
 /*----------------------------------------------------*/
 /*GAMEPLAY*/
 /*----------------------------------------------------*/
 
 //mana initiale
-#define P_INITIAL_MANA 1000
-#define P_MAX_MANA 1000
+#define P_INITIAL_MANA 0
+#define P_MAX_MANA 200
 
 //cout des pouvoirs
 #define P_TELEPORTATION_COST 40
