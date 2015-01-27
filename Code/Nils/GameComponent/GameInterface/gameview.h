@@ -12,6 +12,7 @@ class NodeCombat;
 class QDropEvent;
 class PowerInterface;
 class RessourceBar;
+class RessourcesInterface;
 class Gamer;
 
 namespace GameComponent
@@ -68,6 +69,7 @@ private:
     /*INTERFACE*/
     PowerInterface *powerUi; ///< Palette de gestion des pouvoirs
     RessourceBar *ressBar; ///< Bare de ressource des joueurs
+    RessourcesInterface *ressUi; ///< Palette de gestion des ressources
 
     /*ENTREE*/
     Gamer *owner; ///< Joueur actuellement au commande de la map
@@ -75,7 +77,6 @@ private:
     /*OUTIL*/
     GameScene *scene; ///< Scene de jeu
     ActionManager am; ///< Gestionnaire des actions du joueur
-    double percentToSend; ///< Pourcentage du noeud à envoyer lors d'un envoi
     bool gameFinished; ///< Indique si le jeu est fini
 
     /*METHODE PRIVE*/

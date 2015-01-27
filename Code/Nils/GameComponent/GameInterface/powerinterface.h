@@ -59,10 +59,6 @@ private:
     Button *btPowerInvincibility;
     Button *btPowerTeleportation;
     Button *btPowerDestroy;
-    QGraphicsTextItem *txtCdPowerArmore;
-    QGraphicsTextItem *txtCdPowerInvincibility;
-    QGraphicsTextItem *txtCdPowerTeleportation;
-    QGraphicsTextItem *txtCdPowerDestroy;
     POWER powerSelected;
     ActionManager &am;
 
