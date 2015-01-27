@@ -5,19 +5,37 @@
     <name>EditView</name>
     <message>
         <location filename="GameComponent/EditorInterface/editview.cpp" line="165"/>
-        <source>Sauver la map</source>
+        <source>Save the map</source>
+        <oldsource>Sauver la map</oldsource>
         <translation>Sauver la map</translation>
     </message>
     <message>
         <location filename="GameComponent/EditorInterface/editview.cpp" line="166"/>
         <location filename="GameComponent/EditorInterface/editview.cpp" line="191"/>
-        <source>Nom :</source>
+        <source>Name :</source>
+        <oldsource>Nom :</oldsource>
         <translation>Nom :</translation>
     </message>
     <message>
+        <location filename="GameComponent/EditorInterface/editview.cpp" line="175"/>
+        <source>Map already exist !</source>
+        <oldsource>La map existe déjà !</oldsource>
+        <translation>La map existe déjà!</translation>
+    </message>
+    <message>
         <location filename="GameComponent/EditorInterface/editview.cpp" line="190"/>
-        <source>Ouvrir la map</source>
+        <source>Open map</source>
         <translation>Ouvrir la map</translation>
+    </message>
+    <message>
+        <source>Ouvrir la map</source>
+        <translation type="vanished">Ouvrir la map</translation>
+    </message>
+    <message>
+        <location filename="GameComponent/EditorInterface/editview.cpp" line="200"/>
+        <source>Map does not exist !</source>
+        <oldsource>La map n&apos;existe pas !</oldsource>
+        <translation>La map n&apos;existe pas !</translation>
     </message>
 </context>
 <context>

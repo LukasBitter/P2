@@ -162,8 +162,8 @@ void EditView::onBtSaveToFilePressed()
 {
     bool ok;
     QString text;
-    text = QInputDialog::getText(this, tr("Sauver la map")
-                                         ,tr("Nom :"), QLineEdit::Normal,
+    text = QInputDialog::getText(this, tr("Save the map")
+                                         ,tr("Name :"), QLineEdit::Normal,
                                          "", &ok);
     if(ok)
     {
@@ -172,7 +172,7 @@ void EditView::onBtSaveToFilePressed()
         if(QFile(path).exists())
         {
             QMessageBox msgBox;
-            msgBox.setText("La map existe déjà !");
+            msgBox.setText(tr("Map already exist !"));
             msgBox.exec();
         }
         else
@@ -187,8 +187,8 @@ void EditView::onBtLoadFromFilePressed()
 
     bool ok;
     QString text;
-    text = QInputDialog::getText(this, tr("Ouvrir la map")
-                                         ,tr("Nom :"), QLineEdit::Normal,
+    text = QInputDialog::getText(this, tr("Open map")
+                                         ,tr("Name :"), QLineEdit::Normal,
                                          "", &ok);
     if(ok)
     {
@@ -197,7 +197,7 @@ void EditView::onBtLoadFromFilePressed()
         if(!QFile(path).exists())
         {
             QMessageBox msgBox;
-            msgBox.setText("La map n'existe pas !");
+            msgBox.setText(tr("Map does not exist !"));
             msgBox.exec();
         }
         else

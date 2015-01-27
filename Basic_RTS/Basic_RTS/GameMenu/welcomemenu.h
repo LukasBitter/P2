@@ -39,6 +39,9 @@ private:
     QPushButton* btHostGame;
     QPushButton* btJointGame;
     QPushButton* btQuit;
+    QPushButton* btEnglish;
+    QPushButton* btFrench;
+    QPushButton* btGerman;
 
     /*METHODE PRIVE*/
     void setUpUI();

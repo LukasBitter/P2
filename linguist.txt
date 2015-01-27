@@ -1,3 +1,3 @@
 C:\Qt\5.4\mingw491_32\bin\lupdate.exe -verbose basic_RTS.pro
 
-C:\Qt\5.4\mingw491_32\bin\linguist.exe -verbose basic_RTS_fr.ts
+C:\Qt\5.4\mingw491_32\bin\linguist.exe basic_RTS_fr.ts
