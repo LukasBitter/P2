@@ -23,7 +23,7 @@ void LobbyMenu::paintEvent(QPaintEvent *)
 {
     // AJOUT BACKGROUND
 
-    background.load(":/Background_ligth.jpg");
+    background.load(":/Background.jpg");
 
     QPainter painter(this);
     QRectF target(0.0, 0.0, 1280.0, 800.0);
@@ -312,6 +312,7 @@ void LobbyMenu::setUpUI()
     this->cbbColor = new QComboBox(this);
     this->cbbSlot = new QComboBox(this);
     this->tblStatus = new QTableWidget(this);
+    this->txtLobby = new QLabel(tr("<h2>Welcome in the lobby</h2>"), this);
     this->txtAdressIP = new QLineEdit(tr("&Host IP address"),this);
     this->txtName = new QLabel(tr("Your user name : "),this);
     this->txtUserList = new QLabel(tr("Connected users : "),this);
@@ -350,6 +351,8 @@ void LobbyMenu::setUpUI()
     tblStatus->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     tblStatus->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     txtChat->setReadOnly(true);
+    this->setStyleSheet("QLabel { color: white}");
+    txtLobby->setStyleSheet("color: white; font-size: 16px;");
 
 
     //PEUPLEMENT
@@ -364,21 +367,22 @@ void LobbyMenu::setUpUI()
     l->setColumnStretch(2, 1);
     l->setColumnStretch(3, 1);
     l->setColumnStretch(4, 3);
-    l->addWidget(txtName, 0,0);
-    l->addWidget(btChangeName, 0,1);
-    l->addWidget(txtAdressIP, 1,0);
-    l->addWidget(btConnect, 1,1);
-    l->addWidget(txtUserList, 2,0);
-    l->addWidget(tblStatus, 3,0,6,4);
-    l->addWidget(txtMap, 9,0, 1, 1, Qt::AlignRight);
-    l->addWidget(cbbMap, 9,1);
-    l->addWidget(txtColour, 10,0, 1, 1, Qt::AlignRight);
-    l->addWidget(cbbColor, 10,1);
-    l->addWidget(txtSlotSpawn, 11,0, 1, 1, Qt::AlignRight);
-    l->addWidget(cbbSlot, 11,1);
-    l->addWidget(txtStatus, 12,0, 1, 1, Qt::AlignRight);
-    l->addWidget(txtConnected, 12,1);
-    l->addWidget(cbtReady, 13,1);
+    l->addWidget(txtLobby, 0, 1, 1, 3);
+    l->addWidget(txtName, 1,0, 1, 2);
+    l->addWidget(btChangeName, 1,2);
+    l->addWidget(txtAdressIP, 2,0);
+    l->addWidget(btConnect, 2,1);
+    l->addWidget(txtUserList, 3,0);
+    l->addWidget(tblStatus, 4,0,6,4);
+    l->addWidget(txtMap, 10,0, 1, 1, Qt::AlignRight);
+    l->addWidget(cbbMap, 10,1, 1, 2);
+    l->addWidget(txtColour, 11,0, 1, 1, Qt::AlignRight);
+    l->addWidget(cbbColor, 11,1);
+    l->addWidget(txtSlotSpawn, 12,0, 1, 1, Qt::AlignRight);
+    l->addWidget(cbbSlot, 12,1);
+    l->addWidget(txtStatus, 13,0, 1, 1, Qt::AlignRight);
+    l->addWidget(txtConnected, 13,1);
+    l->addWidget(cbtReady, 14,1);
     l->addWidget(txtChat, 1,4, 20, 1);
     l->addWidget(txtToSendChat, 21,4);
     l->addWidget(btSend, 22,4);
@@ -390,7 +394,17 @@ void LobbyMenu::setUpUI()
     txtToSendChat->setFocus();
 
     // TAB ORDER
-    //setTabOrder(txtToSendChat, b); // a to b
+    setTabOrder(txtAdressIP, btConnect);
+    setTabOrder(btConnect, cbbMap);
+    setTabOrder(cbbMap, cbbColor);
+    setTabOrder(cbbColor, cbbSlot);
+    setTabOrder(cbbSlot, cbtReady);
+    setTabOrder(cbtReady, btStart);
+    setTabOrder(btStart, btReturn);
+    setTabOrder(btReturn, txtToSendChat);
+    setTabOrder(txtToSendChat, btSend);
+    setTabOrder(btSend, btChangeName);
+    setTabOrder(btChangeName, txtAdressIP);
 }
 
 void LobbyMenu::populate()

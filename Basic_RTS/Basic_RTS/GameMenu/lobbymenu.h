@@ -58,6 +58,7 @@ private:
     QLineEdit *txtAdressIP;
     QPushButton *btChangeName;
     QPushButton *btConnect;
+    QLabel *txtLobby;
     QLabel *txtName;
     QLabel *txtUserList;
     QLabel *txtMap;

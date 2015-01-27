@@ -80,7 +80,8 @@ OTHER_FILES += \
 FORMS +=
 
 RESOURCES += \
-    Graphics/graphics.qrc
+    Graphics/graphics.qrc \
+    files.qrc
 
 TRANSLATIONS    = basic_RTS_fr.ts \
                   basic_RTS_de.ts

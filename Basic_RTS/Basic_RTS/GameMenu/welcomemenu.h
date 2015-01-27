@@ -33,14 +33,16 @@ private slots:
     void onBtJointGamePressed();
     void onBtQuitPressed();
     void onBtAboutPressed();
+    void onBtHelpPressed();
 
 private:
     /*INTERFACE*/
-    QPushButton* btEditor;
     QPushButton* btHostGame;
     QPushButton* btJoinGame;
-    QPushButton* btQuit;
+    QPushButton* btEditor;
+    QPushButton* btHelp;
     QPushButton* btAbout;
+    QPushButton* btQuit;
     QLabel *labelTitle;
     QPixmap background;
 
