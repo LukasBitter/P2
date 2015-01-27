@@ -4,7 +4,7 @@
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-Button::Button(POWER p, QGraphicsItem *parent)
+Button::Button(BUTTON_TYPE p, QGraphicsItem *parent)
     : QGraphicsWidget(parent), power(p), buttonSelected(false),
       powerPercent(0)
 {
@@ -118,4 +118,9 @@ void Button::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
  void Button::setSelected(bool b)
  {
      this->buttonSelected = b;
+ }
+
+ void Button::drawImage()
+ {
+
  }

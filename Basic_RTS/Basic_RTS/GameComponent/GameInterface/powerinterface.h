@@ -59,7 +59,7 @@ private:
     Button *btPowerInvincibility;
     Button *btPowerTeleportation;
     Button *btPowerDestroy;
-    POWER powerSelected;
+    BUTTON_TYPE powerSelected;
     ActionManager &am;
 
     /*OUTIL*/

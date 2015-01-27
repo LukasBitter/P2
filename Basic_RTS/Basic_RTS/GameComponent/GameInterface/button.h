@@ -19,7 +19,7 @@ class Button : public QGraphicsWidget
 
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    Button(POWER power, QGraphicsItem *parent = 0);
+    Button(BUTTON_TYPE power, QGraphicsItem *parent = 0);
 
     /*SURCHARGE*/
     QRectF boundingRect() const;
@@ -36,9 +36,11 @@ signals:
 
 private:
     /*ENTREE*/
-    POWER power;
+    BUTTON_TYPE power;
     double powerPercent;
     bool buttonSelected;
+
+    void drawImage();
 };
 
 #endif // BUTTON_H
