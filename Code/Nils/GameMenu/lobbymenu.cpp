@@ -56,10 +56,10 @@ void LobbyMenu::updateUI()
         QTableWidgetItem *l1 = new QTableWidgetItem(QString("%1").arg(g->getName()));
         QTableWidgetItem *l2 = new QTableWidgetItem();
         l2->setBackground(g->getColor());
-        QTableWidgetItem *l3 = new QTableWidgetItem("No slot");
+        QTableWidgetItem *l3 = new QTableWidgetItem(tr("No slot"));
         if(g->getSlotNumber() != -1)l3->setText(QString("%1").arg(g->getSlotNumber()));
-        QTableWidgetItem *l4 = new QTableWidgetItem("Not ready");
-        if(g->isReady())l4->setText("Ready !");
+        QTableWidgetItem *l4 = new QTableWidgetItem(tr("Not ready"));
+        if(g->isReady())l4->setText(tr("Ready !"));
 
         tblStatus->setItem(cpt, 0, l1);
         tblStatus->setItem(cpt, 1, l2);
@@ -72,7 +72,7 @@ void LobbyMenu::updateUI()
     if(currentGamer != 0)
     {
         cbtReady->setChecked(currentGamer->isReady());
-        txtName->setText(QString("Votre pseudo : %1").arg(currentGamer->getName()));
+        txtName->setText(QString(tr("Your user name: %1")).arg(currentGamer->getName()));
         btChangeName->setEnabled(true);
         cbbColor->setCurrentIndex(cbbColor->findData(currentGamer->getColor()));
         cbbSlot->setCurrentIndex(cbbSlot->findData(currentGamer->getSlotNumber()));
@@ -104,7 +104,7 @@ void LobbyMenu::showError(QAbstractSocket::SocketError err)
     }
 
     QMessageBox msgBox;
-    msgBox.setText("ERREUR");
+    msgBox.setText(tr("ERROR"));
     msgBox.exec();
 }
 
@@ -114,31 +114,31 @@ void LobbyMenu::showMessage(NETWORK_INFORMATION err)
     switch (err)
     {
     case I_SAME_COLOR:
-        msgBox.setText("Les joueurs ont la même couleur");
+        msgBox.setText(tr("Players have the same colour"));
         break;
     case I_SAME_SLOT:
-        msgBox.setText("Les joueurs ont le même spawn");
+        msgBox.setText(tr("Players have same spawn"));
         break;
     case I_GAME_STARTED:
-        msgBox.setText("La partie est deja commencée");
+        msgBox.setText(tr("Game is already running"));
         break;
     case I_SLOT_NOT_SELECTED:
-        msgBox.setText("Un joueur n'a pas selectionné de spawn");
+        msgBox.setText(tr("A player hasn't selected any spawn"));
         break;
     case I_COLOR_NOT_SELECTED:
-        msgBox.setText("Un joueur n'a pas selectionné de couleur");
+        msgBox.setText(tr("A player hasn't selected any colour"));
         break;
     case I_MAP_INVALID:
-        msgBox.setText("La map est invalide");
+        msgBox.setText(tr("Invalid map"));
         break;
     case I_MAP_NOT_BIG_ENOUGH:
-        msgBox.setText("La map n'est pas assez grande");
+        msgBox.setText(tr("Map is too small"));
         break;
     case I_NOT_READY:
-        msgBox.setText("Un joueur n'est pas prêt");
+        msgBox.setText(tr("A player is not ready"));
         break;
     case I_LOBBY_FULL:
-        msgBox.setText("Le salon est plein");
+        msgBox.setText(tr("Lobby is full!"));
         break;
     default:
         qCritical()<<"LobbyMenu : unexpected case in 'showMessage'"<<err;
@@ -191,8 +191,8 @@ void LobbyMenu::wantChangeName()
     {
         QString previousName = client->getCurrentGamer()->getName();
         bool ok = false;
-        QString currentName = QInputDialog::getText(this, tr("Entrez votre pseudo")
-                                                    ,tr("Pseudo :"), QLineEdit::Normal,
+        QString currentName = QInputDialog::getText(this, tr("Enter your user name")
+                                                    ,tr("User name :"), QLineEdit::Normal,
                                                     "", &ok);
 
         if(ok && !currentName.isEmpty())
@@ -202,7 +202,7 @@ void LobbyMenu::wantChangeName()
             if(!stop)
             {
                 QMessageBox msgBox;
-                msgBox.setText("Contient des caractaires interdits");
+                msgBox.setText(tr("Contains invalid characters"));
                 msgBox.exec();
             }
             else
@@ -235,7 +235,7 @@ void LobbyMenu::onSuccessfulConnexion()
 {
     qDebug()<<"LobbyMenu : successfull connexion to server";
 
-    txtConnected->setText("Connecté");
+    txtConnected->setText(tr("Connected"));
     wantChangeName(); //Demande un nom  au démmarage
     if(host) client->setReady(true); //Le joueur host est pret de base
 }
@@ -285,21 +285,21 @@ void LobbyMenu::setUpUI()
 {
     //INSTANTIATION
 
-    this->btStart = new QPushButton("Lancer le jeu", this);
-    this->btConnect = new QPushButton("Connection",this);
-    this->btReturn = new QPushButton("Retour",this);
-    this->btChangeName = new QPushButton("Changer le pseudo",this);
-    this->cbtReady = new QCheckBox("Pret", this);
+    this->btStart = new QPushButton(tr("Launch game"), this);
+    this->btConnect = new QPushButton(tr("Connection"),this);
+    this->btReturn = new QPushButton(tr("Back"),this);
+    this->btChangeName = new QPushButton(tr("Change user name"),this);
+    this->cbtReady = new QCheckBox(tr("Ready"), this);
     this->cbbMap = new QComboBox(this);
     this->cbbColor = new QComboBox(this);
     this->cbbSlot = new QComboBox(this);
     this->tblStatus = new QTableWidget(this);
-    this->txtAdressIP = new QLineEdit("Entrez l'adresse IP",this);
-    this->txtName = new QLabel("Votre pseudo : ",this);
-    this->txtConnected = new QLabel("Non connecté",this);
+    this->txtAdressIP = new QLineEdit(tr("Enter host IP address"),this);
+    this->txtName = new QLabel(tr("Your user name : "),this);
+    this->txtConnected = new QLabel(tr("Not connected"),this);
     this->txtChat = new QTextEdit(this);
     this->txtToSendChat = new QLineEdit(this);
-    this->btSend = new QPushButton("Envoyer", this);
+    this->btSend = new QPushButton(tr("Send"), this);
 
     //CONNEXION
 
@@ -368,10 +368,10 @@ void LobbyMenu::populate()
     }
 
     //Peuplement du combobox de selection de la couleur
-    cbbColor->addItem("Rouge", colorArray[0]);
-    cbbColor->addItem("Vert", colorArray[1]);
-    cbbColor->addItem("Orange", colorArray[2]);
-    cbbColor->addItem("Jaune", colorArray[3]);
+    cbbColor->addItem(tr("Red"), colorArray[0]);
+    cbbColor->addItem(tr("Green"), colorArray[1]);
+    cbbColor->addItem(tr("Orange"), colorArray[2]);
+    cbbColor->addItem(tr("Yellow"), colorArray[3]);
 }
 
 void LobbyMenu::disableUI()
@@ -386,8 +386,8 @@ void LobbyMenu::disableUI()
     txtAdressIP->setEnabled(false);
     btChangeName->setEnabled(false);
 
-    txtAdressIP->setText("Entrez l'adresse IP");
-    txtName->setText("Votre pseudo : ");
+    txtAdressIP->setText(tr("Enter host IP address"));
+    txtName->setText(tr("Your user name : "));
 
     updateUI();
 }
