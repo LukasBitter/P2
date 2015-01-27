@@ -49,6 +49,8 @@ void Button::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QW
         break;
     case DESTRUCTION: buttonPath = ":/Button4";
         break;
+    default:
+        break;
     }
 
     if (down)

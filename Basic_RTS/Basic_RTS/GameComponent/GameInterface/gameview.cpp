@@ -9,6 +9,7 @@
 #include "gamerlist.h"
 #include "powerinterface.h"
 #include "ressourcebar.h"
+#include "ressourcesinterface.h"
 
 
 /*----------------------------------------------------*/
@@ -19,7 +20,8 @@ void GameView::initialize()
 {
     scene = 0;
     powerUi = 0;
-    percentToSend = 50;
+    ressBar = 0;
+    ressUi = 0;
     gameFinished = false;
 }
 
@@ -58,24 +60,9 @@ void GameView::keyPressEvent(QKeyEvent *e)
     case Qt::Key_Escape:
         emit returnToMenu();
         break;
-    case Qt::Key_Q:
-        setPercentToSend(25);
-        am.actionChanged(GA_SEND);
-        break;
-    case Qt::Key_W:
-        setPercentToSend(50);
-        am.actionChanged(GA_SEND);
-        break;
-    case Qt::Key_E:
-        setPercentToSend(75);
-        am.actionChanged(GA_SEND);
-        break;
-    case Qt::Key_R:
-        setPercentToSend(100);
-        am.actionChanged(GA_SEND);
-        break;
     default:
         am.actionChanged(NO_ACTION);
+        ressUi->shortCutPressed(e);
         powerUi->shortCutPressed(e);
         break;
     }
@@ -108,11 +95,6 @@ void GameView::dropEvent(QDropEvent *event)
 /*----------------------------------------------------*/
 /*ASSESSEUR / MUTATEUR*/
 /*----------------------------------------------------*/
-
-void GameView::setPercentToSend(int percent)
-{
-    if(percent>=0 && percent<=100) percentToSend = percent;
-}
 
 bool GameView::isContainsPrivateChar(QString &s)
 {
@@ -351,6 +333,10 @@ void GameView::setUpUI()
     powerUi->setY(0);
     powerUi->setMana(P_INITIAL_MANA);
 
+    ressUi = new RessourcesInterface(am);
+    ressUi->setX(0);
+    ressUi->setY(280);
+
     const PowerCountDown &pcd = powerUi->getCountDownManager();
     connect(&pcd,SIGNAL(powerFinishing(ACTIONS,Node*,Node*)),this,SLOT(onPowerFinishing(ACTIONS,Node*,Node*)));
     connect(&pcd,SIGNAL(powerStarting(ACTIONS,Node*,Node*)),this,SLOT(onPowerStarting(ACTIONS,Node*,Node*)));
@@ -367,6 +353,7 @@ void GameView::setUpUI()
 
     scene->addItem(powerUi);
     scene->addItem(ressBar);
+    scene->addItem(ressUi);
 }
 
 /*----------------------------------------------------*/
@@ -381,7 +368,7 @@ void GameView::setUpUI()
 void GameView::sendSquad(Node *from, Node *to)
 {
     NodeCombat *nodeFromTmp = dynamic_cast <NodeCombat*>(from);
-    int nbRessource = (int)(nodeFromTmp->getRessources()*(percentToSend/100));
+    int nbRessource = (int)(nodeFromTmp->getRessources()*(ressUi->getPercentToSend()/100));
     if(nodeFromTmp != 0)
     {
         NodeConnectable *nodeToComba = dynamic_cast <NodeConnectable*>(to);

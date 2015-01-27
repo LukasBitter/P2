@@ -130,6 +130,6 @@ void RessourcesInterface::setUpUI()
 
     //PARAMETRAGE
     QFont f = txtPercent->font();
-    txtPercent->setC
-    f.set
+    txtPercent->setDefaultTextColor(Qt::cyan);
+    f.setBold(true);
 }

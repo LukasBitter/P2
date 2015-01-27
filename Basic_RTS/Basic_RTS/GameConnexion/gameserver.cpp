@@ -322,6 +322,8 @@ void GameServer::receive_C_SEND_CHAT_MESSAGE(QTcpSocket *t, const QString &msg)
 
 void GameServer::receive_C_MAP_CHANGE(QTcpSocket *t, const QString &msg)
 {
+    Q_UNUSED(t);
+
     mapSelected = msg.toInt();
     sendToAllGamer(QString("%1#%2").arg(C_MAP_CHANGE).arg(lstMapName.value(mapSelected,"")));
 }

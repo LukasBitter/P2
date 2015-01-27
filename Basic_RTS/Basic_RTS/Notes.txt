@@ -1,8 +1,4 @@
 
-vérifier pourquoi il ne faut pas appelker dragMoveEvent de la scene
-Demander autre relire initialisation variable
-
 Ajout last-minute :
-- menu editeur ilisible
 - memoire action editeur
 - changer le calcule des colision de squad
