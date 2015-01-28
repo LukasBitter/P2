@@ -205,10 +205,12 @@ void LobbyMenu::wantChangeName()
 
     while(!stop)
     {
+
+        QString msg(tr("User name :"));
         QString previousName = client->getCurrentGamer()->getName();
         bool ok = false;
-        QString currentName = QInputDialog::getText(this, tr("Enter your user name")
-                                                    ,tr("User name :"), QLineEdit::Normal,
+        QString currentName = QInputDialog::getText(this, msg
+                                                    ,tr("<font color='black'>User name :</font>"), QLineEdit::Normal,
                                                     "", &ok);
 
         if(ok && !currentName.isEmpty())
@@ -349,7 +351,9 @@ void LobbyMenu::setUpUI()
     tblStatus->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     tblStatus->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     txtChat->setReadOnly(true);
-    this->setStyleSheet("QLabel { color: white}");
+    cbtReady->setLayoutDirection(Qt::RightToLeft);
+    this->setStyleSheet("QCheckBox { color: white}"
+                        "QLabel { color: white}");
     txtLobby->setStyleSheet("color: white; font-size: 16px;");
 
 

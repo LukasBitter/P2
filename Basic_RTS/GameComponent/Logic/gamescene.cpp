@@ -87,7 +87,10 @@ void GameScene::drawBackground(QPainter *painter, const QRectF &rect)
     Q_UNUSED(rect);
 
     const QPixmap background(":/Background.png");
+    QString returnText(tr("Return to lobby: press \"Esc\""));
+
     painter->drawPixmap(-10,-10, background);
+    painter->drawText(20, 580, returnText);
 }
 
 /*----------------------------------------------------*/
