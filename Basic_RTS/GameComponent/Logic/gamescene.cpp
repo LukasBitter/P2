@@ -187,6 +187,10 @@ int GameScene::getTotalRessources(Gamer &g)
 
         if(nc != 0 && nc->getOwner() == &g) total += nc->getRessources();
     }
+    foreach (Connexion *c, lstConnexion)
+    {
+        total += c->getTotalRessources(g);
+    }
     return total;
 }
 
@@ -216,6 +220,10 @@ int GameScene::getTotalRessources()
         NodeCombat *nc = dynamic_cast<NodeCombat *>(n);
 
         if(nc != 0) total += nc->getRessources();
+    }
+    foreach (Connexion *c, lstConnexion)
+    {
+        total += c->getTotalRessources();
     }
     return total;
 }
@@ -318,11 +326,11 @@ void GameScene::updateFromString(QString s)
                 QString &data = connexionStr.first();
                 Connexion *c = getConnexion(numberId);
                 if(c != 0) c->updateFromString(data);
-                else qCritical()<<"GameScene : unexpected case in 'updateFromString' (3)";
+                else qWarning()<<"GameScene : unexpected case in 'updateFromString' (3)";
             }
             else
             {
-                qCritical()<<"GameScene : unexpected case in 'updateFromString' (1)";
+                qWarning()<<"GameScene : unexpected case in 'updateFromString' (1)";
             }
         }
 
@@ -336,16 +344,16 @@ void GameScene::updateFromString(QString s)
                 QString &data = nodeStr.first();
                 Node *n = getNode(numberId);
                 if(n != 0) n->updateFromString(data);
-                else qCritical()<<"GameScene : unexpected case in 'updateFromString' (4)";
+                else qWarning()<<"GameScene : unexpected case in 'updateFromString' (4)";
             }
             else
             {
-                qCritical()<<"GameScene : unexpected case in 'updateFromString' (2)";
+                qWarning()<<"GameScene : unexpected case in 'updateFromString' (2)";
             }
         }
     }
     else
     {
-        qCritical()<<"GameScene : unexpected case in 'updateFromString' (3)";
+        qCritical()<<"GameScene : unexpected case in 'updateFromString' (5)";
     }
 }

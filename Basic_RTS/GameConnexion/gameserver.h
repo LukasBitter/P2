@@ -27,7 +27,7 @@ class GameServer: public QObject
 
 public:
     /*CONSTRUCTEUR / DESTRUCTEUR*/
-    explicit GameServer(int maxConnexion, QObject *parent = 0);
+    explicit GameServer(QObject *parent = 0);
     ~GameServer();
 
     /*ASSESSEUR / MUTATEUR*/

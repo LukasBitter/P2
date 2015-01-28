@@ -39,7 +39,8 @@ HEADERS += \
     GameComponent/GameInterface/ressourcebar.h \
     GameComponent/GameInterface/ressourcesinterface.h \
     GameComponent/GameInterface/buttonpower.h \
-    GameComponent/GameInterface/buttonressource.h
+    GameComponent/GameInterface/buttonressource.h \
+    settings.h
 
 SOURCES += \
     GameComponent/Logic/connexion.cpp \
@@ -72,7 +73,8 @@ SOURCES += \
     GameComponent/GameInterface/ressourcebar.cpp \
     GameComponent/GameInterface/ressourcesinterface.cpp \
     GameComponent/GameInterface/buttonpower.cpp \
-    GameComponent/GameInterface/buttonressource.cpp
+    GameComponent/GameInterface/buttonressource.cpp \
+    settings.cpp
 
 OTHER_FILES += \
     Notes.txt

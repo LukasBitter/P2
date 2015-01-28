@@ -2,6 +2,7 @@
 #include "gameserver.h"
 #include "client.h"
 #include "gamer.h"
+#include "settings.h"
 #include "GameComponent/GameInterface/gameview.h"
 
 
@@ -10,7 +11,7 @@
 /*----------------------------------------------------*/
 
 GameClient::GameClient(QString host, QObject *parent) : QObject(parent),
-    port(PORT), gamerId(-1), map(0), client(0)
+    port(connexionPort()), gamerId(-1), map(0), client(0)
 {
     client = new Client(port, host, this);
 
@@ -185,6 +186,12 @@ void GameClient::onMessageRecive(QString s)
         receive_C_MAP_CHANGE(msg);
         break;
     }
+    case C_CONFIG_UPDATE:
+    {
+        qDebug()<<"GameClient : in 'onMessageRecive' recive C_CONFIG_UPDATE";
+        receive_C_CONFIG_UPDATE(msg);
+        break;
+    }
     default:
         qCritical()<<"GameClient : unexpected case in 'onMessageRecive'";
         break;
@@ -286,4 +293,9 @@ void GameClient::receive_C_RECIVE_CHAT_MESSAGE(const QString &msg)
 void GameClient::receive_C_MAP_CHANGE(const QString &msg)
 {
     mapSelectionChange(msg);
+}
+
+void GameClient::receive_C_CONFIG_UPDATE(const QString &msg)
+{
+    updateSettingFromString(msg);
 }

@@ -23,6 +23,7 @@ enum NETWORK_COMMANDE
     C_SEND_CHAT_MESSAGE,///< Client->Serveur : envois d'un message au autres joueurs
     C_RECIVE_CHAT_MESSAGE,///< Serveur->Client : réception d'un message des autres joueurs
     C_MAP_CHANGE,///< Serveur->Client : changement de la map de jeu
+    C_CONFIG_UPDATE,///< Serveur->Client : allignement des parametres sur ceux du serveur
 };
 
 ///Informations que le serveur envoi au client
@@ -75,26 +76,14 @@ enum BUTTON_TYPE
 /*GENERAL*/
 /*----------------------------------------------------*/
 
-//fréquence de la boucle de rafraichissement en milliseconde
-//de l'interface des pouvoir en local chez le client
-#define POWER_TIC 100
-//fréquence de la boucle de rafraichissement en milliseconde
-//du jeu sur le serveur
-#define GAME_TIC 75
-//fréquence de la boucle de rafraichissement en milliseconde
-//de la barre de statistique sur les ressource
-#define RESSOURCES_BAR_TIC 500
-//port de connexion
-#define PORT 8000
-//maximum de joueur dans le salon
-#define MAX_GAMER 4
-#define PLAYER_COLOR {Qt::darkRed, Qt::darkGreen, Qt::darkYellow, Qt::darkCyan}
 //Numéro de version des map supportées
 #define VERSION_MAP 1
 //Enregistrement et lecture des maps
 #define MAP_FILE "./maps"
 #define MAP_EXTENSION "rtsmap"
 #define MAP_EXTENSION_FILTER "*.rtsmap"
+//Fichier de configuration
+#define CONFIG_FILE "./config.ini"
 
 /*----------------------------------------------------*/
 /*GRAPHISME*/

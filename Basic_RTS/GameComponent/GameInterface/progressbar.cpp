@@ -49,28 +49,31 @@ void ProgressBar::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
     {
         double percent = ((double)lstCurrentValue.value(i) / (double)max) * dimGradiant;
 
-        QBrush b = painter->brush();
-        b.setColor(lstColor.value(i));
-        b.setStyle(Qt::SolidPattern);
-        painter->setBrush(b);
-
-        if(inverse)
+        if(percent >= 0)
         {
-            if(vertical)
+            QBrush b = painter->brush();
+            b.setColor(lstColor.value(i));
+            b.setStyle(Qt::SolidPattern);
+            painter->setBrush(b);
+
+            if(inverse)
             {
-                painter->drawRect(0, progress, dimBase, percent);
+                if(vertical)
+                {
+                    painter->drawRect(0, progress, dimBase, percent);
+                }
+                else
+                    painter->drawRect(progress, 0, percent, dimBase);
             }
             else
-                painter->drawRect(progress, 0, percent, dimBase);
+            {
+                if(vertical)
+                    painter->drawRect(0, dimension.height()-progress, dimBase, -(percent));
+                else
+                    painter->drawRect(dimension.width()-progress, 0, -(percent), dimBase);
+            }
+            progress += percent;
         }
-        else
-        {
-            if(vertical)
-                painter->drawRect(0, dimension.height()-progress, dimBase, -(percent));
-            else
-                painter->drawRect(dimension.width()-progress, 0, -(percent), dimBase);
-        }
-        progress += percent;
     }
 
     QBrush b = painter->brush();
