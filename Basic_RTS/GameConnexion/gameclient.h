@@ -77,6 +77,7 @@ private:
     void receive_C_ADD_MAP(const QString &msg);
     void receive_C_RECIVE_CHAT_MESSAGE(const QString &msg);
     void receive_C_MAP_CHANGE(const QString &msg);
+    void receive_C_CONFIG_UPDATE(const QString &msg);
 };
 
 #endif // GAMECLIENT_H

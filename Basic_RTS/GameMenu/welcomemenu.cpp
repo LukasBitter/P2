@@ -54,10 +54,10 @@ void WelcomeMenu::onBtQuitPressed()
 
 void WelcomeMenu::onBtAboutPressed()
 {
-    qDebug() << "Bt About";
+    qDebug()<<"WelcomeMenu : enter in 'onBtAboutPressed'";
 
     QString msg("<p align='center'><b>V 1.1</b><br><br>");
-    msg += tr("This game was edited by Nily Riter, Nicolas Gonin and Lukas Bitter<br><br>");
+    msg += tr("This game was edited by Nily Ryter, Nicolas Gonin and Lukas Bitter<br><br>");
     msg += tr("The purpose of this program is the autumn project in 3rd semester<br></p>    ");
     msg += tr("HE-Arc Ingéniérie DLM, January 2015");
 
@@ -67,7 +67,8 @@ void WelcomeMenu::onBtAboutPressed()
 
 void WelcomeMenu::onBtHelpPressed()
 {
-    qDebug() << "Bt Help";
+    qDebug()<<"WelcomeMenu : enter in 'onBtHelpPressed'";
+
     QString fileName(":/README.txt");
     QFile file(fileName);
 

@@ -1,6 +1,7 @@
 #include <QApplication>
 #include "GameMenu/gamemenumanager.h"
 #include "enumlibrary.h"
+#include "settings.h"
 
 
 int main(int argc, char *argv[])
@@ -12,10 +13,19 @@ int main(int argc, char *argv[])
         d.mkpath(".");
     }
 
-//    qInstallMessageHandler(logOutput);
+    QFile c(CONFIG_FILE);
+
+    if(!c.exists())
+    {
+        createDefaultSettingFile();
+    }
+
+    loadSettingFromFile();
+
     QApplication a(argc, argv);
 
     GameMenuManager l;
     l.show();
+
     return a.exec();
 }

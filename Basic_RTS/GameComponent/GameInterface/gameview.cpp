@@ -10,6 +10,7 @@
 #include "powerinterface.h"
 #include "ressourcebar.h"
 #include "ressourcesinterface.h"
+#include "settings.h"
 
 
 /*----------------------------------------------------*/
@@ -125,7 +126,7 @@ QString GameView::getCreationString()
 void GameView::advance()
 {
     scene->advance();
-    if(!gameFinished)
+    if(!gameFinished && !debugNoWin())
     {
         const Gamer *g = scene->isVictory();
         if(g != 0)

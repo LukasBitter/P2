@@ -3,6 +3,7 @@
 #include "progressbar.h"
 #include "GameComponent/Logic/node.h"
 #include "GameComponent/GameInterface/buttonpower.h"
+#include "settings.h"
 
 
 /*----------------------------------------------------*/
@@ -16,7 +17,7 @@ PowerInterface::PowerInterface(ActionManager &am, QGraphicsItem * parent) :
     setAcceptHoverEvents(true);
     setCacheMode(DeviceCoordinateCache);
     setUpUI();
-    startTimer(POWER_TIC);
+    startTimer(clientUpdateLoop());
 }
 
 /*----------------------------------------------------*/
@@ -65,13 +66,13 @@ void PowerInterface::timerEvent(QTimerEvent *event)
 void PowerInterface::setMana(int mana)
 {
     if(mana > 0)this->mana = mana;
-    if(this->mana > P_MAX_MANA)this->mana = P_MAX_MANA;
+    if(this->mana > maxMana())this->mana = maxMana();
 }
 
 void PowerInterface::addMana(int mana)
 {
     if(mana > 0)this->mana += mana;
-    if(this->mana > P_MAX_MANA)this->mana = P_MAX_MANA;
+    if(this->mana > maxMana())this->mana = maxMana();
 }
 
 int PowerInterface::getMana() const
@@ -129,30 +130,30 @@ void PowerInterface::usePower(ACTIONS a, Node *n1, Node *n2)
     {
     case GA_USEPOWER_DESTROY:
     {
-        cost = P_DESTROY_COST;
-        countDownTime = P_DESTROY_CD;
+        cost = destroyCost();
+        countDownTime = destroyCD();
         powerDuration = 0;
         break;
     }
     case GA_USEPOWER_INVINCIBILITY:
     {
-        cost = P_INVINCIBILITY_COST;
-        countDownTime = P_INVINCIBILITY_CD;
-        powerDuration = P_INVINCIBILITY_DURATION;
+        cost = invincibilityCost();
+        countDownTime = invincibilityCD();
+        powerDuration = invincibilityDuration();
         break;
     }
     case GA_USEPOWER_TELEPORTATION:
     {
-        cost = P_TELEPORTATION_COST;
-        countDownTime = P_TELEPORTATION_CD;
+        cost = teleportationCost();
+        countDownTime = teleportationCD();
         powerDuration = 0;
         break;
     }
     case GA_USEPOWER_ARMORE:
     {
-        countDownTime = P_ARMOR_CD;
-        powerDuration = P_ARMOR_DURATION;
-        cost = P_ARMOR_COST;
+        countDownTime = armorCD();
+        powerDuration = armorDuration();
+        cost = armorCost();
         break;
     }
     default:
@@ -219,6 +220,6 @@ void PowerInterface::setUpUI()
     btPowerDestroy->setY(230);
 
     //PARAMETRAGE
-    pbMana->insertPlage(0, P_INITIAL_MANA, P_MAX_MANA,Qt::magenta);
+    pbMana->insertPlage(0, initialMana(), maxMana(),Qt::magenta);
     pbMana->setInverse(false);
 }

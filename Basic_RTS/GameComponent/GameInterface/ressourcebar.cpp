@@ -3,13 +3,14 @@
 #include "gamerlist.h"
 #include "enumlibrary.h"
 #include "GameComponent/Logic/gamescene.h"
+#include "settings.h"
 
 RessourceBar::RessourceBar(int x, int y, int w, int h, GamerList &gl,
                            GameScene &scene, QGraphicsItem *parent):
     ProgressBar(x,y,w,h,parent), scene(scene), gl(gl)
 {
     totalRessourcesOfMap = scene.getTotalRessources();
-    startTimer(RESSOURCES_BAR_TIC);
+    startTimer(clientUpdateLoop());
     setVertical(false);
     setFillMode(true);
 }

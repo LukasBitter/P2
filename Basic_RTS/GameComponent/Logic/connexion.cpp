@@ -188,6 +188,39 @@ void Connexion::sendSquad(Squad s, int nodeId)
 }
 
 /*----------------------------------------------------*/
+/*STATISTIQUE*/
+/*----------------------------------------------------*/
+
+int Connexion::getTotalRessources(Gamer &g)
+{
+    int totRessource = 0;
+    foreach (Squad *s, lstSquad1To2)
+    {
+        if(s->getOwner().getId() == g.getId()) totRessource = s->getNbRessources();
+    }
+    foreach (Squad *s, lstSquad2To1)
+    {
+        if(s->getOwner().getId() == g.getId()) totRessource = s->getNbRessources();
+    }
+    return totRessource;
+}
+
+int Connexion::getTotalRessources()
+{
+
+    int totRessource = 0;
+    foreach (Squad *s, lstSquad1To2)
+    {
+        totRessource = s->getNbRessources();
+    }
+    foreach (Squad *s, lstSquad2To1)
+    {
+        totRessource = s->getNbRessources();
+    }
+    return totRessource;
+}
+
+/*----------------------------------------------------*/
 /*MISE A JOUR*/
 /*----------------------------------------------------*/
 

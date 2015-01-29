@@ -42,6 +42,10 @@ public:
 
     void sendSquad(Squad s, int nodeId);
 
+    /*STATISTIQUE*/
+    int getTotalRessources(Gamer &g);
+    int getTotalRessources();
+
     /*MISE A JOUR*/
     QString getUpdateString() const;
     QString getCreationString() const;

@@ -1,5 +1,6 @@
 #include "lobbymenu.h"
 #include "gamer.h"
+#include "settings.h"
 #include "GameConnexion/gameclient.h"
 #include "GameConnexion/gameserver.h"
 
@@ -53,7 +54,7 @@ void LobbyMenu::enableServerUI()
     btStart->setEnabled(true);
     cbtReady->setEnabled(true);
 
-    setServer(new GameServer(MAX_GAMER, this));
+    setServer(new GameServer(this));
     setClient(new GameClient("127.0.0.1", this));
     host = true;
 }
@@ -166,6 +167,7 @@ void LobbyMenu::showMessage(NETWORK_INFORMATION err)
 void LobbyMenu::wantReturnToMenu()
 {
     qDebug()<<"LobbyMenu : want switch to menu";
+    disableUI();
     emit returnToMenu();
 }
 
@@ -278,10 +280,12 @@ void LobbyMenu::onCbbMapChanged(int i)
 
 void LobbyMenu::onCbbColorChanged(int i)
 {
+    QColor c = cbbColor->currentData().value<QColor>();
     if(client != 0)
     {
-        client->setColor(cbbColor->itemData(i).value<QColor>());
+        client->setColor(c);
     }
+    cbbColor->setStyleSheet(QString("background:%1").arg(c.name()));
 }
 
 void LobbyMenu::onCbbSlotChanged(int i)
@@ -341,7 +345,7 @@ void LobbyMenu::setUpUI()
 
     //PARAMETRAGE
 
-    tblStatus->setRowCount(MAX_GAMER);
+    tblStatus->setRowCount(maxGamer());
     tblStatus->setColumnCount(4);
     QStringList &s = *new QStringList();
     s<<tr("Player name")<<tr("Colour")<<tr("Slot spawn")<<tr("Ready");
@@ -411,20 +415,20 @@ void LobbyMenu::setUpUI()
 
 void LobbyMenu::populate()
 {
-    //Tableau des couleurs de joueur
-    QColor colorArray [MAX_GAMER] = PLAYER_COLOR;
-
     //peuplement du combobox de selection de slot
-    for(int i = 1; i <= MAX_GAMER; ++i)
+    for(int i = 1; i <= maxGamer(); ++i)
     {
         cbbSlot->addItem(QString("%1").arg(i), i);
     }
 
     //Peuplement du combobox de selection de la couleur
-    cbbColor->addItem(tr("Red"), colorArray[0]);
-    cbbColor->addItem(tr("Green"), colorArray[1]);
-    cbbColor->addItem(tr("Orange"), colorArray[2]);
-    cbbColor->addItem(tr("Yellow"), colorArray[3]);
+    int index = 0;
+    foreach (QColor c, getGamerColorList())
+    {
+        cbbColor->addItem("", c);
+        const QModelIndex idx = cbbColor->model()->index(index++, 0);
+        cbbColor->model()->setData(idx, c, Qt::BackgroundColorRole);
+    }
 }
 
 void LobbyMenu::disableUI()
@@ -452,6 +456,7 @@ void LobbyMenu::setClient(GameClient *c)
     {
         qDebug()<<"LobbyMenu : delete client";
         delete client;
+        cbbMap->clear();
     }
     client = c;
     if(client != 0)

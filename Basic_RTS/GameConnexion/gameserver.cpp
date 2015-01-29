@@ -3,17 +3,18 @@
 #include "gamer.h"
 #include "mapfile.h"
 #include "GameComponent/GameInterface/gameview.h"
+#include "settings.h"
 
 
 /*----------------------------------------------------*/
 /*CONSTRUCTEUR / DESTRUCTEUR*/
 /*----------------------------------------------------*/
 
-GameServer::GameServer(int maxConnexion, QObject *parent) : QObject(parent),
-    lockConnexion(false), refreshLoopMS(GAME_TIC), port(PORT), map(0),
-    mapSelected(0)
+GameServer::GameServer(QObject *parent) : QObject(parent),
+    lockConnexion(false), refreshLoopMS(serverUpdateLoop()),
+    port(connexionPort()), map(0), mapSelected(0)
 {
-    server = new Server(port, maxConnexion, this);
+    server = new Server(port, maxGamer(), this);
 
     connect(server, SIGNAL(messageReciveFromClient(QTcpSocket*,QString)),
             this, SLOT(onMessageRecive(QTcpSocket*,QString)));
@@ -215,7 +216,7 @@ void GameServer::receive_C_REQUEST_SLOT(QTcpSocket *t, const QString &msg)
 {
     Q_UNUSED(msg);
 
-    if(lstGamer.getLstGamer().size() == MAX_GAMER)
+    if(lstGamer.getLstGamer().size() == maxGamer())
     {
         qDebug()<<"GameServer : refuse client (1)";
 
@@ -226,12 +227,9 @@ void GameServer::receive_C_REQUEST_SLOT(QTcpSocket *t, const QString &msg)
     {
         qDebug()<<"GameServer : accept client";
 
-        //Tableau des couleurs de joueur
-        QColor colorArray [MAX_GAMER] = PLAYER_COLOR;
-
         Gamer *g = new Gamer();
         g->setSocket(t);
-        g->setColor(colorArray[lstGamer.getLstGamer().size()]);
+        g->setColor(getGamerColorList().at(lstGamer.getLstGamer().size()));
         lstGamer.addGamer(g);
         g->setSlotNumber(lstGamer.getLstGamer().size());
         server->sendMessageToClient(t,QString("%1#%2").arg(C_GAMER_INFO).arg(g->getId()));
@@ -284,6 +282,7 @@ void GameServer::receive_C_LAUNCH_GAME(QTcpSocket *t, const QString &msg)
     if(map != 0) delete map;
     map = new GameView(m.getCreationString(), lstGamer);
     map->updateFromString(m.getUpdateString());
+    sendToAllGamer(QString("%1#%2").arg(C_CONFIG_UPDATE).arg(getUpdateSettingString()));
     sendToAllGamer(QString("%1#%2").arg(C_TRANSIT_GAME).arg(m.getCreationString()));
 
     QList<Gamer *> lst = lstGamer.getLstGamer().values();
