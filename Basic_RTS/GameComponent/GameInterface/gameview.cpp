@@ -379,7 +379,8 @@ void GameView::sendSquad(Node *from, Node *to)
         {
             sendAction(GA_SEND, nodeFromTmp->getId(), nodeToComba->getId(),nbRessource);
         }
-        else if(nodeToMana != 0)
+        else if(nodeToMana != 0 && nodeFromTmp->getOwner() != 0 &&
+                nodeFromTmp->getOwner()->getId() == owner->getId())
         {
             powerUi->addMana(nbRessource);
             sendAction(GA_MANA_BURN, nodeFromTmp->getId(), 0,nbRessource);
