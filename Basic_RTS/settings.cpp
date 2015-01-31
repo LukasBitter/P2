@@ -46,7 +46,7 @@ void loadSettingFromFile()
     }
 
     _initialMana = ini.value("initialMana","0").toInt();
-    _maxMana = ini.value("connexionPort","100").toInt();
+    _maxMana = ini.value("maxMana","100").toInt();
     _armorCost = ini.value("armorCost","10").toInt();
     _teleportationCost = ini.value("teleportationCost","40").toInt();
     _destroyCost = ini.value("destroyCost","80").toInt();
